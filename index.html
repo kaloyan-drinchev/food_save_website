@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FoodSave — спаси следващото си ястие. Открий излишна храна от местни ресторанти и магазини с до 70% отстъпка."
+    />
+    <meta name="theme-color" content="#0D1F0E" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="FoodSave — Спаси следващото си ястие" />
+    <meta
+      property="og:description"
+      content="Открий излишна храна от местни ресторанти и магазини с до 70% отстъпка."
+    />
+    <meta property="og:type" content="website" />
+
+    <title>FoodSave — Спаси следващото си ястие</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" type="image/png" href="assets/images/fs.png" />
+    <link rel="stylesheet" href="assets/css/style.css?v=4" />
+  </head>
+  <body>
+    <!-- ═══════════════ NAVBAR ═══════════════ -->
+    <div
+      id="main-navbar"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 64px;
+        z-index: 1000;
+        background: #0d1f0e;
+        border-bottom: 1px solid #424242;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 24px;
+        font-family: 'Inter', sans-serif;
+      "
+    >
+      <a
+        href="#hero"
+        style="
+          color: #fff;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 1.1rem;
+          margin-right: auto;
+        "
+        >FoodSave</a
+      >
+      <a
+        href="#about"
+        data-i18n="nav.about"
+        style="
+          color: #bdbdbd;
+          text-decoration: none;
+          font-size: 0.85rem;
+          padding: 6px 10px;
+        "
+        >Как работи</a
+      >
+      <a
+        href="#download"
+        data-i18n="nav.download"
+        style="
+          color: #bdbdbd;
+          text-decoration: none;
+          font-size: 0.85rem;
+          padding: 6px 10px;
+        "
+        >Изтегли</a
+      >
+      <a
+        href="privacy-policy.html"
+        data-i18n="nav.privacy"
+        style="
+          color: #bdbdbd;
+          text-decoration: none;
+          font-size: 0.85rem;
+          padding: 6px 10px;
+        "
+        >Поверителност</a
+      >
+      <a
+        href="terms-and-conditions.html"
+        data-i18n="nav.terms"
+        style="
+          color: #bdbdbd;
+          text-decoration: none;
+          font-size: 0.85rem;
+          padding: 6px 10px;
+        "
+        >Условия</a
+      >
+      <a
+        href="#contact"
+        data-i18n="nav.contact"
+        style="
+          color: #bdbdbd;
+          text-decoration: none;
+          font-size: 0.85rem;
+          padding: 6px 10px;
+        "
+        >Контакт</a
+      >
+      <div
+        style="
+          margin-left: auto;
+          display: inline-flex;
+          border: 1px solid #424242;
+          border-radius: 20px;
+          overflow: hidden;
+        "
+      >
+        <button
+          id="btn-lang-bg"
+          style="
+            background: #1b5e20;
+            color: #69f0ae;
+            border: none;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          BG
+        </button>
+        <button
+          id="btn-lang-en"
+          style="
+            background: #243425;
+            color: #bdbdbd;
+            border: none;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          EN
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div
+      id="nav-mobile-menu"
+      class="nav-mobile-menu"
+      role="dialog"
+      aria-label="Mobile navigation"
+    >
+      <a href="#about" data-i18n="nav.about">Как работи</a>
+      <a href="#download" data-i18n="nav.download">Изтегли</a>
+      <a href="privacy-policy.html" data-i18n="nav.privacy">Поверителност</a>
+      <a href="terms-and-conditions.html" data-i18n="nav.terms">Условия</a>
+      <a href="#contact" data-i18n="nav.contact">Контакт</a>
+      <!-- Language toggle inside mobile menu -->
+      <div
+        class="lang-toggle"
+        role="group"
+        aria-label="Language selector"
+        style="margin-top: 16px; align-self: flex-start"
+      >
+        <button id="btn-lang-bg-mobile" class="active" aria-label="Български">
+          BG
+        </button>
+        <button id="btn-lang-en-mobile" aria-label="English">EN</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════════ -->
+    <section id="hero" aria-label="Hero">
+      <!-- Animated bubble canvas — absolutely positioned behind content -->
+      <canvas id="bubble-canvas" aria-hidden="true"></canvas>
+
+      <div class="hero-content">
+        <!-- Badge -->
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span data-i18n="hero.badge">Вече достъпно</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="hero-title">
+          <span data-i18n="hero.title1">Спаси следващото си</span><br />
+          <span data-i18n="hero.title2">Ястие</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          Открий излишна храна от местни ресторанти и магазини с до 70% отстъпка
+          — и намали хранителните отпадъци в квартала си.
+        </p>
+
+        <!-- CTA buttons -->
+        <div class="hero-cta">
+          <a href="#download" class="btn btn-primary">
+            <span>📱</span>
+            <span data-i18n="hero.cta_download">Изтегли приложението</span>
+          </a>
+          <a href="#about" class="btn btn-outline">
+            <span data-i18n="hero.cta_learn">Как работи</span>
+            <span>↓</span>
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value" data-i18n="hero.stat1_value">70%</div>
+            <div class="hero-stat-label" data-i18n="hero.stat1_label">
+              Отстъпка
+            </div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" data-i18n="hero.stat2_value">
+              500+ кг
+            </div>
+            <div class="hero-stat-label" data-i18n="hero.stat2_label">
+              Спасена храна
+            </div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" data-i18n="hero.stat3_value">∞</div>
+            <div class="hero-stat-label" data-i18n="hero.stat3_label">
+              Местни партньори
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator" aria-hidden="true">
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+       HOW IT WORKS
+  ══════════════════════════════════════════════════════════ -->
+    <section id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="section-header centered fade-in">
+          <span class="tag" data-i18n="about.label">Как работи</span>
+          <h2 class="section-title" id="about-title" data-i18n="about.title">
+            Три стъпки за спасяване на храна
+          </h2>
+          <p class="section-subtitle" data-i18n="about.subtitle">
+            FoodSave свързва клиенти с местни бизнеси, които имат излишна храна
+            в края на деня.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+          <!-- Step 1 -->
+          <div class="step-card fade-in">
+            <div class="step-number" data-i18n="about.step1_num">Стъпка 01</div>
+            <div class="step-icon" data-i18n="about.step1_icon">🔍</div>
+            <h3 class="step-title" data-i18n="about.step1_title">Открий</h3>
+            <p class="step-desc" data-i18n="about.step1_desc">
+              Разгледай ресторанти, пекарни и магазини наблизо, които са
+              добавили излишна храна за днес.
+            </p>
+          </div>
+          <!-- Step 2 -->
+          <div class="step-card fade-in">
+            <div class="step-number" data-i18n="about.step2_num">Стъпка 02</div>
+            <div class="step-icon" data-i18n="about.step2_icon">🛍️</div>
+            <h3 class="step-title" data-i18n="about.step2_title">Резервирай</h3>
+            <p class="step-desc" data-i18n="about.step2_desc">
+              Избери изненадваща кутия или конкретна оферта и я запази с до 70%
+              отстъпка.
+            </p>
+          </div>
+          <!-- Step 3 -->
+          <div class="step-card fade-in">
+            <div class="step-number" data-i18n="about.step3_num">Стъпка 03</div>
+            <div class="step-icon" data-i18n="about.step3_icon">✅</div>
+            <h3 class="step-title" data-i18n="about.step3_title">Вземи</h3>
+            <p class="step-desc" data-i18n="about.step3_desc">
+              Прибери поръчката си в рамките на определения прозорец и помогни
+              за намаляване на отпадъците.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+       DOWNLOAD
+  ══════════════════════════════════════════════════════════ -->
+    <section id="download" aria-labelledby="download-title">
+      <div class="container">
+        <div class="section-header centered fade-in">
+          <span class="tag" data-i18n="download.label">Вземи приложението</span>
+          <h2
+            class="section-title"
+            id="download-title"
+            data-i18n="download.title"
+          >
+            Изтегли FoodSave
+          </h2>
+          <p class="section-subtitle" data-i18n="download.subtitle">
+            Достъпно в две версии — за клиенти и за бизнеси.
+          </p>
+        </div>
+
+        <div class="download-grid">
+          <!-- Card: Customers -->
+          <div class="download-card card-client fade-in">
+            <div class="download-card-icon">🛒</div>
+            <h3 class="download-card-title" data-i18n="download.client_title">
+              За клиенти
+            </h3>
+            <p class="download-card-desc" data-i18n="download.client_desc">
+              Намери и резервирай намалена излишна храна от местни ресторанти и
+              магазини. Спести пари, яж добре и помогни на планетата.
+            </p>
+            <div class="store-badges">
+              <!-- Google Play -->
+              <div class="store-badge" title="Coming soon" aria-disabled="true">
+                <span class="badge-icon">▶</span>
+                <div>
+                  <div class="badge-text-sm" data-i18n="download.play_label">
+                    Изтегли от
+                  </div>
+                  <div class="badge-text-lg" data-i18n="download.play_store">
+                    Google Play
+                  </div>
+                </div>
+                <span class="coming-soon-pill" data-i18n="download.coming_soon"
+                  >Очаквайте скоро</span
+                >
+              </div>
+              <!-- App Store -->
+              <div class="store-badge" title="Coming soon" aria-disabled="true">
+                <span class="badge-icon" style="font-size: 1.6rem">🍎</span>
+                <div>
+                  <div class="badge-text-sm" data-i18n="download.apple_label">
+                    Изтегли от
+                  </div>
+                  <div class="badge-text-lg" data-i18n="download.apple_store">
+                    App Store
+                  </div>
+                </div>
+                <span class="coming-soon-pill" data-i18n="download.coming_soon"
+                  >Очаквайте скоро</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card: Business Owners -->
+          <div class="download-card card-business fade-in">
+            <div class="download-card-icon">🏪</div>
+            <h3 class="download-card-title" data-i18n="download.business_title">
+              За собственици на бизнес
+            </h3>
+            <p class="download-card-desc" data-i18n="download.business_desc">
+              Добави своята излишна храна за минути, достигни близки клиенти и
+              генерирай допълнителен приход в края на деня.
+            </p>
+            <div class="store-badges">
+              <!-- Google Play -->
+              <div class="store-badge" title="Coming soon" aria-disabled="true">
+                <span class="badge-icon">▶</span>
+                <div>
+                  <div class="badge-text-sm" data-i18n="download.play_label">
+                    Изтегли от
+                  </div>
+                  <div class="badge-text-lg" data-i18n="download.play_store">
+                    Google Play
+                  </div>
+                </div>
+                <span class="coming-soon-pill" data-i18n="download.coming_soon"
+                  >Очаквайте скоро</span
+                >
+              </div>
+              <!-- App Store -->
+              <div class="store-badge" title="Coming soon" aria-disabled="true">
+                <span class="badge-icon" style="font-size: 1.6rem">🍎</span>
+                <div>
+                  <div class="badge-text-sm" data-i18n="download.apple_label">
+                    Изтегли от
+                  </div>
+                  <div class="badge-text-lg" data-i18n="download.apple_store">
+                    App Store
+                  </div>
+                </div>
+                <span class="coming-soon-pill" data-i18n="download.coming_soon"
+                  >Очаквайте скоро</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+       CONTACT
+  ══════════════════════════════════════════════════════════ -->
+    <section id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="section-header centered fade-in">
+          <span class="tag" data-i18n="contact.label">Свържете се с нас</span>
+          <h2
+            class="section-title"
+            id="contact-title"
+            data-i18n="contact.title"
+          >
+            Контакт
+          </h2>
+          <p class="section-subtitle" data-i18n="contact.subtitle">
+            Имате въпроси, обратна връзка или нужда от поддръжка? С удоволствие
+            ще ви отговорим.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Support -->
+          <div class="contact-card fade-in">
+            <div class="contact-card-icon">💬</div>
+            <div class="contact-card-title" data-i18n="contact.email_title">
+              Поддръжка
+            </div>
+            <div class="contact-card-value">
+              <a
+                href="mailto:support@foodsave.app"
+                data-i18n="contact.email_value"
+                >support@foodsave.app</a
+              >
+            </div>
+          </div>
+          <!-- Business -->
+          <div class="contact-card fade-in">
+            <div class="contact-card-icon">🤝</div>
+            <div class="contact-card-title" data-i18n="contact.business_title">
+              Бизнес партньорства
+            </div>
+            <div class="contact-card-value">
+              <a
+                href="mailto:partners@foodsave.app"
+                data-i18n="contact.business_value"
+                >partners@foodsave.app</a
+              >
+            </div>
+          </div>
+          <!-- Legal -->
+          <div class="contact-card fade-in">
+            <div class="contact-card-icon">⚖️</div>
+            <div class="contact-card-title" data-i18n="contact.legal_title">
+              Правни въпроси
+            </div>
+            <div class="contact-card-value">
+              <a
+                href="mailto:legal@foodsave.app"
+                data-i18n="contact.legal_value"
+                >legal@foodsave.app</a
+              >
+            </div>
+          </div>
+          <!-- Social -->
+          <div class="contact-card fade-in">
+            <div class="contact-card-icon">📣</div>
+            <div class="contact-card-title" data-i18n="contact.social_title">
+              Последвайте ни
+            </div>
+            <div class="contact-card-value" data-i18n="contact.social_value">
+              Очаквайте ни в социалните мрежи
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════ -->
+    <footer>
+      <div class="container footer-inner">
+        <div class="footer-logo"><span>🌿</span> FoodSave</div>
+        <p class="footer-copy" data-i18n="footer.tagline">
+          Намаляваме хранителните отпадъци, по едно ястие наведнъж.
+        </p>
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="privacy-policy.html" data-i18n="footer.privacy"
+            >Поверителност</a
+          >
+          <a href="terms-and-conditions.html" data-i18n="footer.terms"
+            >Общи условия</a
+          >
+          <a href="#contact" data-i18n="footer.contact">Контакт</a>
+        </nav>
+        <p class="footer-copy" data-i18n="footer.copy">
+          © 2026 FoodSave. Всички права запазени.
+        </p>
+      </div>
+    </footer>
+
+    <!-- ── Scripts ─────────────────────────────────────────────── -->
+    <script src="assets/js/bubbles.js"></script>
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
