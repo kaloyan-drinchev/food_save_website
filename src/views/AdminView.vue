@@ -120,16 +120,12 @@ onUnmounted(() => {
 
             <section id="sec-analytics" class="admin-section">
               <h2 class="admin-section-title">Analytics</h2>
-              <DashboardCharts :data="dashData" />
+              <DashboardCharts :data="dashData" section="analytics" />
             </section>
 
             <section id="sec-revenue" class="admin-section">
               <h2 class="admin-section-title">Revenue</h2>
-              <div class="charts-grid">
-                <div class="chart-card full-width">
-                  <p style="color:var(--fs-on-surface-var);padding:20px;text-align:center">Revenue charts are included in the Analytics section above.</p>
-                </div>
-              </div>
+              <DashboardCharts :data="dashData" section="revenue" />
             </section>
 
             <section id="sec-partners" class="admin-section">

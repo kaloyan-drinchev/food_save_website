@@ -27,7 +27,10 @@ ChartJS.defaults.elements.line.tension = 0.35
 ChartJS.defaults.elements.line.borderWidth = 2
 ChartJS.defaults.elements.bar.borderRadius = 4
 
-const props = defineProps({ data: { type: Object, required: true } })
+const props = defineProps({
+  data: { type: Object, required: true },
+  section: { type: String, default: 'all' },
+})
 
 const scaleOpts = {
   x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxTicksLimit: 8, color: '#616161', font: { size: 10 } } },
@@ -55,59 +58,59 @@ function doughData(labels, data, colors) {
 </script>
 
 <template>
-  <!-- Row 1 -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>User Growth (last 90 days)</h3>
-      <div class="chart-wrap"><Line :data="lineData(data.userGrowth.labels, data.userGrowth.data, '#69f0ae')" :options="lineOpts" /></div>
+  <template v-if="section === 'analytics' || section === 'all'">
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>User Growth (last 90 days)</h3>
+        <div class="chart-wrap"><Line :data="lineData(data.userGrowth.labels, data.userGrowth.data, '#69f0ae')" :options="lineOpts" /></div>
+      </div>
+      <div class="chart-card">
+        <h3>Daily Active Users (last 30 days)</h3>
+        <div class="chart-wrap"><Line :data="lineData(data.dau.labels, data.dau.data, '#3b82f6')" :options="lineOpts" /></div>
+      </div>
     </div>
-    <div class="chart-card">
-      <h3>Daily Active Users (last 30 days)</h3>
-      <div class="chart-wrap"><Line :data="lineData(data.dau.labels, data.dau.data, '#3b82f6')" :options="lineOpts" /></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Orders per Day (last 30 days)</h3>
+        <div class="chart-wrap"><Bar :data="barData(data.ordersPerDay.labels, data.ordersPerDay.data, '#69f0ae')" :options="barOpts" /></div>
+      </div>
+      <div class="chart-card">
+        <h3>Food Saved per Day — kg (last 30 days)</h3>
+        <div class="chart-wrap"><Line :data="lineData(data.foodSavedPerDay.labels, data.foodSavedPerDay.data, '#2dd4bf')" :options="lineOpts" /></div>
+      </div>
     </div>
-  </div>
-  <!-- Row 2 -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Orders per Day (last 30 days)</h3>
-      <div class="chart-wrap"><Bar :data="barData(data.ordersPerDay.labels, data.ordersPerDay.data, '#69f0ae')" :options="barOpts" /></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Orders by Business Category</h3>
+        <div class="chart-wrap"><Doughnut :data="doughData(data.categories.labels, data.categories.data, ['#69f0ae','#ff8f00','#3b82f6','#8b5cf6'])" :options="doughOpts" /></div>
+      </div>
+      <div class="chart-card">
+        <h3>Pickup Completion Rate</h3>
+        <div class="chart-wrap"><Doughnut :data="doughData(data.pickupCompletion.labels, data.pickupCompletion.data, ['#69f0ae','#ef9a9a'])" :options="doughOpts" /></div>
+      </div>
     </div>
-    <div class="chart-card">
-      <h3>Food Saved per Day — kg (last 30 days)</h3>
-      <div class="chart-wrap"><Line :data="lineData(data.foodSavedPerDay.labels, data.foodSavedPerDay.data, '#2dd4bf')" :options="lineOpts" /></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Waitlist Signups (last 30 days)</h3>
+        <div class="chart-wrap"><Bar :data="barData(data.waitlistSignups.labels, data.waitlistSignups.data, '#8b5cf6')" :options="barOpts" /></div>
+      </div>
+      <div class="chart-card">
+        <h3>Waitlist Breakdown</h3>
+        <div class="chart-wrap"><Doughnut :data="doughData(data.waitlistBreakdown.labels, data.waitlistBreakdown.data, ['#69f0ae','#ff8f00','#3b82f6'])" :options="doughOpts" /></div>
+      </div>
     </div>
-  </div>
-  <!-- Row 3 -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Orders by Business Category</h3>
-      <div class="chart-wrap"><Doughnut :data="doughData(data.categories.labels, data.categories.data, ['#69f0ae','#ff8f00','#3b82f6','#8b5cf6'])" :options="doughOpts" /></div>
+  </template>
+
+  <template v-if="section === 'revenue' || section === 'all'">
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Revenue per Day — лв (last 30 days)</h3>
+        <div class="chart-wrap"><Line :data="lineData(data.revenuePerDay.labels, data.revenuePerDay.data, '#ff8f00')" :options="lineOpts" /></div>
+      </div>
+      <div class="chart-card">
+        <h3>CO₂ Prevented per Day — kg (last 30 days)</h3>
+        <div class="chart-wrap"><Line :data="lineData(data.co2PerDay.labels, data.co2PerDay.data, '#2dd4bf')" :options="lineOpts" /></div>
+      </div>
     </div>
-    <div class="chart-card">
-      <h3>Pickup Completion Rate</h3>
-      <div class="chart-wrap"><Doughnut :data="doughData(data.pickupCompletion.labels, data.pickupCompletion.data, ['#69f0ae','#ef9a9a'])" :options="doughOpts" /></div>
-    </div>
-  </div>
-  <!-- Row 4 -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Waitlist Signups (last 30 days)</h3>
-      <div class="chart-wrap"><Bar :data="barData(data.waitlistSignups.labels, data.waitlistSignups.data, '#8b5cf6')" :options="barOpts" /></div>
-    </div>
-    <div class="chart-card">
-      <h3>Waitlist Breakdown</h3>
-      <div class="chart-wrap"><Doughnut :data="doughData(data.waitlistBreakdown.labels, data.waitlistBreakdown.data, ['#69f0ae','#ff8f00','#3b82f6'])" :options="doughOpts" /></div>
-    </div>
-  </div>
-  <!-- Row 5 -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Revenue per Day — лв (last 30 days)</h3>
-      <div class="chart-wrap"><Line :data="lineData(data.revenuePerDay.labels, data.revenuePerDay.data, '#ff8f00')" :options="lineOpts" /></div>
-    </div>
-    <div class="chart-card">
-      <h3>CO₂ Prevented per Day — kg (last 30 days)</h3>
-      <div class="chart-wrap"><Line :data="lineData(data.co2PerDay.labels, data.co2PerDay.data, '#2dd4bf')" :options="lineOpts" /></div>
-    </div>
-  </div>
+  </template>
 </template>
