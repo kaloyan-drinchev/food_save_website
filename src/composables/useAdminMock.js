@@ -36,6 +36,40 @@ function timeAgo(minutes) {
   return `${Math.floor(h / 24)}d ago`
 }
 
+function randomDate(daysBack) {
+  const d = new Date()
+  d.setDate(d.getDate() - rand(0, daysBack))
+  d.setHours(rand(0, 23), rand(0, 59))
+  return d
+}
+
+function formatDate(d) {
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function formatDateTime(d) {
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) +
+    ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+}
+
+const FIRST_NAMES = [
+  'Ivan', 'Maria', 'Georgi', 'Elena', 'Nikolay', 'Tsvetana', 'Dimitar', 'Silvia',
+  'Petar', 'Ralitsa', 'Kalin', 'Desislava', 'Boyan', 'Vesela', 'Atanas', 'Daniela',
+  'Stefan', 'Nadya', 'Hristo', 'Gergana',
+]
+
+const LAST_NAMES = [
+  'Petrov', 'Koleva', 'Stefanov', 'Dimitrova', 'Todorov', 'Ruseva', 'Hristov',
+  'Marinova', 'Vassilev', 'Borisova', 'Georgiev', 'Lazarova', 'Nikolov', 'Angelova',
+  'Zahariev', 'Stoyanova', 'Ivanov', 'Pancheva', 'Mihailov', 'Yordanova',
+]
+
+const PARTNER_NAMES = [
+  'Happy Bite', 'Green Kitchen', 'Златна Питка', 'Sofia Bistro', 'Фреш Маркет',
+  'Sweet Dreams Bakery', 'Café Verde', 'Yummy Box', 'Балкан Грил', 'Panda Express BG',
+  'Bread & Butter', 'Хлебна Къща', 'Farm Table', 'Quick Bites', 'Gastro Hub',
+]
+
 export function generateMockData() {
   const labels90 = dateLabels(90)
   const labels30 = dateLabels(30)
@@ -67,15 +101,9 @@ export function generateMockData() {
   const revenuePerDay = { labels: labels30, data: Array.from({ length: 30 }, () => randFloat(250, 700, 0)) }
   const co2PerDay = { labels: labels30, data: randomSeries(30, 120, 260) }
 
-  const partnerNames = [
-    'Happy Bite', 'Green Kitchen', 'Златна Питка', 'Sofia Bistro', 'Фреш Маркет',
-    'Sweet Dreams Bakery', 'Café Verde', 'Yummy Box', 'Балкан Грил', 'Panda Express BG',
-    'Bread & Butter', 'Хлебна Къща', 'Farm Table', 'Quick Bites', 'Gastro Hub',
-  ]
-
   const categoryPool = ['Restaurant', 'Bakery', 'Grocery', 'Café']
 
-  const partners = partnerNames
+  const partners = PARTNER_NAMES
     .slice(0, 10)
     .map((name) => ({
       name,
@@ -86,11 +114,7 @@ export function generateMockData() {
     }))
     .sort((a, b) => b.orders - a.orders)
 
-  const customerNames = [
-    'Ivan P.', 'Maria K.', 'Georgi S.', 'Elena D.', 'Nikolay T.',
-    'Tsvetana R.', 'Dimitar H.', 'Silvia M.', 'Petar V.', 'Ralitsa B.',
-    'Kalin G.', 'Desislava L.', 'Boyan N.', 'Vesela A.', 'Atanas Z.',
-  ]
+  const customerNames = FIRST_NAMES.slice(0, 15).map((f, i) => `${f} ${LAST_NAMES[i][0]}.`)
 
   const statusPool = ['Collected', 'Reserved', 'Cancelled']
   const itemNames = ['Surprise Bag', 'Bread Box', 'Pastry Mix', 'Salad Set', 'Fruit Box', 'Lunch Deal']
@@ -98,7 +122,7 @@ export function generateMockData() {
   const recentOrders = Array.from({ length: 15 }, (_, i) => ({
     time: timeAgo(rand(5, 1200)),
     customer: customerNames[rand(0, customerNames.length - 1)],
-    partner: partnerNames[rand(0, partnerNames.length - 1)],
+    partner: PARTNER_NAMES[rand(0, PARTNER_NAMES.length - 1)],
     items: itemNames[rand(0, itemNames.length - 1)],
     amount: randFloat(3, 12) + ' лв',
     status: i < 10 ? statusPool[rand(0, 1)] : statusPool[rand(0, 2)],
@@ -124,6 +148,164 @@ export function generateMockData() {
     categories, pickupCompletion, waitlistSignups, waitlistBreakdown,
     revenuePerDay, co2PerDay, partners, recentOrders, platformEvents,
   }
+}
+
+export function generateMockUsers() {
+  const statuses = ['active', 'pending_email', 'disabled']
+  const roles = ['customer', 'business', 'admin']
+  const roleWeights = [14, 5, 1]
+
+  function pickRole() {
+    const r = rand(1, 20)
+    if (r <= roleWeights[0]) return roles[0]
+    if (r <= roleWeights[0] + roleWeights[1]) return roles[1]
+    return roles[2]
+  }
+
+  return Array.from({ length: 20 }, (_, i) => {
+    const first = FIRST_NAMES[i % FIRST_NAMES.length]
+    const last = LAST_NAMES[i % LAST_NAMES.length]
+    const email = `${first.toLowerCase()}.${last.toLowerCase()}@example.com`
+    const status = i < 3 ? 'pending_email' : i >= 18 ? 'disabled' : statuses[rand(0, 1) === 0 ? 0 : 0]
+    return {
+      id: `USR-${String(1000 + i).padStart(4, '0')}`,
+      name: `${first} ${last}`,
+      email,
+      status: i < 3 ? 'pending_email' : i >= 18 ? 'disabled' : 'active',
+      role: i === 0 ? 'admin' : pickRole(),
+      registered: formatDate(randomDate(180)),
+    }
+  })
+}
+
+export function generateMockPayments() {
+  const paymentStatuses = ['pending', 'completed', 'blocked', 'refunded']
+  const statusWeights = { pending: 8, completed: 15, blocked: 4, refunded: 3 }
+
+  function pickStatus() {
+    const pool = []
+    for (const [s, w] of Object.entries(statusWeights)) {
+      for (let i = 0; i < w; i++) pool.push(s)
+    }
+    return pool[rand(0, pool.length - 1)]
+  }
+
+  return Array.from({ length: 30 }, (_, i) => {
+    const customer = `${FIRST_NAMES[rand(0, FIRST_NAMES.length - 1)]} ${LAST_NAMES[rand(0, LAST_NAMES.length - 1)][0]}.`
+    const partner = PARTNER_NAMES[rand(0, PARTNER_NAMES.length - 1)]
+    const amount = randFloat(3, 25)
+    const d = randomDate(60)
+    return {
+      id: `TX-${String(5000 + i).padStart(5, '0')}`,
+      date: formatDateTime(d),
+      dateRaw: d,
+      customer,
+      partner,
+      amount: amount.toFixed(2) + ' лв',
+      amountNum: amount,
+      status: pickStatus(),
+    }
+  }).sort((a, b) => b.dateRaw - a.dateRaw)
+}
+
+export function generateMockRefunds() {
+  const reasons = [
+    'Order not received', 'Wrong items', 'Quality issue', 'Late pickup',
+    'Duplicate charge', 'Customer request', 'Partner closed', 'Expired items',
+  ]
+
+  const pending = Array.from({ length: 8 }, (_, i) => {
+    const customer = `${FIRST_NAMES[rand(0, FIRST_NAMES.length - 1)]} ${LAST_NAMES[rand(0, LAST_NAMES.length - 1)][0]}.`
+    const amount = randFloat(3, 20)
+    return {
+      id: `RF-${String(2000 + i).padStart(4, '0')}`,
+      txId: `TX-${String(5000 + rand(0, 29)).padStart(5, '0')}`,
+      customer,
+      amount: amount.toFixed(2) + ' лв',
+      amountNum: amount,
+      reason: reasons[rand(0, reasons.length - 1)],
+      requested: formatDate(randomDate(14)),
+      status: 'pending',
+    }
+  })
+
+  const processedStatuses = ['approved', 'rejected']
+  const processed = Array.from({ length: 15 }, (_, i) => {
+    const customer = `${FIRST_NAMES[rand(0, FIRST_NAMES.length - 1)]} ${LAST_NAMES[rand(0, LAST_NAMES.length - 1)][0]}.`
+    const amount = randFloat(3, 20)
+    return {
+      id: `RF-${String(1000 + i).padStart(4, '0')}`,
+      txId: `TX-${String(5000 + rand(0, 29)).padStart(5, '0')}`,
+      customer,
+      amount: amount.toFixed(2) + ' лв',
+      amountNum: amount,
+      reason: reasons[rand(0, reasons.length - 1)],
+      requested: formatDate(randomDate(60)),
+      processedDate: formatDate(randomDate(30)),
+      status: processedStatuses[rand(0, 1)],
+    }
+  })
+
+  return { pending, processed }
+}
+
+const ADDRESSES = [
+  'бул. Витоша 45, София', 'ул. Граф Игнатиев 12, София', 'бул. Цариградско шосе 78, София',
+  'ул. Раковски 100, София', 'бул. България 60, София', 'ул. Солунска 5, София',
+  'бул. Черни връх 33, София', 'ул. Шишман 22, София', 'бул. Дондуков 8, София',
+  'ул. Пиротска 15, София', 'бул. Скобелев 55, София', 'ул. Алабин 40, София',
+  'бул. Патриарх Евтимий 18, София', 'ул. Ангел Кънчев 7, София', 'бул. Сливница 90, София',
+]
+
+const PHONE_PREFIXES = ['087', '088', '089']
+
+export function generateMockBusinesses() {
+  const categories = ['Restaurant', 'Bakery', 'Grocery', 'Café', 'Bistro', 'Market']
+
+  return PARTNER_NAMES.map((name, i) => {
+    const ownerFirst = FIRST_NAMES[i % FIRST_NAMES.length]
+    const ownerLast = LAST_NAMES[i % LAST_NAMES.length]
+    const phone = `${PHONE_PREFIXES[rand(0, 2)]} ${rand(100, 999)} ${rand(1000, 9999)}`
+    const joined = randomDate(365)
+    const totalOrders = rand(20, 500)
+    const totalRevenue = randFloat(totalOrders * 4, totalOrders * 12)
+    const platformRevenue = totalRevenue * 0.25
+    const rating = randFloat(3.2, 5.0, 1)
+
+    const verified = i >= 4
+    const status = i === 14 ? 'suspended' : 'active'
+    const eik = `${rand(100000000, 999999999)}`
+    const babhUploaded = i >= 2
+    const babhNumber = babhUploaded ? `${rand(10, 28)}-${rand(1000, 9999)}/${2024 + rand(0, 2)}` : ''
+    const companyRegVerified = i >= 3
+    const foodSafetyCert = i >= 5
+
+    return {
+      id: `BIZ-${String(3000 + i).padStart(4, '0')}`,
+      name,
+      category: categories[rand(0, categories.length - 1)],
+      owner: `${ownerFirst} ${ownerLast}`,
+      email: `${name.toLowerCase().replace(/[^a-z0-9]/g, '')}@business.bg`,
+      phone,
+      address: ADDRESSES[i % ADDRESSES.length],
+      status,
+      verified,
+      joined: formatDate(joined),
+      totalOrders,
+      totalRevenue: totalRevenue.toFixed(2) + ' лв',
+      platformRevenue: platformRevenue.toFixed(2) + ' лв',
+      rating: Number(rating),
+      listingsActive: rand(1, 8),
+      avgPickupTime: rand(5, 30) + ' min',
+      eik,
+      babhUploaded,
+      babhNumber,
+      companyRegVerified,
+      foodSafetyCert,
+      verifiedAt: verified ? formatDate(randomDate(120)) : null,
+      verificationNotes: '',
+    }
+  })
 }
 
 export { rand, randFloat, timeAgo }

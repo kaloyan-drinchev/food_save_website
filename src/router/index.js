@@ -20,8 +20,24 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      name: 'admin',
       component: () => import('@/views/AdminView.vue'),
+      children: [
+        {
+          path: '',
+          name: 'admin',
+          component: () => import('@/views/AdminLanding.vue'),
+        },
+        {
+          path: 'metrics',
+          name: 'admin-metrics',
+          component: () => import('@/views/MetricsView.vue'),
+        },
+        {
+          path: 'operations',
+          name: 'admin-operations',
+          component: () => import('@/views/OperationsView.vue'),
+        },
+      ],
     },
   ],
   scrollBehavior(to) {

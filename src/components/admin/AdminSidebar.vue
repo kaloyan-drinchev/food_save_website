@@ -1,29 +1,36 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { rand } from '@/composables/useAdminMock'
 
 const props = defineProps({
   isOpen: { type: Boolean, default: false },
-  activeSection: { type: String, default: 'sec-overview' },
 })
-const emit = defineEmits(['navigate', 'close'])
+const emit = defineEmits(['close'])
+
+const route = useRoute()
+const router = useRouter()
 
 const navItems = [
-  { id: 'sec-overview', label: 'Overview', icon: 'grid' },
-  { id: 'sec-analytics', label: 'Analytics', icon: 'activity' },
-  { id: 'sec-revenue', label: 'Revenue', icon: 'dollar' },
-  { id: 'sec-partners', label: 'Partners', icon: 'users' },
-  { id: 'sec-orders', label: 'Orders', icon: 'bag' },
-  { id: 'sec-events', label: 'Events', icon: 'zap' },
+  { route: '/admin', label: 'Dashboard Home', icon: 'home', exact: true },
+  { route: '/admin/metrics', label: 'Metrics', icon: 'activity' },
+  { route: '/admin/operations', label: 'Operations', icon: 'settings' },
 ]
 
 const svgPaths = {
-  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  home: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
   activity: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
-  dollar: '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
-  users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
-  bag: '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>',
-  zap: '<polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  settings: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+}
+
+function isActive(item) {
+  if (item.exact) return route.path === item.route
+  return route.path.startsWith(item.route)
+}
+
+function navigate(item) {
+  router.push(item.route)
+  emit('close')
 }
 
 const TEMPLATES = [
@@ -63,10 +70,6 @@ onMounted(() => {
 onUnmounted(() => {
   if (feedInterval) clearInterval(feedInterval)
 })
-
-function onNav(id) {
-  emit('navigate', id)
-}
 </script>
 
 <template>
@@ -75,10 +78,10 @@ function onNav(id) {
       <div class="sidebar-section-label">Navigation</div>
       <button
         v-for="item in navItems"
-        :key="item.id"
+        :key="item.route"
         class="sidebar-link"
-        :class="{ active: activeSection === item.id }"
-        @click="onNav(item.id)"
+        :class="{ active: isActive(item) }"
+        @click="navigate(item)"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" v-html="svgPaths[item.icon]"></svg>
         {{ item.label }}
