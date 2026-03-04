@@ -61,6 +61,7 @@
         "
         >FoodSave</a
       >
+      <div class="nav-desktop-links">
       <a
         href="#about"
         data-i18n="nav.about"
@@ -154,6 +155,10 @@
           EN
         </button>
       </div>
+      </div>
+      <button id="nav-hamburger" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
 
     <!-- Mobile menu -->
@@ -186,68 +191,99 @@
        HERO
   ══════════════════════════════════════════════════════════ -->
     <section id="hero" aria-label="Hero">
-      <!-- Animated bubble canvas — absolutely positioned behind content -->
-      <canvas id="bubble-canvas" aria-hidden="true"></canvas>
+      <div class="hero-carousel" id="hero-carousel">
+        <div class="hero-slides" id="hero-slides">
 
-      <div class="hero-content">
-        <!-- Badge -->
-        <div class="hero-badge">
-          <span class="hero-badge-dot"></span>
-          <span data-i18n="hero.badge">Вече достъпно</span>
+          <!-- Slide 1: Discovery -->
+          <div class="hero-slide" style="background:linear-gradient(180deg,#1B5E20 0%,#388E3C 100%)">
+            <div class="slide-illustration">
+              <div class="orbit-center" style="background:radial-gradient(circle,#81C784,#4CAF50);box-shadow:0 0 60px rgba(129,199,132,.3)">
+                <span>🛒</span>
+              </div>
+              <div class="orbit-items orbit-spin">
+                <div class="orbit-item" style="--a:0deg;background:#1B5E20">🏠</div>
+                <div class="orbit-item" style="--a:60deg;background:#1B5E20">🍃</div>
+                <div class="orbit-item" style="--a:120deg;background:#1B5E20">🏪</div>
+                <div class="orbit-item" style="--a:180deg;background:#1B5E20">🍴</div>
+                <div class="orbit-item" style="--a:240deg;background:#1B5E20">📊</div>
+                <div class="orbit-item" style="--a:300deg;background:#1B5E20">☕</div>
+              </div>
+            </div>
+            <h2 class="slide-title" data-i18n="hero.slide1_title">Спаси следващото си ястие</h2>
+            <p class="slide-subtitle" data-i18n="hero.slide1_subtitle">Открий излишна храна от местни ресторанти и магазини с до 70% отстъпка.</p>
+          </div>
+
+          <!-- Slide 2: Savings -->
+          <div class="hero-slide" style="background:linear-gradient(180deg,#BF360C 0%,#FF9800 100%)">
+            <div class="slide-illustration">
+              <div class="orbit-center" style="background:radial-gradient(circle,#FFB74D,#FF9800);box-shadow:0 0 60px rgba(255,183,77,.3)">
+                <span class="discount-label"><strong>-70%</strong><small>OFF</small></span>
+              </div>
+              <div class="orbit-items orbit-float">
+                <div class="orbit-badge" style="--a:0deg">-25%</div>
+                <div class="orbit-badge" style="--a:72deg">-30%</div>
+                <div class="orbit-badge" style="--a:144deg">-50%</div>
+                <div class="orbit-badge" style="--a:216deg">-40%</div>
+                <div class="orbit-badge" style="--a:288deg">-60%</div>
+              </div>
+            </div>
+            <h2 class="slide-title" data-i18n="hero.slide2_title">Спести пари всеки ден</h2>
+            <p class="slide-subtitle" data-i18n="hero.slide2_subtitle">Насладете се на вкусни ястия на част от цената, докато намалявате хранителните отпадъци.</p>
+          </div>
+
+          <!-- Slide 3: Eco -->
+          <div class="hero-slide" style="background:linear-gradient(180deg,#004D40 0%,#00897B 100%)">
+            <div class="slide-illustration">
+              <div class="orbit-center eco-glow" style="background:radial-gradient(circle,#A5D6A7,#66BB6A);box-shadow:0 0 60px rgba(165,214,167,.35)">
+                <span>🍃</span>
+              </div>
+              <div class="orbit-items">
+                <div class="particle" style="--x:25%;--y:15%;--d:0s;--s:10px"></div>
+                <div class="particle" style="--x:72%;--y:22%;--d:.8s;--s:6px"></div>
+                <div class="particle" style="--x:80%;--y:60%;--d:1.6s;--s:8px"></div>
+                <div class="particle" style="--x:60%;--y:80%;--d:2.4s;--s:12px"></div>
+                <div class="particle" style="--x:30%;--y:75%;--d:3.2s;--s:7px"></div>
+                <div class="particle" style="--x:12%;--y:50%;--d:4s;--s:9px"></div>
+                <div class="particle" style="--x:50%;--y:10%;--d:4.8s;--s:5px"></div>
+                <div class="particle" style="--x:88%;--y:40%;--d:5.6s;--s:8px"></div>
+              </div>
+            </div>
+            <h2 class="slide-title" data-i18n="hero.slide3_title">Опази нашата планета</h2>
+            <p class="slide-subtitle" data-i18n="hero.slide3_subtitle">Всяко спасено ястие предотвратява CO₂ емисии и пази храната от сметищата.</p>
+          </div>
+
+          <!-- Slide 4: Community -->
+          <div class="hero-slide" style="background:linear-gradient(180deg,#2E7D32 0%,#43A047 100%)">
+            <div class="slide-illustration">
+              <div class="orbit-center" style="background:radial-gradient(circle,#FFC107,#FF9800);box-shadow:0 0 60px rgba(255,193,7,.3)">
+                <span>❤️</span>
+              </div>
+              <div class="orbit-items orbit-spin">
+                <div class="orbit-item person-green" style="--a:0deg">👤</div>
+                <div class="orbit-item person-orange" style="--a:45deg">👤</div>
+                <div class="orbit-item person-green" style="--a:90deg">👤</div>
+                <div class="orbit-item person-orange" style="--a:135deg">👤</div>
+                <div class="orbit-item person-green" style="--a:180deg">👤</div>
+                <div class="orbit-item person-orange" style="--a:225deg">👤</div>
+                <div class="orbit-item person-green" style="--a:270deg">👤</div>
+                <div class="orbit-item person-orange" style="--a:315deg">👤</div>
+              </div>
+            </div>
+            <h2 class="slide-title" data-i18n="hero.slide4_title">Присъедини се към FoodSave</h2>
+            <p class="slide-subtitle" data-i18n="hero.slide4_subtitle">Започни да спасяваш храна в квартала си още сега.</p>
+          </div>
+
         </div>
 
-        <!-- Title -->
-        <h1 class="hero-title">
-          <span data-i18n="hero.title1">Спаси следващото си</span><br />
-          <span data-i18n="hero.title2">Ястие</span>
-        </h1>
-
-        <!-- Subtitle -->
-        <p class="hero-subtitle" data-i18n="hero.subtitle">
-          Открий излишна храна от местни ресторанти и магазини с до 70% отстъпка
-          — и намали хранителните отпадъци в квартала си.
-        </p>
-
-        <!-- CTA buttons -->
-        <div class="hero-cta">
-          <a href="#download" class="btn btn-primary">
-            <span>📱</span>
-            <span data-i18n="hero.cta_download">Изтегли приложението</span>
-          </a>
-          <a href="#about" class="btn btn-outline">
-            <span data-i18n="hero.cta_learn">Как работи</span>
-            <span>↓</span>
-          </a>
+        <!-- Overlay controls -->
+        <a href="#about" class="slide-skip" data-i18n="hero.skip">Пропусни</a>
+        <div class="hero-dots" id="hero-dots">
+          <span class="hero-dot active"></span>
+          <span class="hero-dot"></span>
+          <span class="hero-dot"></span>
+          <span class="hero-dot"></span>
         </div>
-
-        <!-- Stats -->
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-value" data-i18n="hero.stat1_value">70%</div>
-            <div class="hero-stat-label" data-i18n="hero.stat1_label">
-              Отстъпка
-            </div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value" data-i18n="hero.stat2_value">
-              500+ кг
-            </div>
-            <div class="hero-stat-label" data-i18n="hero.stat2_label">
-              Спасена храна
-            </div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value" data-i18n="hero.stat3_value">∞</div>
-            <div class="hero-stat-label" data-i18n="hero.stat3_label">
-              Местни партньори
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scroll indicator -->
-      <div class="scroll-indicator" aria-hidden="true">
-        <div class="scroll-arrow"></div>
+        <button class="hero-carousel-btn" id="hero-carousel-btn" data-i18n="hero.cta_next">Напред →</button>
       </div>
     </section>
 

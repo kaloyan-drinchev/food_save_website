@@ -24,19 +24,21 @@ const I18n = (() => {
       },
 
       hero: {
-        badge: 'Now Available',
-        title1: 'Save Your Next',
-        title2: 'Meal',
-        subtitle:
-          'Discover surplus food from local restaurants and stores at up to 70% off — while reducing food waste in your neighbourhood.',
-        cta_download: 'Download the App',
-        cta_learn: 'How It Works',
-        stat1_value: '70%',
-        stat1_label: 'Discount up to',
-        stat2_value: '500+ kg',
-        stat2_label: 'Food saved',
-        stat3_value: '∞',
-        stat3_label: 'Local partners',
+        skip: 'Skip',
+        slide1_title: 'Save Your Next Meal',
+        slide1_subtitle:
+          'Discover surplus food from local restaurants and stores at up to 70\u00A0% off.',
+        slide2_title: 'Save Money Every Day',
+        slide2_subtitle:
+          'Enjoy delicious meals at a fraction of the price while reducing food waste.',
+        slide3_title: 'Protect Our Planet',
+        slide3_subtitle:
+          'Every saved meal prevents CO\u2082 emissions and keeps food from landfills.',
+        slide4_title: 'Join FoodSave',
+        slide4_subtitle:
+          'Start saving food in your neighbourhood right now.',
+        cta_next: 'Next \u2192',
+        cta_start: 'Get Started \u2192',
       },
 
       about: {
@@ -269,19 +271,21 @@ const I18n = (() => {
       },
 
       hero: {
-        badge: 'Вече достъпно',
-        title1: 'Спаси следващото си',
-        title2: 'Ястие',
-        subtitle:
-          'Открий излишна храна от местни ресторанти и магазини с до 70% отстъпка — и намали хранителните отпадъци в квартала си.',
-        cta_download: 'Изтегли приложението',
-        cta_learn: 'Как работи',
-        stat1_value: '70%',
-        stat1_label: 'Отстъпка',
-        stat2_value: '500+ кг',
-        stat2_label: 'Спасена храна',
-        stat3_value: '∞',
-        stat3_label: 'Местни партньори',
+        skip: 'Пропусни',
+        slide1_title: 'Спаси следващото си ястие',
+        slide1_subtitle:
+          'Открий излишна храна от местни ресторанти и магазини с до 70% отстъпка.',
+        slide2_title: 'Спести пари всеки ден',
+        slide2_subtitle:
+          'Насладете се на вкусни ястия на част от цената, докато намалявате хранителните отпадъци.',
+        slide3_title: 'Опази нашата планета',
+        slide3_subtitle:
+          'Всяко спасено ястие предотвратява CO\u2082 емисии и пази храната от сметищата.',
+        slide4_title: 'Присъедини се към FoodSave',
+        slide4_subtitle:
+          'Започни да спасяваш храна в квартала си още сега.',
+        cta_next: 'Напред \u2192',
+        cta_start: 'Започни \u2192',
       },
 
       about: {

@@ -96,8 +96,6 @@
     btn.addEventListener('click', () => {
       const open = menu.classList.toggle('open');
       btn.setAttribute('aria-expanded', open);
-      // Animate hamburger → X
-      const [s1, , s3] = btn.querySelectorAll('span');
       btn.classList.toggle('is-open', open);
     });
 
@@ -113,7 +111,7 @@
 
   /* ── Sticky nav shadow on scroll ────────────────────────────── */
   function initNavScroll() {
-    const nav = $('nav');
+    const nav = $('#main-navbar');
     if (!nav) return;
     window.addEventListener(
       'scroll',
@@ -141,12 +139,50 @@
     $$('.fade-in').forEach((el) => observer.observe(el));
   }
 
-  /* ── Bubble canvas ───────────────────────────────────────────── */
-  function initBubbles() {
-    const canvas = $('#bubble-canvas');
-    if (!canvas || typeof BubbleCanvas === 'undefined') return;
-    const bc = new BubbleCanvas(canvas);
-    bc.start();
+  /* ── Hero carousel ──────────────────────────────────────────── */
+  function initCarousel() {
+    const slides = $('#hero-slides');
+    const dots = $$('#hero-dots .hero-dot');
+    const btn = $('#hero-carousel-btn');
+    const carousel = $('#hero-carousel');
+    if (!slides || !btn || !carousel) return;
+
+    let current = 0;
+    const total = 4;
+
+    function goTo(index) {
+      current = Math.max(0, Math.min(index, total - 1));
+      slides.style.transform = `translateX(-${current * 25}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      const key = current === total - 1 ? 'hero.cta_start' : 'hero.cta_next';
+      btn.dataset.i18n = key;
+      btn.textContent = I18n.t(key);
+    }
+
+    btn.addEventListener('click', () => {
+      if (current < total - 1) {
+        goTo(current + 1);
+      } else {
+        const about = document.getElementById('about');
+        if (about) about.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => goTo(i));
+    });
+
+    let touchStartX = 0;
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    carousel.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) goTo(current + 1);
+        else goTo(current - 1);
+      }
+    }, { passive: true });
   }
 
   /* ── Init ────────────────────────────────────────────────────── */
@@ -155,6 +191,6 @@
     initMobileNav();
     initNavScroll();
     initFadeIn();
-    initBubbles();
+    initCarousel();
   });
 })();
