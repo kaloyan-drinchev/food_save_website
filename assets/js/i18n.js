@@ -230,6 +230,37 @@ const I18n = (() => {
         updated: 'Last updated: March 2, 2026',
       },
 
+      waitlist: {
+        label: 'Early Access',
+        title: 'Join the Waitlist',
+        subtitle:
+          'Be the first to know when FoodSave launches. Sign up and we\u2019ll notify you as soon as the app is ready.',
+        name_placeholder: 'Your name',
+        email_placeholder: 'Your email',
+        role_customer: 'I\u2019m a Customer',
+        role_business: 'I\u2019m a Business',
+        submit: 'Join the Waitlist',
+        modal_title: 'You\u2019re on the list!',
+        modal_body: 'Thank you for your interest. We\u2019ll notify you as soon as FoodSave launches.',
+        modal_close: 'Close',
+      },
+
+      faq: {
+        label: 'FAQ',
+        title: 'Frequently Asked Questions',
+        subtitle: 'Everything you need to know about FoodSave before we launch.',
+        q1: 'Is the food safe to eat?',
+        a1: 'Absolutely. All Partner businesses on FoodSave are required to hold valid food handling permits and comply with local health and hygiene regulations. The food listed is surplus \u2014 not expired. It\u2019s the same quality food sold during regular hours, just offered at a discount to prevent waste.',
+        q2: 'Which cities is FoodSave available in?',
+        a2: 'We\u2019re launching exclusively in Sofia, Bulgaria. Once we\u2019ve established a strong network of partners and users there, we plan to expand to other major Bulgarian cities.',
+        q3: 'When does the app launch?',
+        a3: 'We\u2019re targeting summer 2026 for both the customer and business apps on Google Play and the App Store. Join the waitlist above to be notified the moment we go live!',
+        q4: 'How much can I save?',
+        a4: 'Customers can save up to 70% off the original price of meals and groceries. The exact discount depends on what each Partner offers, but great deals are the norm \u2014 not the exception.',
+        q5: 'How do I become a partner business?',
+        a5: 'If you run a restaurant, bakery, caf\u00e9, or grocery store and want to reduce your food waste while earning extra revenue, sign up on the waitlist as a business. We\u2019ll reach out with onboarding details before launch.',
+      },
+
       contact: {
         label: 'Get in Touch',
         title: 'Contact Us',
@@ -475,6 +506,37 @@ const I18n = (() => {
 <p>Въпроси относно настоящите Условия могат да бъдат изпратени на <a href="mailto:legal@foodsave.app">legal@foodsave.app</a>.</p>
         `,
         updated: 'Последна актуализация: 2 март 2026 г.',
+      },
+
+      waitlist: {
+        label: 'Ранен достъп',
+        title: 'Запиши се в листата',
+        subtitle:
+          'Бъди сред първите, които ще разберат, когато FoodSave стартира. Регистрирай се и ще те уведомим веднага.',
+        name_placeholder: 'Твоето име',
+        email_placeholder: 'Твоят имейл',
+        role_customer: 'Аз съм клиент',
+        role_business: 'Аз съм бизнес',
+        submit: 'Запиши се',
+        modal_title: 'Ти си в списъка!',
+        modal_body: 'Благодарим ти за интереса. Ще те уведомим веднага щом FoodSave стартира.',
+        modal_close: 'Затвори',
+      },
+
+      faq: {
+        label: 'Въпроси',
+        title: 'Често задавани въпроси',
+        subtitle: 'Всичко, което трябва да знаеш за FoodSave преди стартирането.',
+        q1: 'Безопасна ли е храната?',
+        a1: 'Абсолютно. Всички партньорски бизнеси във FoodSave са задължени да притежават валидни разрешителни за работа с храни и да спазват местните здравни и хигиенни разпоредби. Обявената храна е излишна — не с изтекъл срок. Това е същото качество храна, продавана по време на нормално работно време, само предложена с отстъпка, за да се предотврати разхищение.',
+        q2: 'В кои градове е наличен FoodSave?',
+        a2: 'Стартираме първоначално само в София, България. След като изградим стабилна мрежа от партньори и потребители там, планираме разширяване към други големи български градове.',
+        q3: 'Кога ще стартира приложението?',
+        a3: 'Целим лятото на 2026 г. за пускането на приложенията за клиенти и бизнеси в Google Play и App Store. Запиши се в листата по-горе, за да бъдеш уведомен/а веднага щом стартираме!',
+        q4: 'Колко мога да спестя?',
+        a4: 'Клиентите могат да спестят до 70% от оригиналната цена на ястия и хранителни продукти. Точната отстъпка зависи от това, което всеки партньор предлага, но страхотните сделки са нормата — не изключението.',
+        q5: 'Как да стана партньорски бизнес?',
+        a5: 'Ако управляваш ресторант, пекарна, кафене или хранителен магазин и искаш да намалиш хранителните си отпадъци, докато печелиш допълнителен приход, запиши се в листата като бизнес. Ще се свържем с подробности за включване преди стартирането.',
       },
 
       contact: {

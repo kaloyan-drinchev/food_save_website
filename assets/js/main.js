@@ -26,6 +26,10 @@
       const val = I18n.t(el.dataset.i18nHtml);
       if (val !== el.dataset.i18nHtml) el.innerHTML = val;
     });
+    $$('[data-i18n-placeholder]').forEach((el) => {
+      const val = I18n.t(el.dataset.i18nPlaceholder);
+      if (val !== el.dataset.i18nPlaceholder) el.placeholder = val;
+    });
     // Update <html lang> attribute
     document.documentElement.lang = I18n.getLang();
     // Update page title — respect legal page titles via data-i18n on h1
@@ -139,6 +143,47 @@
     $$('.fade-in').forEach((el) => observer.observe(el));
   }
 
+  /* ── Waitlist form (Formspree) ──────────────────────────────── */
+  function initWaitlist() {
+    const form = $('#waitlist-form');
+    const modal = $('#waitlist-modal');
+    const closeBtn = $('#waitlist-modal-close');
+    if (!form) return;
+
+    function closeModal() {
+      if (modal) modal.hidden = true;
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('.waitlist-submit');
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (res.ok) {
+          form.reset();
+          if (modal) modal.hidden = false;
+        }
+      } finally {
+        btn.disabled = false;
+        btn.style.opacity = '';
+      }
+    });
+  }
+
   /* ── Hero carousel ──────────────────────────────────────────── */
   function initCarousel() {
     const slides = $('#hero-slides');
@@ -192,5 +237,6 @@
     initNavScroll();
     initFadeIn();
     initCarousel();
+    initWaitlist();
   });
 })();

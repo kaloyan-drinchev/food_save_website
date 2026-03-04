@@ -883,6 +883,242 @@ section:nth-child(even) {
   border-top: 1px solid var(--color-outline-var);
 }
 
+/* ── Waitlist Section ───────────────────────────────────────── */
+#waitlist {
+  background: var(--color-surface);
+}
+
+.waitlist-form {
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.waitlist-fields {
+  display: flex;
+  gap: 12px;
+}
+
+.waitlist-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-outline-var);
+  background: var(--color-surface-high);
+  color: var(--color-on-surface);
+  font-family: var(--font);
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.waitlist-input::placeholder {
+  color: var(--color-outline);
+}
+
+.waitlist-input:focus {
+  border-color: var(--color-primary);
+}
+
+.waitlist-role {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-on-surface-var);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-outline-var);
+  transition: all var(--transition);
+}
+
+.role-option:has(input:checked) {
+  border-color: var(--color-primary);
+  background: rgba(105, 240, 174, 0.08);
+  color: var(--color-primary);
+}
+
+.role-option input[type='radio'] {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.waitlist-submit {
+  padding: 16px 32px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.waitlist-submit:hover {
+  background: #fff;
+  color: var(--color-on-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(105, 240, 174, 0.25);
+}
+
+/* ── Modal ──────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--color-scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: modal-fade-in 0.25s ease;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal-card {
+  background: var(--color-surface-high);
+  border: 1px solid var(--color-outline-var);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  animation: modal-scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.modal-body {
+  font-size: 0.95rem;
+  color: var(--color-on-surface-var);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.modal-close-btn {
+  padding: 12px 36px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.modal-close-btn:hover {
+  background: #fff;
+  color: var(--color-on-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(105, 240, 174, 0.25);
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-scale-in {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ── FAQ Section ───────────────────────────────────────────── */
+#faq {
+  background: var(--color-surface-mid);
+}
+
+.faq-list {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: var(--color-surface-high);
+  border: 1px solid var(--color-outline-var);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.faq-item[open] {
+  border-color: var(--color-primary-dark);
+}
+
+.faq-question {
+  padding: 20px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: color var(--transition);
+}
+
+.faq-question::-webkit-details-marker {
+  display: none;
+}
+
+.faq-question::after {
+  content: '+';
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+
+.faq-item[open] .faq-question::after {
+  content: '\2212';
+  transform: rotate(180deg);
+}
+
+.faq-item[open] .faq-question {
+  color: var(--color-primary);
+}
+
+.faq-answer {
+  padding: 0 24px 20px;
+  font-size: 0.92rem;
+  color: var(--color-on-surface-var);
+  line-height: 1.7;
+}
+
 /* ── Contact Section ────────────────────────────────────────── */
 #contact {
   background: var(--color-surface);
@@ -996,6 +1232,15 @@ footer {
   .slide-illustration {
     width: 220px;
     height: 220px;
+  }
+
+  .waitlist-fields {
+    flex-direction: column;
+  }
+
+  .waitlist-role {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .steps-grid,
