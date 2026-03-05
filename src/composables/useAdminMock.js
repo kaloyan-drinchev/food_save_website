@@ -280,6 +280,10 @@ export function generateMockBusinesses() {
     const companyRegVerified = i >= 3
     const foodSafetyCert = i >= 5
 
+    const haccpFile = foodSafetyCert
+      ? { name: `HACCP_certificate_${name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`, size: `${rand(300, 900)} KB`, uploadedAt: formatDate(randomDate(45)) }
+      : null
+
     return {
       id: `BIZ-${String(3000 + i).padStart(4, '0')}`,
       name,
@@ -302,6 +306,7 @@ export function generateMockBusinesses() {
       babhNumber,
       companyRegVerified,
       foodSafetyCert,
+      haccpFile,
       verifiedAt: verified ? formatDate(randomDate(120)) : null,
       verificationNotes: '',
     }

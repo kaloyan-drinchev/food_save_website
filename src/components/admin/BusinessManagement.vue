@@ -213,6 +213,10 @@ function ratingStars(rating) {
   return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - half)
 }
 
+function toggleDoc(biz, field) {
+  biz[field] = !biz[field]
+}
+
 function docCheckCount(biz) {
   let done = 0
   if (biz.babhUploaded) done++
@@ -420,25 +424,40 @@ function docCheckCount(biz) {
               </div>
 
               <div class="biz-doc-checklist">
+                <!-- Company Registration -->
                 <div class="biz-doc-item" :class="{ checked: detailBiz.companyRegVerified }">
-                  <span class="biz-doc-icon">{{ detailBiz.companyRegVerified ? '✓' : '○' }}</span>
+                  <span class="biz-doc-icon" @click="toggleDoc(detailBiz, 'companyRegVerified')">{{ detailBiz.companyRegVerified ? '✓' : '○' }}</span>
                   <div class="biz-doc-info">
                     <span class="biz-doc-name">Търговски регистър (Company Registration)</span>
                     <span class="biz-doc-detail">EIK: {{ detailBiz.eik }} — {{ detailBiz.companyRegVerified ? 'Verified in Commercial Register' : 'Pending verification' }}</span>
                   </div>
                 </div>
+
+                <!-- БАБХ Registration -->
                 <div class="biz-doc-item" :class="{ checked: detailBiz.babhUploaded }">
-                  <span class="biz-doc-icon">{{ detailBiz.babhUploaded ? '✓' : '○' }}</span>
+                  <span class="biz-doc-icon" @click="toggleDoc(detailBiz, 'babhUploaded')">{{ detailBiz.babhUploaded ? '✓' : '○' }}</span>
                   <div class="biz-doc-info">
                     <span class="biz-doc-name">БАБХ Registration (Food Safety Agency)</span>
                     <span class="biz-doc-detail">{{ detailBiz.babhUploaded ? `Reg. №: ${detailBiz.babhNumber}` : 'Not submitted — required by Закон за храните' }}</span>
                   </div>
                 </div>
+
+                <!-- HACCP Certificate -->
                 <div class="biz-doc-item" :class="{ checked: detailBiz.foodSafetyCert }">
-                  <span class="biz-doc-icon">{{ detailBiz.foodSafetyCert ? '✓' : '○' }}</span>
+                  <span class="biz-doc-icon" @click="toggleDoc(detailBiz, 'foodSafetyCert')">{{ detailBiz.foodSafetyCert ? '✓' : '○' }}</span>
                   <div class="biz-doc-info">
                     <span class="biz-doc-name">Food Safety / HACCP Certificate</span>
                     <span class="biz-doc-detail">{{ detailBiz.foodSafetyCert ? 'Certificate uploaded and reviewed' : 'Not submitted yet' }}</span>
+                    <div v-if="detailBiz.haccpFile" class="biz-doc-file">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <span class="biz-doc-file-name">{{ detailBiz.haccpFile.name }}</span>
+                      <span class="biz-doc-file-meta">{{ detailBiz.haccpFile.size }} · {{ detailBiz.haccpFile.uploadedAt }}</span>
+                      <button class="biz-doc-view-btn" @click.stop>View</button>
+                    </div>
+                    <div v-else class="biz-doc-empty">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <span>No file uploaded</span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { generateMockUsers } from '@/composables/useAdminMock'
 
 const users = ref(generateMockUsers())
@@ -13,6 +13,24 @@ const showEditModal = ref(false)
 const editForm = ref({ id: '', name: '', email: '', role: 'customer', status: 'active' })
 const showDeleteConfirm = ref(false)
 const deleteTarget = ref(null)
+const menuOpenId = ref(null)
+
+function toggleMenu(userId) {
+  menuOpenId.value = menuOpenId.value === userId ? null : userId
+}
+
+function closeMenu() {
+  menuOpenId.value = null
+}
+
+function handleClickOutside(e) {
+  if (!e.target.closest('.user-actions-cell')) {
+    closeMenu()
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 
 const filtered = computed(() => {
   let list = users.value
@@ -183,20 +201,42 @@ function roleClass(role) {
             <td><span class="badge" :class="statusClass(user.status)">{{ statusLabel(user.status) }}</span></td>
             <td><span class="badge" :class="roleClass(user.role)">{{ user.role }}</span></td>
             <td>{{ user.registered }}</td>
-            <td class="ops-actions">
-              <button
-                v-if="user.status === 'pending_email'"
-                class="btn-xs btn-confirm"
-                @click="confirmEmail(user)"
-              >Confirm Email</button>
-              <button class="btn-xs btn-edit" @click="openEdit(user)">Edit</button>
-              <button
-                class="btn-xs"
-                :class="user.status === 'disabled' ? 'btn-enable' : 'btn-disable'"
-                @click="toggleStatus(user)"
-              >{{ user.status === 'disabled' ? 'Enable' : 'Disable' }}</button>
-              <button class="btn-xs btn-reset" @click="resetPassword(user)">Reset PW</button>
-              <button class="btn-xs btn-delete" @click="openDelete(user)">Delete</button>
+            <td class="user-actions-cell">
+              <button class="kebab-btn" @click.stop="toggleMenu(user.id)" title="Actions">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+              </button>
+              <div v-if="menuOpenId === user.id" class="kebab-dropdown">
+                <button
+                  v-if="user.status === 'pending_email'"
+                  class="kebab-item kebab-item--confirm"
+                  @click="confirmEmail(user); closeMenu()"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Confirm Email
+                </button>
+                <button class="kebab-item kebab-item--edit" @click="openEdit(user); closeMenu()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit
+                </button>
+                <button
+                  class="kebab-item"
+                  :class="user.status === 'disabled' ? 'kebab-item--enable' : 'kebab-item--disable'"
+                  @click="toggleStatus(user); closeMenu()"
+                >
+                  <svg v-if="user.status === 'disabled'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  {{ user.status === 'disabled' ? 'Enable' : 'Disable' }}
+                </button>
+                <button class="kebab-item kebab-item--reset" @click="resetPassword(user); closeMenu()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Reset Password
+                </button>
+                <div class="kebab-divider"></div>
+                <button class="kebab-item kebab-item--delete" @click="openDelete(user); closeMenu()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
           <tr v-if="filtered.length === 0">
@@ -225,7 +265,7 @@ function roleClass(role) {
               <label>Role</label>
               <select v-model="createForm.role">
                 <option value="customer">Customer</option>
-                <option value="business">Business</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
             <div class="ops-modal-actions">
@@ -263,7 +303,6 @@ function roleClass(role) {
             <label>Role</label>
             <select v-model="editForm.role">
               <option value="customer">Customer</option>
-              <option value="business">Business</option>
               <option value="admin">Admin</option>
             </select>
           </div>
