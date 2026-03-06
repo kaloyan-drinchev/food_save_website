@@ -1,10 +1,20 @@
 <script setup>
-import { watch, onMounted } from 'vue'
+import { computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
+import bgMessages from '@/i18n/bg.js'
+import enMessages from '@/i18n/en.js'
 
 const { t, locale } = useI18n()
+
+const localeMessages = { bg: bgMessages, en: enMessages }
+
+// Access HTML content directly, bypassing the vue-i18n message compiler
+// (the compiler mis-parses special chars like % and @ inside large HTML strings)
+const termsContent = computed(
+  () => localeMessages[locale.value]?.terms?.content ?? bgMessages.terms.content,
+)
 
 function updateTitle() {
   document.title = `FoodSave — ${t('terms.title')}`
@@ -28,7 +38,7 @@ onMounted(updateTitle)
 
   <main>
     <div class="container legal-page-container">
-      <div class="legal-content" v-html="t('terms.content')"></div>
+      <div class="legal-content" v-html="termsContent"></div>
       <p class="legal-meta">{{ t('terms.updated') }}</p>
     </div>
   </main>
