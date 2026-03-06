@@ -13,14 +13,11 @@ export default {
     slide1_subtitle:
       'Discover surplus food from local restaurants and stores at up to 70\u00A0% off.',
     slide2_title: 'Save Money Every Day',
-    slide2_subtitle:
-      'Enjoy delicious meals at a fraction of the price while reducing food waste.',
+    slide2_subtitle: 'Enjoy delicious meals at a fraction of the price while reducing food waste.',
     slide3_title: 'Protect Our Planet',
-    slide3_subtitle:
-      'Every saved meal prevents CO\u2082 emissions and keeps food from landfills.',
+    slide3_subtitle: 'Every saved meal prevents CO\u2082 emissions and keeps food from landfills.',
     slide4_title: 'Join FoodSave',
-    slide4_subtitle:
-      'Start saving food in your neighbourhood right now.',
+    slide4_subtitle: 'Start saving food in your neighbourhood right now.',
     cta_next: 'Next \u2192',
     cta_start: 'Get Started \u2192',
   },
@@ -248,8 +245,7 @@ export default {
   contact: {
     label: 'Get in Touch',
     title: 'Contact Us',
-    subtitle:
-      "Have questions, feedback, or need support? We'd love to hear from you.",
+    subtitle: "Have questions, feedback, or need support? We'd love to hear from you.",
     email_title: 'Email Support',
     email_value: 'support@foodsave.app',
     business_title: 'Business Partnerships',
@@ -270,5 +266,11 @@ export default {
 
   legal: {
     back: 'Back to Home',
+  },
+
+  notFound: {
+    title: 'Page Not Found',
+    text: 'The link you followed is broken or the page has been moved.',
+    button: 'Go to Homepage',
   },
 }
