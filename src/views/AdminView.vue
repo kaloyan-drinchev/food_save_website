@@ -10,7 +10,6 @@ const isLoggedIn = ref(sessionStorage.getItem('fs_admin') === 'true')
 const sidebarOpen = ref(false)
 
 function login() {
-  sessionStorage.setItem('fs_admin', 'true')
   isLoggedIn.value = true
 }
 
@@ -37,17 +36,10 @@ onMounted(() => {
   <AdminLogin v-if="!isLoggedIn" @login="login" />
 
   <div v-else class="dashboard">
-    <AdminHeader
-      @logout="logout"
-      @refresh="() => {}"
-      @toggle-sidebar="toggleSidebar"
-    />
+    <AdminHeader @logout="logout" @refresh="() => {}" @toggle-sidebar="toggleSidebar" />
 
     <div class="dash-layout">
-      <AdminSidebar
-        :is-open="sidebarOpen"
-        @close="closeSidebar"
-      />
+      <AdminSidebar :is-open="sidebarOpen" @close="closeSidebar" />
 
       <div class="dash-main">
         <div class="dash-body">

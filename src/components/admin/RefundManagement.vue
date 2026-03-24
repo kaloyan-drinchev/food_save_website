@@ -1,21 +1,25 @@
 <script setup>
 import { ref } from 'vue'
-import { generateMockRefunds } from '@/composables/useAdminMock'
 
 const props = defineProps({
   prefillTxId: { type: String, default: '' },
 })
 
-const data = generateMockRefunds()
-const pendingRefunds = ref(data.pending)
-const processedRefunds = ref(data.processed)
+// The API does not have refund endpoints yet.
+// Refunds are managed locally until the backend adds support.
+const pendingRefunds = ref([])
+const processedRefunds = ref([])
 const showManualForm = ref(false)
 const manualForm = ref({ txId: props.prefillTxId || '', amount: '', reason: '' })
 const confirmMsg = ref('')
 
 function approveRefund(refund) {
   refund.status = 'approved'
-  const now = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  const now = new Date().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
   processedRefunds.value.unshift({ ...refund, processedDate: now })
   pendingRefunds.value = pendingRefunds.value.filter((r) => r.id !== refund.id)
   confirmMsg.value = `Refund ${refund.id} approved`
@@ -24,7 +28,11 @@ function approveRefund(refund) {
 
 function rejectRefund(refund) {
   refund.status = 'rejected'
-  const now = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  const now = new Date().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
   processedRefunds.value.unshift({ ...refund, processedDate: now })
   pendingRefunds.value = pendingRefunds.value.filter((r) => r.id !== refund.id)
   confirmMsg.value = `Refund ${refund.id} rejected`
@@ -45,7 +53,11 @@ function submitManualRefund() {
     amount: parseFloat(manualForm.value.amount).toFixed(2) + ' лв',
     amountNum: parseFloat(manualForm.value.amount),
     reason: manualForm.value.reason || 'Manual refund',
-    requested: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+    requested: new Date().toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }),
     status: 'pending',
   }
   pendingRefunds.value.unshift(newRefund)
@@ -55,7 +67,11 @@ function submitManualRefund() {
 }
 
 function statusBadge(status) {
-  const map = { pending: 'badge-payment-pending', approved: 'badge-active', rejected: 'badge-disabled' }
+  const map = {
+    pending: 'badge-payment-pending',
+    approved: 'badge-active',
+    rejected: 'badge-disabled',
+  }
   return map[status] || ''
 }
 </script>
@@ -63,7 +79,9 @@ function statusBadge(status) {
 <template>
   <div class="ops-panel">
     <div class="ops-toolbar">
-      <h3 style="font-size: 1rem; font-weight: 700; color: var(--fs-on-surface)">Pending Refunds ({{ pendingRefunds.length }})</h3>
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--fs-on-surface)">
+        Pending Refunds ({{ pendingRefunds.length }})
+      </h3>
       <button class="btn-sm btn-primary" @click="openManualRefund">+ Manual Refund</button>
     </div>
 
@@ -96,7 +114,9 @@ function statusBadge(status) {
             </td>
           </tr>
           <tr v-if="pendingRefunds.length === 0">
-            <td colspan="7" style="text-align: center; padding: 24px; color: var(--fs-outline)">No pending refunds</td>
+            <td colspan="7" style="text-align: center; padding: 24px; color: var(--fs-outline)">
+              No pending refunds
+            </td>
           </tr>
         </tbody>
       </table>
@@ -126,7 +146,9 @@ function statusBadge(status) {
             <td>{{ r.amount }}</td>
             <td>{{ r.reason }}</td>
             <td>{{ r.processedDate }}</td>
-            <td><span class="badge" :class="statusBadge(r.status)">{{ r.status }}</span></td>
+            <td>
+              <span class="badge" :class="statusBadge(r.status)">{{ r.status }}</span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -142,7 +164,13 @@ function statusBadge(status) {
           </div>
           <div class="ops-field">
             <label>Amount (лв)</label>
-            <input v-model="manualForm.amount" type="number" step="0.01" min="0" placeholder="0.00" />
+            <input
+              v-model="manualForm.amount"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+            />
           </div>
           <div class="ops-field">
             <label>Reason</label>

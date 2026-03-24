@@ -1,8 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { generateMockBusinesses } from '@/composables/useAdminMock'
+import { ref, computed, onMounted } from 'vue'
+import { api } from '@/services/api'
 
-const businesses = ref(generateMockBusinesses())
+const businesses = ref([])
+const loading = ref(true)
 const search = ref('')
 const filterStatus = ref('all')
 const filterVerified = ref('all')
@@ -24,6 +25,68 @@ const showCertViewer = ref(false)
 const certViewerUrl = ref('')
 const certViewerName = ref('')
 const certFileInput = ref(null)
+
+function mapBusiness(b) {
+  const loc = b.locations?.[0] || {}
+  return {
+    id: String(b.id),
+    name: b.companyName || 'Unnamed',
+    category: b.businessType?.type || 'Unknown',
+    owner: '', // API has no owner name field
+    email: '', // API has no business email field
+    phone: loc.phoneNumber || '',
+    address: loc.address || '',
+    status: 'active',
+    isVerified: b.isVerified || false,
+    joined: b.createdAt
+      ? new Date(b.createdAt).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        })
+      : '',
+    totalOrders: 0,
+    totalRevenue: '0.00 лв',
+    platformRevenue: '0.00 лв',
+    rating: b.rating || 0,
+    listingsActive: b.products?.length || 0,
+    avgPickupTime: '-',
+    eik: b.bulstatVat || '',
+    babhUploaded: false,
+    babhNumber: '',
+    companyRegVerified: !!b.bulstatVat,
+    foodSafetyCert: false,
+    haccpFile: null,
+    certStatus: null,
+    certRequestedAt: null,
+    verifiedAt: b.isVerified
+      ? b.updatedAt
+        ? new Date(b.updatedAt).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        : ''
+      : null,
+    verificationNotes: '',
+    _raw: b,
+  }
+}
+
+async function loadBusinesses() {
+  loading.value = true
+  try {
+    const data = await api.getBusinesses()
+    businesses.value = (Array.isArray(data) ? data : []).map(mapBusiness)
+  } catch (e) {
+    toast('Failed to load businesses: ' + e.message)
+    businesses.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(loadBusinesses)
 
 const filtered = computed(() => {
   let list = businesses.value
@@ -380,69 +443,76 @@ function docCheckCount(biz) {
 
     <div v-if="confirmMsg" class="ops-toast">{{ confirmMsg }}</div>
 
-    <div class="ops-count">{{ filtered.length }} of {{ businesses.length }} businesses</div>
-
-    <!-- Business cards -->
-    <div class="biz-cards-grid">
-      <div
-        v-for="biz in filtered"
-        :key="biz.id"
-        class="biz-card"
-        :class="{ 'biz-card--unverified': !biz.isVerified }"
-        @click="openDetail(biz)"
-      >
-        <div class="biz-card-header">
-          <div class="biz-card-main">
-            <div class="biz-card-name">
-              {{ biz.name }}
-              <span v-if="biz.isVerified" class="biz-verified-badge" title="Verified">✓</span>
-              <span v-else class="biz-unverified-badge" title="Awaiting verification"
-                >Unverified</span
-              >
-              <span
-                v-if="biz.certStatus === 'awaiting_resubmission'"
-                class="biz-cert-badge"
-                title="Awaiting certificate resubmission"
-                >⏳ Cert Pending</span
-              >
-            </div>
-            <div class="biz-card-meta">
-              <span class="biz-card-category">{{ biz.category }}</span>
-              <span class="biz-card-id">{{ biz.id }}</span>
-              <span class="biz-card-eik">EIK: {{ biz.eik }}</span>
-            </div>
-          </div>
-          <div class="biz-card-right">
-            <span class="badge" :class="statusClass(biz.status)">{{
-              statusLabel(biz.status)
-            }}</span>
-          </div>
-        </div>
-
-        <div class="biz-card-stats">
-          <div class="biz-stat">
-            <span class="biz-stat-value">{{ biz.totalOrders }}</span>
-            <span class="biz-stat-label">Orders</span>
-          </div>
-          <div class="biz-stat">
-            <span class="biz-stat-value">{{ biz.totalRevenue }}</span>
-            <span class="biz-stat-label">Revenue</span>
-          </div>
-          <div class="biz-stat">
-            <span class="biz-stat-value">{{ biz.platformRevenue }}</span>
-            <span class="biz-stat-label">Platform Rev (25%)</span>
-          </div>
-          <div class="biz-stat">
-            <span class="biz-stat-value biz-rating"
-              >{{ biz.rating }} <span class="biz-stars">{{ ratingStars(biz.rating) }}</span></span
-            >
-            <span class="biz-stat-label">Rating</span>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="filtered.length === 0" class="biz-empty">No businesses match your search.</div>
+    <div v-if="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <span class="loading-text">Loading businesses...</span>
     </div>
+
+    <template v-else>
+      <div class="ops-count">{{ filtered.length }} of {{ businesses.length }} businesses</div>
+
+      <!-- Business cards -->
+      <div class="biz-cards-grid">
+        <div
+          v-for="biz in filtered"
+          :key="biz.id"
+          class="biz-card"
+          :class="{ 'biz-card--unverified': !biz.isVerified }"
+          @click="openDetail(biz)"
+        >
+          <div class="biz-card-header">
+            <div class="biz-card-main">
+              <div class="biz-card-name">
+                {{ biz.name }}
+                <span v-if="biz.isVerified" class="biz-verified-badge" title="Verified">✓</span>
+                <span v-else class="biz-unverified-badge" title="Awaiting verification"
+                  >Unverified</span
+                >
+                <span
+                  v-if="biz.certStatus === 'awaiting_resubmission'"
+                  class="biz-cert-badge"
+                  title="Awaiting certificate resubmission"
+                  >⏳ Cert Pending</span
+                >
+              </div>
+              <div class="biz-card-meta">
+                <span class="biz-card-category">{{ biz.category }}</span>
+                <span class="biz-card-id">{{ biz.id }}</span>
+                <span class="biz-card-eik">EIK: {{ biz.eik }}</span>
+              </div>
+            </div>
+            <div class="biz-card-right">
+              <span class="badge" :class="statusClass(biz.status)">{{
+                statusLabel(biz.status)
+              }}</span>
+            </div>
+          </div>
+
+          <div class="biz-card-stats">
+            <div class="biz-stat">
+              <span class="biz-stat-value">{{ biz.totalOrders }}</span>
+              <span class="biz-stat-label">Orders</span>
+            </div>
+            <div class="biz-stat">
+              <span class="biz-stat-value">{{ biz.totalRevenue }}</span>
+              <span class="biz-stat-label">Revenue</span>
+            </div>
+            <div class="biz-stat">
+              <span class="biz-stat-value">{{ biz.platformRevenue }}</span>
+              <span class="biz-stat-label">Platform Rev (25%)</span>
+            </div>
+            <div class="biz-stat">
+              <span class="biz-stat-value biz-rating"
+                >{{ biz.rating }} <span class="biz-stars">{{ ratingStars(biz.rating) }}</span></span
+              >
+              <span class="biz-stat-label">Rating</span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="filtered.length === 0" class="biz-empty">No businesses match your search.</div>
+      </div>
+    </template>
 
     <Teleport to="body">
       <!-- Business Detail Modal -->

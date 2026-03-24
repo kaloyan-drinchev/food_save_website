@@ -7,7 +7,9 @@ const password = ref('')
 const showError = ref(false)
 
 function onSubmit() {
+  showError.value = false
   if (username.value.trim() === 'admin' && password.value === 'guiadmin') {
+    sessionStorage.setItem('fs_admin', 'true')
     emit('login')
   } else {
     showError.value = true
@@ -27,10 +29,18 @@ function onSubmit() {
         </div>
         <div class="login-field">
           <label for="password">Password</label>
-          <input type="password" id="password" v-model="password" autocomplete="current-password" required />
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            autocomplete="current-password"
+            required
+          />
         </div>
         <button type="submit" class="login-btn">Sign In</button>
-        <p class="login-error" :style="{ display: showError ? 'block' : 'none' }">Invalid credentials</p>
+        <p class="login-error" :style="{ display: showError ? 'block' : 'none' }">
+          Invalid credentials
+        </p>
       </form>
     </div>
   </div>
