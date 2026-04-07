@@ -9,6 +9,7 @@ const items = [1, 2, 3, 4, 5]
     <div class="container">
       <div class="section-header centered">
         <span class="section-label">{{ t('faq.label') }}</span>
+        <div class="section-divider"></div>
         <h2 class="section-title">{{ t('faq.title') }}</h2>
         <p class="section-subtitle">{{ t('faq.subtitle') }}</p>
       </div>

@@ -39,7 +39,7 @@ function onTouchEnd(e) {
 
       <div class="hero-slides" :style="{ transform: slideTransform }">
         <!-- Slide 1: Discovery -->
-        <div class="hero-slide" style="background:linear-gradient(160deg,#0d1f0e 0%,#1a2e1b 40%,#2e4a2f 100%)">
+        <div class="hero-slide hero-slide-1">
           <div class="slide-illustration">
             <div class="orbit-center" style="background:radial-gradient(circle,#2E7D32,#1B5E20);box-shadow:0 0 40px rgba(46,125,50,.35)">🔍</div>
             <div class="orbit-items orbit-spin">
@@ -55,7 +55,7 @@ function onTouchEnd(e) {
         </div>
 
         <!-- Slide 2: Savings -->
-        <div class="hero-slide" style="background:linear-gradient(160deg,#1a0e00 0%,#3E2723 40%,#4E342E 100%)">
+        <div class="hero-slide hero-slide-2">
           <div class="slide-illustration">
             <div class="orbit-center" style="background:radial-gradient(circle,#FF8F00,#E65100);box-shadow:0 0 40px rgba(255,143,0,.35)">
               <div class="discount-label"><strong>70%</strong><small>OFF</small></div>
@@ -72,7 +72,7 @@ function onTouchEnd(e) {
         </div>
 
         <!-- Slide 3: Eco -->
-        <div class="hero-slide" style="background:linear-gradient(160deg,#002910 0%,#004D40 40%,#00695C 100%)">
+        <div class="hero-slide hero-slide-3">
           <div class="slide-illustration eco-glow">
             <div class="orbit-center" style="background:radial-gradient(circle,#4CAF50,#2E7D32);box-shadow:0 0 50px rgba(76,175,80,.4)">🌍</div>
             <div class="particle" style="--x:15%;--y:20%;--s:10px;--d:0s"></div>
@@ -93,7 +93,7 @@ function onTouchEnd(e) {
         </div>
 
         <!-- Slide 4: Community -->
-        <div class="hero-slide" style="background:linear-gradient(160deg,#0d1f0e 0%,#1B5E20 40%,#2E7D32 100%)">
+        <div class="hero-slide hero-slide-4">
           <div class="slide-illustration">
             <div class="orbit-center" style="background:radial-gradient(circle,#69F0AE,#00C853);box-shadow:0 0 50px rgba(105,240,174,.4)">🤝</div>
             <div class="orbit-items orbit-spin">

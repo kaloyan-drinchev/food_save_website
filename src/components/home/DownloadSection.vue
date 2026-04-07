@@ -8,6 +8,7 @@ const { t } = useI18n()
     <div class="container">
       <div class="section-header centered">
         <span class="section-label">{{ t('download.label') }}</span>
+        <div class="section-divider"></div>
         <h2 class="section-title">{{ t('download.title') }}</h2>
         <p class="section-subtitle">{{ t('download.subtitle') }}</p>
       </div>

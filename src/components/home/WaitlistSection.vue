@@ -30,6 +30,7 @@ async function onSubmit(e) {
     <div class="container">
       <div class="section-header centered">
         <span class="section-label">{{ t('waitlist.label') }}</span>
+        <div class="section-divider"></div>
         <h2 class="section-title">{{ t('waitlist.title') }}</h2>
         <p class="section-subtitle">{{ t('waitlist.subtitle') }}</p>
       </div>
