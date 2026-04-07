@@ -1,0 +1,93 @@
+FoodSave Admin Panel - Backend Priorities
+
+1. Admin user listing and user management
+Why it matters:
+The current Users screen is reconstructing data from the logged-in profile and businesses, so it cannot show real customers, real admins, or complete account data.
+
+Needed backend operations:
+- GET /admin/users
+- GET /admin/users/:id
+- PATCH /admin/users/:id
+- PATCH /admin/users/:id/status
+- DELETE /admin/users/:id or soft-delete/deactivate
+
+2. Disable / suspend account
+Why it matters:
+This is the minimum safety control for abuse, fraud, spam, and policy violations.
+
+Needed backend operations:
+- PATCH /admin/users/:id/status with values like active, suspended, disabled
+- Equivalent business suspension endpoint if businesses are managed separately
+
+3. Business verification workflow
+Why it matters:
+This is central to marketplace trust and partner onboarding.
+
+Needed backend operations:
+- PATCH /admin/businesses/:id/verify
+- PATCH /admin/businesses/:id/unverify
+- PATCH /admin/businesses/:id/status
+- Support for certificate metadata, verification notes, and document status
+
+4. Admin password reset trigger
+Why it matters:
+Support teams need recovery tools for user accounts.
+
+Needed backend operations:
+- POST /admin/users/:id/reset-password
+- Or POST /auth/forgot-password usable by admin on behalf of a user
+
+5. Persistent business editing
+Why it matters:
+The frontend already has a business update method, but current edit actions are still local-only.
+
+Needed backend operations:
+- Confirm PUT /business can update arbitrary businesses for an admin
+- If not, add PUT /admin/businesses/:id
+
+6. Admin order operations
+Why it matters:
+This affects live operations and customer experience.
+
+Needed backend operations:
+- Keep confirm / pickup / cancel if admin-authorized
+- Add admin-side order notes, issue flags, and reassignment if needed
+
+7. Refund management
+Why it matters:
+Money operations should never be local-only.
+
+Needed backend operations:
+- GET /admin/refunds
+- POST /admin/refunds
+- PATCH /admin/refunds/:id/approve
+- PATCH /admin/refunds/:id/reject
+
+8. Audit log for admin actions
+Why it matters:
+Once admins can disable users, verify businesses, reset passwords, or refund payments, accountability is required.
+
+Needed backend operations:
+- GET /admin/audit-logs
+- Automatic logging for status changes, verification, refunds, and password resets
+
+9. Role-based admin authorization
+Why it matters:
+Not every staff member should be allowed to perform every admin action.
+
+Needed backend operations:
+- Admin roles and permissions in JWT or session claims
+- Endpoint-level authorization for support, finance, ops, and super-admin
+
+10. True dashboard counts endpoint
+Why it matters:
+Admin metrics should not be inferred from partial data sources.
+
+Needed backend operations:
+- GET /admin/stats
+- Totals for users, customers, businesses, admins, active orders, refunds, and revenue
+
+Top 3 most urgent:
+1. GET /admin/users plus user status update
+2. Business verification and suspension endpoints
+3. Refund endpoints

@@ -28,8 +28,8 @@ export const api = {
   register: (data) => request('POST', '/auth/register', data),
 
   // Users
-  getProfile: () => request('GET', '/users/profile'),
-  updateProfile: (data) => request('PUT', '/users/profile', data),
+  getProfile: () => request('GET', '/auth/users/profile'),
+  updateProfile: (data) => request('PUT', '/auth/users/profile', data),
 
   // Businesses
   getBusinesses: (category) =>
@@ -55,8 +55,8 @@ export const api = {
   createPayment: (data) => request('POST', '/payments', data),
 
   // Products
-  getProducts: (page, limit) => request('GET', `/products?page=${page || 1}&limit=${limit || 50}`),
-  getBusinessProducts: () => request('GET', '/business/products'),
+  getProducts: (page, limit) => request('GET', `/menu?page=${page || 1}&limit=${limit || 50}`),
+  getBusinessProducts: () => request('GET', '/business/menu'),
 
   // Categories & Allergens
   getCategories: () => request('GET', '/categories'),
