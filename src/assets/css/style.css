@@ -17,33 +17,33 @@
 
 /* ── Dark theme (default) ────────────────────────────────── */
 [data-theme='dark'] {
-  --color-primary: #69f0ae;
-  --color-primary-dark: #2e7d32;
-  --color-primary-container: #1b5e20;
-  --color-on-primary: #003909;
+  --color-primary: #8de2b8;
+  --color-primary-dark: #374151;
+  --color-primary-container: #1f2937;
+  --color-on-primary: #f9fafb;
   --color-accent: #ff8f00;
   --color-accent-container: #7a3d00;
   --color-on-accent: #3e1d00;
   --color-tertiary: #4db6ac;
   --color-tertiary-container: #004d40;
-  --color-surface: #0d1f0e;
-  --color-surface-mid: #1a2e1b;
-  --color-surface-high: #243425;
+  --color-surface: #1f2329;
+  --color-surface-mid: #2d333d;
+  --color-surface-high: #3a4150;
   --color-on-surface: #ffffff;
-  --color-on-surface-var: #bdbdbd;
-  --color-outline: #616161;
-  --color-outline-var: #424242;
+  --color-on-surface-var: #b0b7c3;
+  --color-outline: #75808f;
+  --color-outline-var: #4a5460;
   --color-error: #ef9a9a;
   --color-scrim: rgba(0, 0, 0, 0.7);
-  --color-glass: rgba(13, 31, 14, 0.75);
-  --color-glass-border: rgba(105, 240, 174, 0.08);
-  --color-card-glow: rgba(105, 240, 174, 0.06);
-  --hero-slide1-bg: linear-gradient(160deg, #0d1f0e 0%, #1a2e1b 40%, #2e4a2f 100%);
-  --hero-slide2-bg: linear-gradient(160deg, #1a0e00 0%, #3e2723 40%, #4e342e 100%);
-  --hero-slide3-bg: linear-gradient(160deg, #002910 0%, #004d40 40%, #00695c 100%);
-  --hero-slide4-bg: linear-gradient(160deg, #0d1f0e 0%, #1b5e20 40%, #2e7d32 100%);
-  --btn-primary-text: #003909;
-  --nav-bg: rgba(13, 31, 14, 0.82);
+  --color-glass: rgba(31, 35, 41, 0.75);
+  --color-glass-border: rgba(141, 226, 184, 0.08);
+  --color-card-glow: rgba(141, 226, 184, 0.06);
+  --hero-slide1-bg: linear-gradient(160deg, #1f2329 0%, #2d333d 40%, #414956 100%);
+  --hero-slide2-bg: linear-gradient(160deg, #261911 0%, #3d3024 40%, #524437 100%);
+  --hero-slide3-bg: linear-gradient(160deg, #1a1f27 0%, #27333f 40%, #37495d 100%);
+  --hero-slide4-bg: linear-gradient(160deg, #1f2329 0%, #313943 40%, #465460 100%);
+  --btn-primary-text: #0f172a;
+  --nav-bg: rgba(31, 35, 41, 0.82);
 }
 
 /* ── Light theme ─────────────────────────────────────────── */
