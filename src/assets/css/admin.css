@@ -3,18 +3,18 @@
    Uses the same color tokens as the main site
    ============================================================ */
 :root {
-  --fs-primary: #69f0ae;
-  --fs-primary-dark: #2e7d32;
-  --fs-primary-container: #1b5e20;
-  --fs-on-primary: #003909;
+  --fs-primary: #8de2b8;
+  --fs-primary-dark: #374151;
+  --fs-primary-container: #1f2937;
+  --fs-on-primary: #f9fafb;
   --fs-accent: #ff8f00;
-  --fs-surface: #0d1f0e;
-  --fs-surface-mid: #1a2e1b;
-  --fs-surface-high: #243425;
+  --fs-surface: #1f2329;
+  --fs-surface-mid: #2d333d;
+  --fs-surface-high: #3a4150;
   --fs-on-surface: #ffffff;
-  --fs-on-surface-var: #bdbdbd;
-  --fs-outline: #616161;
-  --fs-outline-var: #424242;
+  --fs-on-surface-var: #b0b7c3;
+  --fs-outline: #75808f;
+  --fs-outline-var: #4a5460;
   --fs-error: #ef9a9a;
   --fs-scrim: rgba(0, 0, 0, 0.7);
   --fs-font: 'Rubik', sans-serif;
