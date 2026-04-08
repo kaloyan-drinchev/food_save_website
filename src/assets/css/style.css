@@ -1658,3 +1658,20 @@ section,
 .modal-card {
   transition: all var(--transition), background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
 }
+
+/* ── Navbar responsive overrides ─────────────────────────────
+   Must appear AFTER the navbar-glass declarations above so the
+   same-specificity media-query rules take effect on mobile.
+   ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar-glass {
+    padding: 0 16px;
+  }
+  .nav-desktop-links {
+    display: none;
+  }
+  .nav-right-group {
+    gap: 6px;
+    margin-left: auto;
+  }
+}
