@@ -37,7 +37,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <template>
   <nav id="main-navbar" class="navbar-glass" :class="{ scrolled: navShadow }">
     <RouterLink to="/" class="nav-brand">
-      <img src="/assets/images/logo-horizontal.png" alt="FoodSave" class="nav-logo" />
+      <img src="/assets/images/logo.png" alt="FoodSave" class="nav-logo" />
     </RouterLink>
 
     <div class="nav-desktop-links">
@@ -48,6 +48,13 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           :class="{ 'active-link': activePage === 'about' }"
         >
           {{ t('nav.about') }}
+        </RouterLink>
+        <RouterLink
+          to="/#faq"
+          class="nav-link"
+          :class="{ 'active-link': activePage === 'faq' }"
+        >
+          {{ t('nav.faq') }}
         </RouterLink>
         <RouterLink
           to="/#download"
@@ -101,6 +108,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     <div v-if="menuOpen" class="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
       <div class="mobile-menu-links">
         <RouterLink to="/#about" @click="closeMenu">{{ t('nav.about') }}</RouterLink>
+        <RouterLink to="/#faq" @click="closeMenu">{{ t('nav.faq') }}</RouterLink>
         <RouterLink to="/#download" @click="closeMenu">{{ t('nav.download') }}</RouterLink>
         <RouterLink to="/privacy" @click="closeMenu">{{ t('nav.privacy') }}</RouterLink>
         <RouterLink to="/terms" @click="closeMenu">{{ t('nav.terms') }}</RouterLink>

@@ -41,10 +41,10 @@ function onTouchEnd(e) {
         <!-- Slide 1: Discovery -->
         <div class="hero-slide hero-slide-1">
           <div class="slide-illustration">
-            <div class="orbit-center" style="background:radial-gradient(circle,#2E7D32,#1B5E20);box-shadow:0 0 40px rgba(46,125,50,.35)">🔍</div>
+            <div class="orbit-center" style="background:radial-gradient(circle,#2E5836,#1A3322);box-shadow:0 0 40px rgba(46,88,54,.35)">🔍</div>
             <div class="orbit-items orbit-spin">
-              <div class="orbit-item" style="--a:0deg;background:#FF8F00;box-shadow:0 2px 8px rgba(255,143,0,.3)">🍕</div>
-              <div class="orbit-item" style="--a:72deg;background:#4CAF50;box-shadow:0 2px 8px rgba(76,175,80,.3)">🥗</div>
+              <div class="orbit-item" style="--a:0deg;background:#EB8227;box-shadow:0 2px 8px rgba(235,130,39,.3)">🍕</div>
+              <div class="orbit-item" style="--a:72deg;background:#2E5836;box-shadow:0 2px 8px rgba(46,88,54,.3)">🥗</div>
               <div class="orbit-item" style="--a:144deg;background:#FF5722;box-shadow:0 2px 8px rgba(255,87,34,.3)">🥐</div>
               <div class="orbit-item" style="--a:216deg;background:#7B1FA2;box-shadow:0 2px 8px rgba(123,31,162,.3)">🍱</div>
               <div class="orbit-item" style="--a:288deg;background:#00838F;box-shadow:0 2px 8px rgba(0,131,143,.3)">🧁</div>
@@ -57,7 +57,7 @@ function onTouchEnd(e) {
         <!-- Slide 2: Savings -->
         <div class="hero-slide hero-slide-2">
           <div class="slide-illustration">
-            <div class="orbit-center" style="background:radial-gradient(circle,#FF8F00,#E65100);box-shadow:0 0 40px rgba(255,143,0,.35)">
+            <div class="orbit-center" style="background:radial-gradient(circle,#EB8227,#C06B1C);box-shadow:0 0 40px rgba(235,130,39,.35)">
               <div class="discount-label"><strong>70%</strong><small>OFF</small></div>
             </div>
             <div class="orbit-items orbit-float">
@@ -74,7 +74,7 @@ function onTouchEnd(e) {
         <!-- Slide 3: Eco -->
         <div class="hero-slide hero-slide-3">
           <div class="slide-illustration eco-glow">
-            <div class="orbit-center" style="background:radial-gradient(circle,#4CAF50,#2E7D32);box-shadow:0 0 50px rgba(76,175,80,.4)">🌍</div>
+            <div class="orbit-center" style="background:radial-gradient(circle,#2E5836,#1A3322);box-shadow:0 0 50px rgba(46,88,54,.4)">🌍</div>
             <div class="particle" style="--x:15%;--y:20%;--s:10px;--d:0s"></div>
             <div class="particle" style="--x:75%;--y:15%;--s:6px;--d:1.2s"></div>
             <div class="particle" style="--x:80%;--y:70%;--s:12px;--d:2.5s"></div>
@@ -95,14 +95,14 @@ function onTouchEnd(e) {
         <!-- Slide 4: Community -->
         <div class="hero-slide hero-slide-4">
           <div class="slide-illustration">
-            <div class="orbit-center" style="background:radial-gradient(circle,#69F0AE,#00C853);box-shadow:0 0 50px rgba(105,240,174,.4)">🤝</div>
+            <div class="orbit-center" style="background:radial-gradient(circle,#80C49B,#2E5836);box-shadow:0 0 50px rgba(128,196,155,.4)">🤝</div>
             <div class="orbit-items orbit-spin">
-              <div class="orbit-item person-green" style="--a:0deg;box-shadow:0 2px 8px rgba(46,125,50,.4)">👩</div>
-              <div class="orbit-item person-orange" style="--a:60deg;box-shadow:0 2px 8px rgba(216,67,21,.4)">🏪</div>
-              <div class="orbit-item person-green" style="--a:120deg;box-shadow:0 2px 8px rgba(46,125,50,.4)">👨</div>
-              <div class="orbit-item person-orange" style="--a:180deg;box-shadow:0 2px 8px rgba(216,67,21,.4)">🍽️</div>
-              <div class="orbit-item person-green" style="--a:240deg;box-shadow:0 2px 8px rgba(46,125,50,.4)">👩‍🍳</div>
-              <div class="orbit-item person-orange" style="--a:300deg;box-shadow:0 2px 8px rgba(216,67,21,.4)">🛒</div>
+              <div class="orbit-item person-green" style="--a:0deg;box-shadow:0 2px 8px rgba(46,88,54,.4)">👩</div>
+              <div class="orbit-item person-orange" style="--a:60deg;box-shadow:0 2px 8px rgba(235,130,39,.4)">🏪</div>
+              <div class="orbit-item person-green" style="--a:120deg;box-shadow:0 2px 8px rgba(46,88,54,.4)">👨</div>
+              <div class="orbit-item person-orange" style="--a:180deg;box-shadow:0 2px 8px rgba(235,130,39,.4)">🍽️</div>
+              <div class="orbit-item person-green" style="--a:240deg;box-shadow:0 2px 8px rgba(46,88,54,.4)">👩‍🍳</div>
+              <div class="orbit-item person-orange" style="--a:300deg;box-shadow:0 2px 8px rgba(235,130,39,.4)">🛒</div>
             </div>
           </div>
           <h2 class="slide-title">{{ t('hero.slide4_title') }}</h2>

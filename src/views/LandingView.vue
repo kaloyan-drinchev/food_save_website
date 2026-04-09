@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
+import FaqSection from '@/components/home/FaqSection.vue'
 import WaitlistSection from '@/components/home/WaitlistSection.vue'
 import ContactSection from '@/components/home/ContactSection.vue'
 
@@ -429,6 +430,11 @@ onMounted(() => {
     </section>
 
     <!-- ═══════════════════════════════════════════
+         FAQ  (reused component)
+    ════════════════════════════════════════════ -->
+    <FaqSection />
+
+    <!-- ═══════════════════════════════════════════
          WAITLIST  (reused component)
     ════════════════════════════════════════════ -->
     <WaitlistSection />
@@ -447,10 +453,6 @@ onMounted(() => {
 /* ══════════════════════════════════════════════
    Layout & base
 ══════════════════════════════════════════════ */
-.lv-main {
-  overflow-x: hidden;
-}
-
 .lv-container {
   max-width: var(--max-width);
   margin-inline: auto;
