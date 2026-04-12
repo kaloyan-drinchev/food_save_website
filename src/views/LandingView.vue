@@ -542,6 +542,9 @@ onMounted(() => {
     grid-template-columns: 1fr;
     text-align: center;
   }
+  .lv-hero-content {
+    align-items: center;
+  }
   .lv-hero-phone {
     order: -1;
     display: flex;
@@ -552,6 +555,9 @@ onMounted(() => {
   }
   .lv-social-proof {
     justify-content: center;
+  }
+  .lv-hero-sub {
+    max-width: 100%;
   }
 }
 
@@ -902,10 +908,6 @@ onMounted(() => {
   .lv-preview-inner {
     grid-template-columns: 1fr;
   }
-  .lv-preview-phones {
-    order: -1;
-    justify-content: center;
-  }
 }
 
 .lv-preview-phones {
@@ -931,6 +933,20 @@ onMounted(() => {
   z-index: 1;
   right: -20px;
   bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .lv-preview-phones {
+    height: auto;
+    min-height: 340px;
+    order: -1;
+    justify-content: center;
+  }
+  .lv-phone-back {
+    left: auto;
+    right: 50%;
+    margin-right: -30px;
+  }
 }
 
 .lv-feature-list {
@@ -1150,6 +1166,12 @@ onMounted(() => {
   padding: 0.6rem 1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-outline-var);
+}
+
+@media (max-width: 480px) {
+  .lv-biz-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ══════════════════════════════════════════════
