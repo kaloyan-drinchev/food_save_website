@@ -20,7 +20,7 @@ function onSubmit() {
 <template>
   <div class="login-screen">
     <div class="login-card">
-      <div class="login-logo">🌿 FoodSave</div>
+      <div class="login-logo"><img src="/assets/images/logo.svg" alt="FoodSave" class="login-logo-img" /></div>
       <p class="login-subtitle">Admin Dashboard</p>
       <form @submit.prevent="onSubmit">
         <div class="login-field">

@@ -37,7 +37,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <template>
   <nav id="main-navbar" class="navbar-glass" :class="{ scrolled: navShadow }">
     <RouterLink to="/" class="nav-brand">
-      <img src="/assets/images/logo.png" alt="FoodSave" class="nav-logo" />
+      <img src="/assets/images/logo.svg" alt="FoodSave" class="nav-logo" />
     </RouterLink>
 
     <div class="nav-desktop-links">

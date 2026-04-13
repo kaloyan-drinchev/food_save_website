@@ -3,6 +3,16 @@
    Uses the same color tokens as the main site
    ============================================================ */
 :root {
+  --fs-font: 'Rubik', sans-serif;
+  --fs-font-heading: 'Montserrat', sans-serif;
+  --fs-radius: 14px;
+  --fs-radius-sm: 8px;
+  --fs-transition: 0.3s ease;
+}
+
+/* ── Dark theme (default) ──────────────────────────────────── */
+:root,
+[data-theme='dark'] {
   --fs-primary: #80C49B;
   --fs-primary-dark: #374151;
   --fs-primary-container: #1f2937;
@@ -17,11 +27,24 @@
   --fs-outline-var: #4a5460;
   --fs-error: #ef9a9a;
   --fs-scrim: rgba(0, 0, 0, 0.7);
-  --fs-font: 'Rubik', sans-serif;
-  --fs-font-heading: 'Montserrat', sans-serif;
-  --fs-radius: 14px;
-  --fs-radius-sm: 8px;
-  --fs-transition: 0.3s ease;
+}
+
+/* ── Light theme ───────────────────────────────────────────── */
+[data-theme='light'] {
+  --fs-primary: #2e7d32;
+  --fs-primary-dark: #1b5e20;
+  --fs-primary-container: #c8e6c9;
+  --fs-on-primary: #ffffff;
+  --fs-accent: #e65100;
+  --fs-surface: #f5faf5;
+  --fs-surface-mid: #eaf3ea;
+  --fs-surface-high: #ffffff;
+  --fs-on-surface: #1a2e1b;
+  --fs-on-surface-var: #546e56;
+  --fs-outline: #90a490;
+  --fs-outline-var: #d4e4d4;
+  --fs-error: #d32f2f;
+  --fs-scrim: rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -61,10 +84,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .login-logo {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--fs-primary);
   margin-bottom: 8px;
+}
+
+.login-logo-img {
+  height: 56px;
+  width: auto;
 }
 
 .login-subtitle {
@@ -157,9 +182,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .dash-logo {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--fs-primary);
+  height: 32px;
+  width: auto;
+  display: block;
 }
 
 .dash-badge {
