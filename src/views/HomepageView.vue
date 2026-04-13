@@ -11,6 +11,69 @@ const { t, locale } = useI18n()
 const submitting = ref(false)
 const showModal = ref(false)
 
+// Stats count-up
+const statConfigs = [
+  { prefix: '', target: 70,  suffix: ' %',  decimals: 0 },
+  { prefix: '~', target: 2.5, suffix: ' kg', decimals: 1 },
+  { prefix: '', target: 100, suffix: ' %',  decimals: 0 },
+  { prefix: '', target: null, suffix: 'BG',  decimals: 0 },
+]
+const statValues = ref(statConfigs.map(s => s.target === null ? s.suffix : `${s.prefix}0${s.suffix}`))
+
+function animateStats() {
+  const duration = 1800
+  const start = performance.now()
+  function tick(now) {
+    const elapsed = now - start
+    const progress = Math.min(elapsed / duration, 1)
+    const eased = 1 - Math.pow(1 - progress, 4)
+    statConfigs.forEach((cfg, i) => {
+      if (cfg.target === null) return
+      const cur = cfg.target * eased
+      const display = cfg.decimals > 0 ? cur.toFixed(cfg.decimals) : Math.round(cur)
+      statValues.value[i] = `${cfg.prefix}${display}${cfg.suffix}`
+    })
+    if (progress < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
+// Testimonials data
+const reviews = [
+  { initials: 'AS', name: 'Alexandra S.', textKey: 'landing.review1_text', roleKey: 'landing.review1_role' },
+  { initials: 'MP', name: 'Martin P.',    textKey: 'landing.review2_text', roleKey: 'landing.review2_role' },
+  { initials: 'ED', name: 'Elena D.',     textKey: 'landing.review3_text', roleKey: 'landing.review3_role' },
+  { initials: 'GI', name: 'Georgi I.',    textKey: 'landing.review4_text', roleKey: 'landing.review4_role' },
+  { initials: 'SV', name: 'Simona V.',    textKey: 'landing.review5_text', roleKey: 'landing.review5_role' },
+  { initials: 'KN', name: 'Kaloyan N.',   textKey: 'landing.review6_text', roleKey: 'landing.review6_role' },
+]
+
+// Impact count-up
+const impactConfigs = [
+  { prefix: '',  target: 1240, suffix: '+',   decimals: 0 },
+  { prefix: '',  target: 3100, suffix: ' kg', decimals: 0 },
+  { prefix: '€', target: 8500, suffix: '',    decimals: 0 },
+  { prefix: '',  target: 45,   suffix: '+',   decimals: 0 },
+]
+const impactValues = ref(impactConfigs.map(c => `${c.prefix}0${c.suffix}`))
+
+function animateImpact() {
+  const duration = 1800
+  const start = performance.now()
+  function tick(now) {
+    const elapsed = now - start
+    const progress = Math.min(elapsed / duration, 1)
+    const eased = 1 - Math.pow(1 - progress, 4)
+    impactConfigs.forEach((cfg, i) => {
+      const cur = cfg.target * eased
+      const display = cfg.decimals > 0 ? cur.toFixed(cfg.decimals) : Math.round(cur)
+      impactValues.value[i] = `${cfg.prefix}${display}${cfg.suffix}`
+    })
+    if (progress < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
 async function onWaitlistSubmit(e) {
   const form = e.target
   submitting.value = true
@@ -48,6 +111,34 @@ onMounted(() => {
     { threshold: 0.12 }
   )
   document.querySelectorAll('.lv-fade').forEach((el) => observer.observe(el))
+
+  // Stats count-up observer
+  const statsBar = document.querySelector('.lv-stats-bar')
+  if (statsBar) {
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateStats()
+          statsObserver.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.4 })
+    statsObserver.observe(statsBar)
+  }
+
+  // Impact count-up observer
+  const impactCounters = document.querySelector('.lv-impact-counters')
+  if (impactCounters) {
+    const impactObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateImpact()
+          impactObserver.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.4 })
+    impactObserver.observe(impactCounters)
+  }
 
   // Also handle .fade-in elements used by reused components (WaitlistSection, ContactSection)
   const fadeObserver = new IntersectionObserver(
@@ -113,22 +204,22 @@ onMounted(() => {
     <div class="lv-stats-bar lv-fade">
       <div class="lv-container lv-stats-inner">
         <div class="lv-stat">
-          <span class="lv-stat-value">{{ t('landing.stats_savings_value') }}</span>
+          <span class="lv-stat-value">{{ statValues[0] }}</span>
           <span class="lv-stat-label">{{ t('landing.stats_savings_label') }}</span>
         </div>
         <div class="lv-stat-divider" aria-hidden="true"></div>
         <div class="lv-stat">
-          <span class="lv-stat-value">{{ t('landing.stats_waste_value') }}</span>
+          <span class="lv-stat-value">{{ statValues[1] }}</span>
           <span class="lv-stat-label">{{ t('landing.stats_waste_label') }}</span>
         </div>
         <div class="lv-stat-divider" aria-hidden="true"></div>
         <div class="lv-stat">
-          <span class="lv-stat-value">{{ t('landing.stats_local_value') }}</span>
+          <span class="lv-stat-value">{{ statValues[2] }}</span>
           <span class="lv-stat-label">{{ t('landing.stats_local_label') }}</span>
         </div>
         <div class="lv-stat-divider" aria-hidden="true"></div>
         <div class="lv-stat">
-          <span class="lv-stat-value">{{ t('landing.stats_country_value') }}</span>
+          <span class="lv-stat-value">{{ statValues[3] }}</span>
           <span class="lv-stat-label">{{ t('landing.stats_country_label') }}</span>
         </div>
       </div>
@@ -173,6 +264,41 @@ onMounted(() => {
     <!-- ═══════════════════════════════════════════
          APP PREVIEW
     ════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════
+         ENVIRONMENTAL IMPACT
+    ════════════════════════════════════════════ -->
+    <section class="lv-section lv-impact lv-fade">
+      <div class="lv-container">
+        <div class="lv-section-header">
+          <span class="lv-section-label">{{ t('landing.impact_label') }}</span>
+          <h2 class="lv-section-title">{{ t('landing.impact_title') }}</h2>
+          <p class="lv-section-sub">{{ t('landing.impact_sub') }}</p>
+        </div>
+        <div class="lv-impact-counters">
+          <div class="lv-impact-card">
+            <div class="lv-impact-icon">🍱</div>
+            <span class="lv-impact-value">{{ impactValues[0] }}</span>
+            <span class="lv-impact-label">{{ t('landing.impact_meals_label') }}</span>
+          </div>
+          <div class="lv-impact-card">
+            <div class="lv-impact-icon">🌿</div>
+            <span class="lv-impact-value">{{ impactValues[1] }}</span>
+            <span class="lv-impact-label">{{ t('landing.impact_co2_label') }}</span>
+          </div>
+          <div class="lv-impact-card">
+            <div class="lv-impact-icon">💰</div>
+            <span class="lv-impact-value">{{ impactValues[2] }}</span>
+            <span class="lv-impact-label">{{ t('landing.impact_saved_label') }}</span>
+          </div>
+          <div class="lv-impact-card">
+            <div class="lv-impact-icon">🏪</div>
+            <span class="lv-impact-value">{{ impactValues[3] }}</span>
+            <span class="lv-impact-label">{{ t('landing.impact_biz_label') }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══════════════════════════════════════════
          CONSUMER FEATURES
     ════════════════════════════════════════════ -->
@@ -358,7 +484,7 @@ onMounted(() => {
         <div class="lv-phone-wrap lv-biz-phone">
           <div class="lv-phone-frame">
             <div class="lv-phone-notch"></div>
-            <img src="/assets/images/landing/app-browse-list.jpg" alt="">
+            <img src="/assets/images/landing/app-business-page.jpg" alt="">
             <div class="lv-phone-home-bar" aria-hidden="true"></div>
           </div>
           <div class="lv-phone-shadow"></div>
@@ -367,45 +493,115 @@ onMounted(() => {
     </section>
 
     <!-- ═══════════════════════════════════════════
+         TRUST SIGNALS
+    ════════════════════════════════════════════ -->
+    <div class="lv-trust-bar lv-fade">
+      <div class="lv-container lv-trust-inner">
+        <div class="lv-trust-item">
+          <span class="lv-trust-icon">🛡️</span>
+          <span>{{ t('landing.trust_babh') }}</span>
+        </div>
+        <div class="lv-trust-sep" aria-hidden="true"></div>
+        <div class="lv-trust-item">
+          <span class="lv-trust-icon">🔒</span>
+          <span>{{ t('landing.trust_payments') }}</span>
+        </div>
+        <div class="lv-trust-sep" aria-hidden="true"></div>
+        <div class="lv-trust-item">
+          <span class="lv-trust-icon">📱</span>
+          <span>{{ t('landing.trust_free') }}</span>
+        </div>
+        <div class="lv-trust-sep" aria-hidden="true"></div>
+        <div class="lv-trust-item">
+          <span class="lv-trust-icon">🇧🇬</span>
+          <span>{{ t('landing.trust_local') }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
          DOWNLOAD
     ════════════════════════════════════════════ -->
     <section id="download" class="lv-section lv-download lv-fade">
-      <div class="lv-container">
-        <div class="lv-section-header">
-          <span class="lv-section-label">{{ t('landing.dl_label') }}</span>
-          <h2 class="lv-section-title">{{ t('landing.dl_title') }}</h2>
-          <p class="lv-section-sub">{{ t('landing.dl_sub') }}</p>
+      <div class="lv-dl-glow lv-dl-glow--1" aria-hidden="true"></div>
+      <div class="lv-dl-glow lv-dl-glow--2" aria-hidden="true"></div>
+
+      <div class="lv-container lv-dl-layout">
+        <!-- Left: Phone mockup -->
+        <div class="lv-dl-phone-col">
+          <div class="lv-phone-wrap">
+            <div class="lv-phone-frame">
+              <div class="lv-phone-notch"></div>
+              <img src="/assets/images/landing/app-homepage-screen.jpg" alt="FoodSave app" />
+              <div class="lv-phone-home-bar" aria-hidden="true"></div>
+            </div>
+            <div class="lv-phone-shadow"></div>
+          </div>
         </div>
 
-        <div class="lv-dl-single">
-          <div class="lv-dl-card">
-            <div class="lv-dl-icon">📱</div>
-            <h3>{{ t('landing.dl_client_title') }}</h3>
-            <p>{{ t('landing.dl_client_desc') }}</p>
-            <div class="lv-store-badges">
-              <div class="lv-store-badge">
-                <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-badge-icon" />
-                <div>
-                  <div class="lv-badge-sm">{{ t('landing.dl_play_sm') }}</div>
-                  <div class="lv-badge-lg">{{ t('landing.dl_play_lg') }}</div>
-                </div>
-                <span class="lv-soon">{{ t('landing.dl_soon') }}</span>
+        <!-- Right: Content -->
+        <div class="lv-dl-content">
+          <span class="lv-section-label">{{ t('landing.dl_label') }}</span>
+          <h2 class="lv-section-title lv-left">{{ t('landing.dl_title') }}</h2>
+          <p class="lv-dl-desc">{{ t('landing.dl_sub') }}</p>
+
+          <div class="lv-dl-highlight">
+            <div class="lv-dl-highlight-icon">📱</div>
+            <div>
+              <strong>{{ t('landing.dl_client_title') }}</strong>
+              <p>{{ t('landing.dl_client_desc') }}</p>
+            </div>
+          </div>
+
+          <div class="lv-store-badges-v2">
+            <div class="lv-store-btn">
+              <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_play_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_play_lg') }}</span>
               </div>
-              <div class="lv-store-badge">
-                <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-badge-icon" />
-                <div>
-                  <div class="lv-badge-sm">{{ t('landing.dl_apple_sm') }}</div>
-                  <div class="lv-badge-lg">{{ t('landing.dl_apple_lg') }}</div>
-                </div>
-                <span class="lv-soon">{{ t('landing.dl_soon') }}</span>
+              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
+            </div>
+            <div class="lv-store-btn">
+              <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_apple_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_apple_lg') }}</span>
               </div>
-              <div class="lv-store-badge">
-                <img src="/assets/images/landing/huawei-appgallery.png" alt="AppGallery" class="lv-badge-icon" />
-                <div>
-                  <div class="lv-badge-sm">{{ t('landing.dl_huawei_sm') }}</div>
-                  <div class="lv-badge-lg">{{ t('landing.dl_huawei_lg') }}</div>
-                </div>
-                <span class="lv-soon">{{ t('landing.dl_soon') }}</span>
+              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
+            </div>
+            <div class="lv-store-btn">
+              <img src="/assets/images/landing/huawei-appgallery.png" alt="AppGallery" class="lv-store-btn-icon" />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_huawei_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_huawei_lg') }}</span>
+              </div>
+              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         TESTIMONIALS
+    ════════════════════════════════════════════ -->
+    <section class="lv-section lv-testimonials lv-fade">
+      <div class="lv-container">
+        <div class="lv-section-header">
+          <span class="lv-section-label">{{ t('landing.reviews_label') }}</span>
+          <h2 class="lv-section-title">{{ t('landing.reviews_title') }}</h2>
+          <p class="lv-section-sub">{{ t('landing.reviews_sub') }}</p>
+        </div>
+        <div class="lv-reviews-grid">
+          <div class="lv-review-card" v-for="(review, i) in reviews" :key="i">
+            <div class="lv-review-stars" aria-label="5 stars">★★★★★</div>
+            <p class="lv-review-text">&ldquo;{{ t(review.textKey) }}&rdquo;</p>
+            <div class="lv-review-author">
+              <div class="lv-review-avatar" aria-hidden="true">{{ review.initials }}</div>
+              <div>
+                <div class="lv-review-name">{{ review.name }}</div>
+                <div class="lv-review-role">{{ t(review.roleKey) }}</div>
               </div>
             </div>
           </div>
@@ -807,7 +1003,7 @@ onMounted(() => {
 ══════════════════════════════════════════════ */
 .lv-steps {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
@@ -862,6 +1058,7 @@ onMounted(() => {
   color: var(--color-outline);
   align-self: center;
   flex-shrink: 0;
+  padding-top: 0;
 }
 
 @media (max-width: 680px) {
@@ -1140,95 +1337,387 @@ onMounted(() => {
    Download
 ══════════════════════════════════════════════ */
 .lv-download {
-  background: var(--color-surface-mid);
+  position: relative;
+  background: var(--color-surface-high);
+  overflow: hidden;
 }
 
-.lv-dl-single {
+.lv-dl-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  opacity: 0.25;
+}
+.lv-dl-glow--1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+  top: -80px; left: -60px;
+}
+.lv-dl-glow--2 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+  bottom: -60px; right: -40px;
+}
+
+.lv-dl-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.lv-dl-phone-col {
   display: flex;
   justify-content: center;
 }
 
-.lv-dl-single .lv-dl-card {
-  max-width: 480px;
-  width: 100%;
-}
-
-.lv-dl-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-}
-
-.lv-dl-card-biz {
-  border-color: var(--color-accent-container);
-}
-
-.lv-dl-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.lv-dl-card h3 {
-  font-weight: 800;
-  font-size: 1.15rem;
-  margin-bottom: 0.5rem;
-  color: var(--color-on-surface);
-}
-
-.lv-dl-card p {
-  font-size: 0.9rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.6;
-  margin-bottom: 1.25rem;
-}
-
-.lv-store-badges {
+.lv-dl-content {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
-.lv-store-badge {
+.lv-dl-content .lv-section-label {
+  align-self: flex-start;
+}
+
+.lv-dl-desc {
+  font-size: 1.05rem;
+  color: var(--color-on-surface-var);
+  line-height: 1.7;
+  max-width: 460px;
+  margin-top: 0.25rem;
+}
+
+.lv-dl-highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.lv-dl-highlight-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.lv-dl-highlight strong {
+  display: block;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-on-surface);
+  margin-bottom: 0.3rem;
+}
+
+.lv-dl-highlight p {
+  font-size: 0.88rem;
+  color: var(--color-on-surface-var);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.lv-store-badges-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+.lv-store-btn {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  background: var(--color-surface-mid);
-  border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-outline-var);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
   position: relative;
 }
 
-.lv-badge-icon {
-  font-size: 1.4rem;
-  width: 1.4rem;
-  height: 1.4rem;
+.lv-store-btn:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  transform: translateY(-2px);
+}
+
+.lv-store-btn-icon {
+  font-size: 1.6rem;
+  width: 1.6rem;
+  height: 1.6rem;
   flex-shrink: 0;
   color: var(--color-on-surface);
   object-fit: contain;
 }
 
-.lv-badge-sm {
+.lv-store-btn-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.lv-store-btn-sm {
   font-size: 0.65rem;
   color: var(--color-on-surface-var);
+  letter-spacing: 0.02em;
 }
 
-.lv-badge-lg {
-  font-size: 0.95rem;
+.lv-store-btn-lg {
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-on-surface);
+  line-height: 1.2;
 }
 
-.lv-soon {
+.lv-soon-pill {
   margin-left: auto;
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 0.25rem 0.6rem;
+  padding: 0.3rem 0.7rem;
   border-radius: var(--radius-full);
   background: var(--color-primary-container);
   color: var(--color-primary);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .lv-dl-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    text-align: center;
+  }
+  .lv-dl-phone-col {
+    order: -1;
+  }
+  .lv-dl-content {
+    align-items: center;
+  }
+  .lv-dl-content .lv-section-label {
+    align-self: center;
+  }
+  .lv-dl-content .lv-section-title {
+    text-align: center;
+  }
+  .lv-dl-desc {
+    text-align: center;
+  }
+  .lv-dl-highlight {
+    text-align: left;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   Environmental Impact
+══════════════════════════════════════════════ */
+.lv-impact {
+  background: var(--color-surface-high);
+}
+
+.lv-impact-counters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .lv-impact-counters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .lv-impact-counters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lv-impact-card {
+  background: var(--color-surface-mid);
+  border: 1px solid var(--color-outline-var);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lv-impact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--color-card-glow);
+}
+
+.lv-impact-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 6%, transparent), transparent);
+  pointer-events: none;
+}
+
+.lv-impact-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.lv-impact-value {
+  display: block;
+  font-size: clamp(2rem, 4vw, 2.25rem);
+  font-weight: 900;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.lv-impact-label {
+  font-size: 0.82rem;
+  color: var(--color-on-surface-var);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════
+   Trust Signals
+══════════════════════════════════════════════ */
+.lv-trust-bar {
+  background: var(--color-surface-mid);
+  border-top: 1px solid var(--color-outline-var);
+  border-bottom: 1px solid var(--color-outline-var);
+  padding-block: 1.25rem;
+}
+
+.lv-trust-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+}
+
+.lv-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-on-surface-var);
+}
+
+.lv-trust-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.lv-trust-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--color-outline-var);
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .lv-trust-sep { display: none; }
+}
+
+/* ══════════════════════════════════════════════
+   Testimonials
+══════════════════════════════════════════════ */
+.lv-testimonials {
+  background: var(--color-surface);
+}
+
+.lv-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .lv-reviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .lv-reviews-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lv-review-card {
+  background: var(--color-surface-mid);
+  border: 1px solid var(--color-outline-var);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lv-review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--color-card-glow);
+}
+
+.lv-review-stars {
+  color: var(--color-accent);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+}
+
+.lv-review-text {
+  font-size: 0.93rem;
+  color: var(--color-on-surface-var);
+  line-height: 1.7;
+  flex: 1;
+  margin: 0;
+  font-style: italic;
+}
+
+.lv-review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lv-review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary-container);
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.lv-review-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.lv-review-role {
+  font-size: 0.78rem;
+  color: var(--color-on-surface-var);
 }
 </style>

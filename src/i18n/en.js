@@ -120,6 +120,38 @@ export default {
     bs6_icon: '📍',
     bs6_title: 'Multi-Location Support',
     bs6_desc: 'Manage multiple branches from a single account. Each location has its own map pin, working hours, phone number, and deal feed. БАБХ food-safety compliant.',
+
+    // ── Environmental Impact ───────────────────────────────
+    impact_label: 'Our Impact So Far',
+    impact_title: 'Together, we\'re making a difference',
+    impact_sub: 'Every rescued meal adds up. Here\'s the collective impact our community has already made.',
+    impact_meals_label: 'Meals Rescued',
+    impact_co2_label: 'CO₂ Prevented',
+    impact_saved_label: 'Money Saved',
+    impact_biz_label: 'Partner Businesses',
+
+    // ── Trust signals ──────────────────────────────────────
+    trust_babh: 'БАБХ Compliant',
+    trust_payments: 'Secure Payments',
+    trust_free: 'Free to Download',
+    trust_local: 'Built for Bulgaria',
+
+    // ── Testimonials ───────────────────────────────────────
+    reviews_label: 'Early Reviews',
+    reviews_title: 'Loved by early users',
+    reviews_sub: 'Here\'s what people from our pilot program are saying about FoodSave.',
+    review1_text: 'I saved €12 on a bakery bag that would have been thrown away. The app is so easy to use — found the deal, paid in seconds, picked up in 10 minutes.',
+    review1_role: 'Student, Sofia',
+    review2_text: 'As a restaurant owner, FoodSave helps me recover money I used to just lose. Creating a deal takes under a minute and orders come in almost immediately.',
+    review2_role: 'Restaurant Owner, Plovdiv',
+    review3_text: 'The map view is brilliant. I can see everything available near me right now. Found an amazing sushi deal two streets away that I would never have known about.',
+    review3_role: 'Food Lover, Varna',
+    review4_text: 'My "Hero" badge is at level 4 already! There\'s something addictive about seeing your total savings grow — I check the app every evening before dinner.',
+    review4_role: 'Regular User, Sofia',
+    review5_text: 'We used to throw away €200 of pastries every week. With FoodSave we sell 90 % of our surplus and the QR pickup system makes it effortless for staff.',
+    review5_role: 'Bakery Owner, Burgas',
+    review6_text: 'Love that every meal has full allergen info. As someone with a nut allergy, that was always a concern with food apps — FoodSave nailed it.',
+    review6_role: 'Health-conscious Shopper, Sofia',
   },
 
   nav: {
