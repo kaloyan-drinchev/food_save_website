@@ -61,15 +61,18 @@ export default {
 
     dl_label: 'Get the App',
     dl_title: 'Download FoodSave',
-    dl_sub: 'Available for iOS and Android — one version for customers, one for business owners. Launching soon.',
-    dl_client_title: 'For Customers',
-    dl_client_desc: 'Find and reserve discounted surplus food from local businesses near you.',
+    dl_sub: 'Available for iOS and Android — for customers and business owners alike. Launching soon.',
+    dl_client_title: 'For Everyone',
+    dl_client_desc: 'Find and reserve discounted surplus food from local businesses, or manage your own listings as a business owner.',
+
     dl_biz_title: 'For Business Owners',
     dl_biz_desc: 'List surplus food in seconds, reach nearby customers, and get paid weekly.',
     dl_play_sm: 'Get it on',
     dl_play_lg: 'Google Play',
     dl_apple_sm: 'Download on the',
     dl_apple_lg: 'App Store',
+    dl_huawei_sm: 'Explore it on',
+    dl_huawei_lg: 'Huawei AppGallery',
     dl_soon: 'Coming Soon',
 
     // ── Consumer features grid ─────────────────────────────

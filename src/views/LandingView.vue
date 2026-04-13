@@ -377,7 +377,7 @@ onMounted(() => {
           <p class="lv-section-sub">{{ t('landing.dl_sub') }}</p>
         </div>
 
-        <div class="lv-dl-grid">
+        <div class="lv-dl-single">
           <div class="lv-dl-card">
             <div class="lv-dl-icon">📱</div>
             <h3>{{ t('landing.dl_client_title') }}</h3>
@@ -399,27 +399,11 @@ onMounted(() => {
                 </div>
                 <span class="lv-soon">{{ t('landing.dl_soon') }}</span>
               </div>
-            </div>
-          </div>
-
-          <div class="lv-dl-card lv-dl-card-biz">
-            <div class="lv-dl-icon">🏪</div>
-            <h3>{{ t('landing.dl_biz_title') }}</h3>
-            <p>{{ t('landing.dl_biz_desc') }}</p>
-            <div class="lv-store-badges">
               <div class="lv-store-badge">
-                <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-badge-icon" />
+                <img src="/assets/images/landing/huawei-appgallery.png" alt="AppGallery" class="lv-badge-icon" />
                 <div>
-                  <div class="lv-badge-sm">{{ t('landing.dl_play_sm') }}</div>
-                  <div class="lv-badge-lg">{{ t('landing.dl_play_lg') }}</div>
-                </div>
-                <span class="lv-soon">{{ t('landing.dl_soon') }}</span>
-              </div>
-              <div class="lv-store-badge">
-                <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-badge-icon" />
-                <div>
-                  <div class="lv-badge-sm">{{ t('landing.dl_apple_sm') }}</div>
-                  <div class="lv-badge-lg">{{ t('landing.dl_apple_lg') }}</div>
+                  <div class="lv-badge-sm">{{ t('landing.dl_huawei_sm') }}</div>
+                  <div class="lv-badge-lg">{{ t('landing.dl_huawei_lg') }}</div>
                 </div>
                 <span class="lv-soon">{{ t('landing.dl_soon') }}</span>
               </div>
@@ -1159,14 +1143,14 @@ onMounted(() => {
   background: var(--color-surface-mid);
 }
 
-.lv-dl-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+.lv-dl-single {
+  display: flex;
+  justify-content: center;
 }
 
-@media (max-width: 640px) {
-  .lv-dl-grid { grid-template-columns: 1fr; }
+.lv-dl-single .lv-dl-card {
+  max-width: 480px;
+  width: 100%;
 }
 
 .lv-dl-card {
@@ -1222,6 +1206,7 @@ onMounted(() => {
   height: 1.4rem;
   flex-shrink: 0;
   color: var(--color-on-surface);
+  object-fit: contain;
 }
 
 .lv-badge-sm {
