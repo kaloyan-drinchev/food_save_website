@@ -4,13 +4,37 @@ This project ships as a Docker container and is intended to run behind Nginx on 
 
 ## 1. Prepare the VPS
 
-These steps assume an Ubuntu or Debian-based Hostinger VPS.
+These steps assume an Ubuntu 24.04 Hostinger VPS.
+
+Do not mix Ubuntu's `docker.io` package with Docker's official repository packages. If your server already has `https://download.docker.com/linux/ubuntu` configured, install `docker-ce` packages instead of `docker.io`.
 
 ```bash
 sudo apt update
-sudo apt install -y docker.io docker-compose-plugin nginx certbot python3-certbot-nginx
+sudo apt install -y ca-certificates curl gnupg nginx certbot python3-certbot-nginx
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+	"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" | \
+	sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 sudo systemctl enable --now docker
 sudo systemctl enable --now nginx
+```
+
+Verify the install:
+
+```bash
+docker --version
+docker compose version
+```
+
+If you previously tried `docker.io` and still hit package conflicts, remove the distro Docker packages and reinstall the Docker repo packages:
+
+```bash
+sudo apt remove -y docker.io docker-doc docker-compose podman-docker containerd runc
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 If you want to run Docker without `sudo`, add your user to the Docker group and reconnect:
@@ -57,6 +81,8 @@ Copy the provided site config and replace `your-domain.com` with your real domai
 sudo cp docs/hostinger-nginx.conf /etc/nginx/sites-available/food-save-website
 sudo nano /etc/nginx/sites-available/food-save-website
 ```
+
+If your frontend calls an API from the browser, keep the `/api/v1/` proxy block and replace `api-upstream.example.com:8080` with your real backend host and port. If your site is fully static and does not call a backend API, you can remove that `/api/v1/` block.
 
 Enable the site and reload Nginx:
 
