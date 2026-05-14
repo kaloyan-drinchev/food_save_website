@@ -82,8 +82,6 @@ sudo cp docs/hostinger-nginx.conf /etc/nginx/sites-available/food-save-website
 sudo nano /etc/nginx/sites-available/food-save-website
 ```
 
-If your frontend calls an API from the browser, keep the `/api/v1/` proxy block and replace `api-upstream.example.com:8080` with your real backend host and port. If your site is fully static and does not call a backend API, you can remove that `/api/v1/` block.
-
 Enable the site and reload Nginx:
 
 ```bash
@@ -92,6 +90,18 @@ sudo ln -s /etc/nginx/sites-available/food-save-website /etc/nginx/sites-enabled
 sudo nginx -t
 sudo systemctl reload nginx
 ```
+
+## 5a. When the API moves to `api.foodsave.tech`
+
+Do not proxy the API through the main `foodsave.tech` Nginx site. Keep the main site config focused on the frontend only.
+
+When the new API subdomain is ready:
+
+- create a DNS record for `api.foodsave.tech`
+- install SSL for that API domain on the backend server
+- update the frontend production env to `VITE_API_BASE_URL=https://api.foodsave.tech/api/v1`
+- redeploy the frontend container with `docker compose up -d --build`
+- allow CORS on the API for `https://foodsave.tech` and `https://www.foodsave.tech`
 
 ## 6. Enable SSL with Let's Encrypt
 

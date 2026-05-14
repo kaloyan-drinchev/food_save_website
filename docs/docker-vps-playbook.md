@@ -271,7 +271,35 @@ sudo nginx -t
 sudo systemctl status nginx --no-pager
 ```
 
-## 12. Troubleshooting
+## 12. Using a separate API subdomain
+
+If the frontend will call a backend on a different subdomain, for example `api.foodsave.tech`, use this pattern:
+
+- frontend site stays on `https://foodsave.tech`
+- API stays on `https://api.foodsave.tech`
+- do not proxy `/api/v1` through the main frontend Nginx site unless you explicitly want a same-origin setup
+
+Frontend setup:
+
+```env
+VITE_API_BASE_URL=https://api.foodsave.tech/api/v1
+```
+
+Backend requirements:
+
+- `api.foodsave.tech` must have a valid SSL certificate
+- the backend must allow CORS from `https://foodsave.tech`
+- the backend should also allow CORS from `https://www.foodsave.tech` if you serve both domains
+
+Frontend redeploy after changing the API URL:
+
+```bash
+cd <project-dir>
+git pull
+docker compose up -d --build
+```
+
+## 13. Troubleshooting
 
 ### Docker package conflict on Ubuntu
 
@@ -326,7 +354,7 @@ dig +short <domain>
 dig +short <www-domain>
 ```
 
-## 13. FoodSave example
+## 14. FoodSave example
 
 For this project, the real values are:
 
