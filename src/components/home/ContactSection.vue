@@ -16,17 +16,9 @@ const { t } = useI18n()
         <div class="contact-card">
           <div class="contact-card-icon">📧</div>
           <h3 class="contact-card-title">{{ t('contact.email_title') }}</h3>
-          <p class="contact-card-value"><a :href="'mailto:' + t('contact.email_value')">{{ t('contact.email_value') }}</a></p>
-        </div>
-        <div class="contact-card">
-          <div class="contact-card-icon">🤝</div>
-          <h3 class="contact-card-title">{{ t('contact.business_title') }}</h3>
-          <p class="contact-card-value"><a :href="'mailto:' + t('contact.business_value')">{{ t('contact.business_value') }}</a></p>
-        </div>
-        <div class="contact-card">
-          <div class="contact-card-icon">⚖️</div>
-          <h3 class="contact-card-title">{{ t('contact.legal_title') }}</h3>
-          <p class="contact-card-value"><a :href="'mailto:' + t('contact.legal_value')">{{ t('contact.legal_value') }}</a></p>
+          <p class="contact-card-value">
+            <a :href="'mailto:' + t('contact.email_value')">{{ t('contact.email_value') }}</a>
+          </p>
         </div>
         <div class="contact-card">
           <div class="contact-card-icon">📱</div>

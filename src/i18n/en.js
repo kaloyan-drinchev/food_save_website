@@ -5,7 +5,8 @@ export default {
     hero_badge: '🌿 Coming Soon to Bulgaria',
     hero_title_line1: 'Rescue Your',
     hero_title_line2: 'Next Meal',
-    hero_sub: 'Buy surplus food from local restaurants, bakeries, and stores at up\u00A0to\u00A0<strong>70\u00A0% off</strong>. Save money, eat well, and help fight food waste — all in one tap.',
+    hero_sub:
+      'Buy surplus food from local restaurants, bakeries, and stores at up\u00A0to\u00A0<strong>70\u00A0% off</strong>. Save money, eat well, and help fight food waste — all in one tap.',
     hero_cta_waitlist: 'Join the Waitlist',
     hero_cta_how: 'How It Works ↓',
     hero_social_proof: '500+ people already on the waitlist',
@@ -24,27 +25,35 @@ export default {
 
     how_label: 'How It Works',
     how_title: 'Three steps to save food',
-    how_sub: 'FoodSave connects customers with local businesses that have surplus food at the end of the day — quick, simple, and impactful.',
+    how_sub:
+      'FoodSave connects customers with local businesses that have surplus food at the end of the day — quick, simple, and impactful.',
     step1_num: '01',
     step1_title: 'Discover',
-    step1_desc: 'Browse restaurants, bakeries, and stores nearby that have listed their surplus food for today.',
+    step1_desc:
+      'Browse restaurants, bakeries, and stores nearby that have listed their surplus food for today.',
     step2_num: '02',
     step2_title: 'Reserve',
-    step2_desc: 'Choose a specific deal from the menu and reserve it at up to 70\u00A0% off the original price. Pay in-app with Card, Google Pay, Revolut, or PayPal.',
+    step2_desc:
+      'Choose a specific deal from the menu and reserve it at up to 70\u00A0% off the original price. Pay in-app with Card, Google Pay, Revolut, or PayPal.',
     step3_num: '03',
     step3_title: 'Pick Up',
-    step3_desc: 'Collect your order within the pickup window by showing your QR code. Enjoy great food and help reduce food waste.',
+    step3_desc:
+      'Collect your order within the pickup window by showing your QR code. Enjoy great food and help reduce food waste.',
 
     app_label: 'The App',
     app_title: 'Everything you need, in one tap',
     feat1_title: 'Live Map',
-    feat1_desc: 'See all available surplus deals near you in real time, with distance and pickup windows.',
+    feat1_desc:
+      'See all available surplus deals near you in real time, with distance and pickup windows.',
     feat2_title: 'Flash Deals',
-    feat2_desc: 'Urgency-driven deals expiring in under 60 minutes — grab them before they\'re gone.',
+    feat2_desc:
+      "Urgency-driven deals expiring in under 60 minutes — grab them before they're gone.",
     feat3_title: 'QR Pickup',
-    feat3_desc: 'Get a digital ticket with a QR code — show it at the store to confirm your rescue.',
+    feat3_desc:
+      'Get a digital ticket with a QR code — show it at the store to confirm your rescue.',
     feat4_title: 'Impact & Hero Badge',
-    feat4_desc: 'Track your total savings (€), CO₂ prevented, and level up your personal Hero badge the more food you rescue.',
+    feat4_desc:
+      'Track your total savings (€), CO₂ prevented, and level up your personal Hero badge the more food you rescue.',
     phone_browse: 'Browse screen',
     phone_discover: 'Discover screen',
     phone_merchant: 'Merchant dashboard',
@@ -52,7 +61,8 @@ export default {
 
     biz_label: 'For Businesses',
     biz_title: 'Turn food waste into revenue',
-    biz_sub: 'List your surplus food in seconds. Reach nearby customers instantly. Manage orders with a live dashboard, scan pickup QR codes, and track revenue — all from your phone.',
+    biz_sub:
+      'List your surplus food in seconds. Reach nearby customers instantly. Manage orders with a live dashboard, scan pickup QR codes, and track revenue — all from your phone.',
     biz_type1: 'Bakeries & Bistros',
     biz_type2: 'Restaurants & Fast Food',
     biz_type3: 'Grocery Stores',
@@ -61,9 +71,11 @@ export default {
 
     dl_label: 'Get the App',
     dl_title: 'Download FoodSave',
-    dl_sub: 'Available for iOS and Android — for customers and business owners alike. Launching soon.',
+    dl_sub:
+      'Available for iOS and Android — for customers and business owners alike. Launching soon.',
     dl_client_title: 'For Everyone',
-    dl_client_desc: 'Find and reserve discounted surplus food from local businesses, or manage your own listings as a business owner.',
+    dl_client_desc:
+      'Find and reserve discounted surplus food from local businesses, or manage your own listings as a business owner.',
 
     dl_biz_title: 'For Business Owners',
     dl_biz_desc: 'List surplus food in seconds, reach nearby customers, and get paid weekly.',
@@ -78,53 +90,70 @@ export default {
     // ── Consumer features grid ─────────────────────────────
     cf_label: 'For Consumers',
     cf_title: 'Everything you need to rescue food',
-    cf_sub: 'From discovering deals to picking up your bag — FoodSave handles every step of the journey.',
+    cf_sub:
+      'From discovering deals to picking up your bag — FoodSave handles every step of the journey.',
 
     cf1_title: 'Dual Feed',
-    cf1_desc: '"Collect Now" bags for immediate pickup and "Flash Deals" expiring within the hour — always something fresh nearby.',
+    cf1_desc:
+      '"Collect Now" bags for immediate pickup and "Flash Deals" expiring within the hour — always something fresh nearby.',
     cf2_title: 'Live Map',
-    cf2_desc: 'Switch to map view and see every available deal around you in real time, with distance and pickup windows shown on the pin.',
+    cf2_desc:
+      'Switch to map view and see every available deal around you in real time, with distance and pickup windows shown on the pin.',
     cf3_title: 'Favorites',
-    cf3_desc: 'Save your favourite meals and stores. Two dedicated tabs so you never lose track of a great bakery or a recurring deal.',
+    cf3_desc:
+      'Save your favourite meals and stores. Two dedicated tabs so you never lose track of a great bakery or a recurring deal.',
     cf4_title: 'Card, Google Pay, Revolut & PayPal',
-    cf4_desc: 'Pay in-app however you prefer — card, Google Pay, Revolut, or PayPal. Fast, secure, and no cash needed at the store.',
+    cf4_desc:
+      'Pay in-app however you prefer — card, Google Pay, Revolut, or PayPal. Fast, secure, and no cash needed at the store.',
     cf5_title: 'QR Pickup',
-    cf5_desc: 'After payment you get a digital ticket with a QR code. Show it at the store — the merchant scans it in seconds.',
+    cf5_desc:
+      'After payment you get a digital ticket with a QR code. Show it at the store — the merchant scans it in seconds.',
     cf6_title: 'Ratings & Reviews',
-    cf6_desc: 'Rate your experience after every rescue and read reviews from the community before you reserve.',
+    cf6_desc:
+      'Rate your experience after every rescue and read reviews from the community before you reserve.',
     cf7_title: 'Smart Notifications',
-    cf7_desc: 'Get notified about new deals in your area, order status updates, and flash deals before they sell out.',
+    cf7_desc:
+      'Get notified about new deals in your area, order status updates, and flash deals before they sell out.',
     cf8_title: 'Full Allergen Info',
-    cf8_desc: 'Every deal shows complete allergen information so you can make safe choices before you reserve. No surprises at pickup.',
+    cf8_desc:
+      'Every deal shows complete allergen information so you can make safe choices before you reserve. No surprises at pickup.',
 
     // ── Business suite ─────────────────────────────────────
     bs_label: 'For Businesses',
     bs_title: 'A complete toolkit for your store',
-    bs_sub: 'Everything a busy restaurant, bakery, or grocery store needs to list surplus food, manage orders, and get paid — with zero friction.',
+    bs_sub:
+      'Everything a busy restaurant, bakery, or grocery store needs to list surplus food, manage orders, and get paid — with zero friction.',
 
     bs1_icon: '📊',
     bs1_title: 'Revenue Dashboard',
-    bs1_desc: 'Track total revenue, orders, items sold, and repeat customers. Filter by Today, Week, Month, or All Time with a live chart.',
+    bs1_desc:
+      'Track total revenue, orders, items sold, and repeat customers. Filter by Today, Week, Month, or All Time with a live chart.',
     bs2_icon: '⚡',
     bs2_title: 'Deal Creation in 30 Seconds',
-    bs2_desc: 'Pick a menu item, set the discounted price (the app calculates the % off automatically), and choose the quantity available. Done.',
+    bs2_desc:
+      'Pick a menu item, set the discounted price (the app calculates the % off automatically), and choose the quantity available. Done.',
     bs3_icon: '📋',
     bs3_title: 'Full Menu Management',
-    bs3_desc: 'Add items with photos, prices, categories, and allergens. Your menu is the source of truth for every deal you create.',
+    bs3_desc:
+      'Add items with photos, prices, categories, and allergens. Your menu is the source of truth for every deal you create.',
     bs4_icon: '📦',
     bs4_title: 'Order Management',
-    bs4_desc: 'Four-tab order board: Pending → Ready → Collected → Cancelled. See customer names and items at a glance, then mark orders ready when bags are packed.',
+    bs4_desc:
+      'Four-tab order board: Pending → Ready → Collected → Cancelled. See customer names and items at a glance, then mark orders ready when bags are packed.',
     bs5_icon: '📷',
     bs5_title: 'QR Code Scanner',
-    bs5_desc: 'Validate pickups instantly with a full-screen QR scanner. Invalid or already-used codes are rejected immediately.',
+    bs5_desc:
+      'Validate pickups instantly with a full-screen QR scanner. Invalid or already-used codes are rejected immediately.',
     bs6_icon: '📍',
     bs6_title: 'Multi-Location Support',
-    bs6_desc: 'Manage multiple branches from a single account. Each location has its own map pin, working hours, phone number, and deal feed. БАБХ food-safety compliant.',
+    bs6_desc:
+      'Manage multiple branches from a single account. Each location has its own map pin, working hours, phone number, and deal feed. БАБХ food-safety compliant.',
 
     // ── Environmental Impact ───────────────────────────────
     impact_label: 'Our Impact So Far',
-    impact_title: 'Together, we\'re making a difference',
-    impact_sub: 'Every rescued meal adds up. Here\'s the collective impact our community has already made.',
+    impact_title: "Together, we're making a difference",
+    impact_sub:
+      "Every rescued meal adds up. Here's the collective impact our community has already made.",
     impact_meals_label: 'Meals Rescued',
     impact_co2_label: 'CO₂ Prevented',
     impact_saved_label: 'Money Saved',
@@ -139,18 +168,24 @@ export default {
     // ── Testimonials ───────────────────────────────────────
     reviews_label: 'Early Reviews',
     reviews_title: 'Loved by early users',
-    reviews_sub: 'Here\'s what people from our pilot program are saying about FoodSave.',
-    review1_text: 'I saved €12 on a bakery bag that would have been thrown away. The app is so easy to use — found the deal, paid in seconds, picked up in 10 minutes.',
+    reviews_sub: "Here's what people from our pilot program are saying about FoodSave.",
+    review1_text:
+      'I saved €12 on a bakery bag that would have been thrown away. The app is so easy to use — found the deal, paid in seconds, picked up in 10 minutes.',
     review1_role: 'Student, Sofia',
-    review2_text: 'As a restaurant owner, FoodSave helps me recover money I used to just lose. Creating a deal takes under a minute and orders come in almost immediately.',
+    review2_text:
+      'As a restaurant owner, FoodSave helps me recover money I used to just lose. Creating a deal takes under a minute and orders come in almost immediately.',
     review2_role: 'Restaurant Owner, Plovdiv',
-    review3_text: 'The map view is brilliant. I can see everything available near me right now. Found an amazing sushi deal two streets away that I would never have known about.',
+    review3_text:
+      'The map view is brilliant. I can see everything available near me right now. Found an amazing sushi deal two streets away that I would never have known about.',
     review3_role: 'Food Lover, Varna',
-    review4_text: 'My "Hero" badge is at level 4 already! There\'s something addictive about seeing your total savings grow — I check the app every evening before dinner.',
+    review4_text:
+      'My "Hero" badge is at level 4 already! There\'s something addictive about seeing your total savings grow — I check the app every evening before dinner.',
     review4_role: 'Regular User, Sofia',
-    review5_text: 'We used to throw away €200 of pastries every week. With FoodSave we sell 90 % of our surplus and the QR pickup system makes it effortless for staff.',
+    review5_text:
+      'We used to throw away €200 of pastries every week. With FoodSave we sell 90 % of our surplus and the QR pickup system makes it effortless for staff.',
     review5_role: 'Bakery Owner, Burgas',
-    review6_text: 'Love that every meal has full allergen info. As someone with a nut allergy, that was always a concern with food apps — FoodSave nailed it.',
+    review6_text:
+      'Love that every meal has full allergen info. As someone with a nut allergy, that was always a concern with food apps — FoodSave nailed it.',
     review6_role: 'Health-conscious Shopper, Sofia',
   },
 
@@ -399,12 +434,8 @@ export default {
     label: 'Get in Touch',
     title: 'Contact Us',
     subtitle: "Have questions, feedback, or need support? We'd love to hear from you.",
-    email_title: 'Email Support',
-    email_value: "support{'@'}foodsave.app",
-    business_title: 'Business Partnerships',
-    business_value: "partners{'@'}foodsave.app",
-    legal_title: 'Legal Enquiries',
-    legal_value: "legal{'@'}foodsave.app",
+    email_title: 'Contact Email',
+    email_value: "contact{'@'}foodsave.tech",
     social_title: 'Follow Us',
     social_value: 'Coming soon on social media',
   },
