@@ -5,6 +5,7 @@ import { RouterView, useRouter } from 'vue-router'
 import { api } from '@/services/api'
 import AdminHeader from '@/components/admin/AdminHeader.vue'
 import AdminSidebar from '@/components/admin/AdminSidebar.vue'
+import AdminRightSidebar from '@/components/admin/AdminRightSidebar.vue'
 
 const router = useRouter()
 const isLoggedIn = ref(!!sessionStorage.getItem('fs_admin_token'))
@@ -45,6 +46,8 @@ onMounted(() => {
           <RouterView />
         </div>
       </div>
+
+      <AdminRightSidebar />
     </div>
   </div>
 </template>

@@ -1,9 +1,7 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { api } from '@/services/api'
 
-const props = defineProps({
+defineProps({
   isOpen: { type: Boolean, default: false },
 })
 const emit = defineEmits(['close'])
@@ -33,102 +31,6 @@ function navigate(item) {
   router.push(item.route)
   emit('close')
 }
-
-const activityItems = ref([])
-const activityError = ref('')
-let feedInterval = null
-
-function timeAgo(dateStr) {
-  if (!dateStr) return ''
-  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
-  if (diff < 60) return `${diff}s ago`
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-  return `${Math.floor(diff / 86400)}d ago`
-}
-
-function userName(u) {
-  const first = u?.customer?.firstName || ''
-  const last = u?.customer?.lastName || ''
-  return [first, last].filter(Boolean).join(' ') || u?.email || `User #${u?.id}`
-}
-
-async function loadActivity() {
-  try {
-    const [users, businesses, orders] = await Promise.all([
-      api.admin.listUsers().catch(() => []),
-      api.admin.listBusinesses().catch(() => []),
-      api.admin.listOrders().catch(() => []),
-    ])
-
-    const events = []
-
-    for (const u of Array.isArray(users) ? users : []) {
-      events.push({
-        ts: u.createdAt,
-        icon: '🆕',
-        html: `<strong>${userName(u)}</strong> registered`,
-      })
-    }
-
-    for (const b of Array.isArray(businesses) ? businesses : []) {
-      events.push({
-        ts: b.createdAt,
-        icon: '🏪',
-        html: `<strong>${b.companyName || 'Business #' + b.id}</strong> registered`,
-      })
-      if (b.isVerified && b.updatedAt && b.updatedAt !== b.createdAt) {
-        events.push({
-          ts: b.updatedAt,
-          icon: '✅',
-          html: `<strong>${b.companyName || 'Business #' + b.id}</strong> was verified`,
-        })
-      }
-    }
-
-    for (const o of Array.isArray(orders) ? orders : []) {
-      const who = o.user ? userName(o.user) : `User #${o.userId}`
-      events.push({
-        ts: o.createdAt,
-        icon: '🛒',
-        html: `<strong>${who}</strong> placed an order`,
-      })
-      if (o.status === 'picked_up' || o.status === 'completed') {
-        events.push({
-          ts: o.updatedAt || o.createdAt,
-          icon: '✅',
-          html: `<strong>${who}</strong> picked up order`,
-        })
-      } else if (o.status === 'cancelled') {
-        events.push({
-          ts: o.updatedAt || o.createdAt,
-          icon: '❌',
-          html: `<strong>${who}</strong> cancelled order`,
-        })
-      }
-    }
-
-    events.sort((a, b) => new Date(b.ts || 0) - new Date(a.ts || 0))
-    activityItems.value = events.slice(0, 8).map((e, i) => ({
-      icon: e.icon,
-      html: e.html,
-      time: timeAgo(e.ts),
-      key: (e.ts || '') + '-' + i,
-    }))
-    activityError.value = ''
-  } catch (e) {
-    activityError.value = e.message || 'Failed to load activity'
-  }
-}
-
-onMounted(() => {
-  loadActivity()
-  feedInterval = setInterval(loadActivity, 30000)
-})
-
-onUnmounted(() => {
-  if (feedInterval) clearInterval(feedInterval)
-})
 </script>
 
 <template>
@@ -154,36 +56,6 @@ onUnmounted(() => {
         {{ item.label }}
       </button>
     </nav>
-
-    <div class="sidebar-divider"></div>
-
-    <div class="sidebar-section-label">Live Activity</div>
-    <div class="activity-feed">
-      <div v-if="activityError" class="activity-item" style="color: #ef9a9a">
-        <span class="activity-icon">⚠️</span>
-        <div>
-          <div class="activity-text">{{ activityError }}</div>
-        </div>
-      </div>
-      <div
-        v-else-if="activityItems.length === 0"
-        class="activity-item"
-        style="opacity: 0.6; font-size: 0.85rem"
-      >
-        <span class="activity-icon">💤</span>
-        <div>
-          <div class="activity-text">No recent activity</div>
-          <div class="activity-time">Waiting for events…</div>
-        </div>
-      </div>
-      <div v-for="item in activityItems" :key="item.key" class="activity-item">
-        <span class="activity-icon">{{ item.icon }}</span>
-        <div>
-          <div class="activity-text" v-html="item.html"></div>
-          <div class="activity-time">{{ item.time }}</div>
-        </div>
-      </div>
-    </div>
 
     <div class="sidebar-divider"></div>
 

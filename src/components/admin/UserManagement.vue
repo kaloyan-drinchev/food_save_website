@@ -217,39 +217,40 @@ function roleClass(role) {
 
 <template>
   <div class="ops-panel">
-    <div class="ops-summary-grid" style="grid-template-columns: repeat(4, 1fr)">
-      <div class="ops-summary-card">
-        <div class="ops-summary-value green">{{ counts.customers }}</div>
-        <div class="ops-summary-label">Customers</div>
+    <div class="user-toolbar">
+      <div class="user-stats-strip">
+        <div class="user-stat">
+          <span class="user-stat-dot dot-green"></span>
+          <span class="user-stat-value">{{ counts.customers }}</span>
+          <span class="user-stat-label">Customers</span>
+        </div>
+        <div class="user-stat-divider"></div>
+        <div class="user-stat">
+          <span class="user-stat-dot dot-accent"></span>
+          <span class="user-stat-value">{{ counts.businesses }}</span>
+          <span class="user-stat-label">Businesses</span>
+        </div>
+        <div class="user-stat-divider"></div>
+        <div class="user-stat">
+          <span class="user-stat-dot dot-neutral"></span>
+          <span class="user-stat-value">{{ counts.total }}</span>
+          <span class="user-stat-label">Total</span>
+        </div>
       </div>
-      <div class="ops-summary-card">
-        <div class="ops-summary-value accent">{{ counts.businesses }}</div>
-        <div class="ops-summary-label">Businesses</div>
-      </div>
-      <div class="ops-summary-card">
-        <div class="ops-summary-value" style="color: #3b82f6">{{ counts.admins }}</div>
-        <div class="ops-summary-label">Admins</div>
-      </div>
-      <div class="ops-summary-card">
-        <div class="ops-summary-value">{{ counts.total }}</div>
-        <div class="ops-summary-label">Total Users</div>
-      </div>
-    </div>
 
-    <div class="ops-toolbar">
-      <input
-        v-model="search"
-        type="text"
-        class="ops-search"
-        placeholder="Search by name, email, or ID..."
-      />
-      <select v-model="filterRole" class="ops-filter">
-        <option value="all">All Roles</option>
-        <option value="customer">Customers</option>
-        <option value="business">Businesses</option>
-        <option value="admin">Admins</option>
-      </select>
-      <button class="btn-sm btn-primary" @click="openCreate">+ Create Account</button>
+      <div class="user-toolbar-controls">
+        <input
+          v-model="search"
+          type="text"
+          class="ops-search"
+          placeholder="Search by name, email, or ID..."
+        />
+        <select v-model="filterRole" class="ops-filter">
+          <option value="all">All Roles</option>
+          <option value="customer">Customers</option>
+          <option value="business">Businesses</option>
+        </select>
+      </div>
     </div>
 
     <div v-if="confirmMsg" class="ops-toast">{{ confirmMsg }}</div>
@@ -511,3 +512,116 @@ function roleClass(role) {
     </Teleport>
   </div>
 </template>
+
+<style scoped>
+.user-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.user-toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 280px;
+  min-width: 0;
+  justify-content: flex-end;
+}
+
+.user-toolbar-controls .ops-search {
+  flex: 1 1 220px;
+  min-width: 160px;
+  max-width: 360px;
+  margin: 0;
+}
+
+.user-toolbar-controls .ops-filter {
+  margin: 0;
+}
+
+.user-stats-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 18px;
+  background: var(--fs-surface-high);
+  border: 1px solid var(--fs-outline-var);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  flex: 0 0 auto;
+}
+
+.user-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--fs-on-surface-var);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.user-stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fs-on-surface);
+  font-variant-numeric: tabular-nums;
+}
+
+.user-stat-label {
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+.user-stat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.dot-green {
+  background: var(--fs-primary);
+  color: var(--fs-primary);
+}
+.dot-accent {
+  background: var(--fs-accent);
+  color: var(--fs-accent);
+}
+.dot-neutral {
+  background: var(--fs-on-surface-var);
+  color: var(--fs-on-surface-var);
+}
+
+.user-stat-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--fs-outline-var);
+}
+
+@media (max-width: 560px) {
+  .user-stats-strip {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 14px;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  .user-toolbar-controls {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .user-toolbar-controls .ops-search {
+    max-width: none;
+  }
+}
+</style>

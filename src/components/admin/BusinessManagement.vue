@@ -417,44 +417,51 @@ function docCheckCount(biz) {
       </button>
     </div>
 
-    <!-- Summary cards -->
-    <div class="ops-summary-grid" style="grid-template-columns: repeat(4, 1fr)">
-      <div class="ops-summary-card">
-        <div class="ops-summary-value">{{ counts.total }}</div>
-        <div class="ops-summary-label">Total Businesses</div>
+    <div class="ops-inline-toolbar">
+      <div class="ops-stats-strip">
+        <div class="ops-stat">
+          <span class="ops-stat-dot dot-neutral"></span>
+          <span class="ops-stat-value">{{ counts.total }}</span>
+          <span class="ops-stat-label">Total</span>
+        </div>
+        <div class="ops-stat-divider"></div>
+        <div class="ops-stat">
+          <span class="ops-stat-dot dot-green"></span>
+          <span class="ops-stat-value">{{ counts.active }}</span>
+          <span class="ops-stat-label">Active</span>
+        </div>
+        <div class="ops-stat-divider"></div>
+        <div class="ops-stat">
+          <span class="ops-stat-dot dot-accent"></span>
+          <span class="ops-stat-value">{{ counts.unverified }}</span>
+          <span class="ops-stat-label">Unverified</span>
+        </div>
+        <div class="ops-stat-divider"></div>
+        <div class="ops-stat">
+          <span class="ops-stat-dot dot-red"></span>
+          <span class="ops-stat-value">{{ counts.suspended }}</span>
+          <span class="ops-stat-label">Suspended</span>
+        </div>
       </div>
-      <div class="ops-summary-card">
-        <div class="ops-summary-value green">{{ counts.active }}</div>
-        <div class="ops-summary-label">Active</div>
-      </div>
-      <div class="ops-summary-card">
-        <div class="ops-summary-value accent">{{ counts.unverified }}</div>
-        <div class="ops-summary-label">Unverified</div>
-      </div>
-      <div class="ops-summary-card">
-        <div class="ops-summary-value red">{{ counts.suspended }}</div>
-        <div class="ops-summary-label">Suspended</div>
-      </div>
-    </div>
 
-    <!-- Toolbar -->
-    <div class="ops-toolbar">
-      <input
-        v-model="search"
-        type="text"
-        class="ops-search"
-        placeholder="Search by name, owner, email, EIK..."
-      />
-      <select v-model="filterVerified" class="ops-filter">
-        <option value="all">All Verification</option>
-        <option value="unverified">Unverified Only</option>
-        <option value="verified">Verified Only</option>
-      </select>
-      <select v-model="filterStatus" class="ops-filter">
-        <option value="all">All Statuses</option>
-        <option value="active">Active</option>
-        <option value="suspended">Suspended</option>
-      </select>
+      <div class="ops-inline-controls ops-inline-controls--wide">
+        <input
+          v-model="search"
+          type="text"
+          class="ops-search"
+          placeholder="Search by name, owner, email, EIK..."
+        />
+        <select v-model="filterVerified" class="ops-filter">
+          <option value="all">All Verification</option>
+          <option value="unverified">Unverified Only</option>
+          <option value="verified">Verified Only</option>
+        </select>
+        <select v-model="filterStatus" class="ops-filter">
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
     </div>
 
     <div v-if="confirmMsg" class="ops-toast">{{ confirmMsg }}</div>

@@ -645,9 +645,9 @@ img {
 }
 
 /* ── Sections — Shared ──────────────────────────────────────── */
-section {
+/* section {
   padding: 96px 0;
-}
+} */
 
 section:nth-child(even) {
   background: var(--color-surface-mid);

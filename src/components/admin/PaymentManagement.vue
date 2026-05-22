@@ -5,6 +5,7 @@ import { api } from '@/services/api'
 const payments = ref([])
 const loading = ref(true)
 const filter = ref('all')
+const search = ref('')
 
 function mapPayment(p) {
   return {
@@ -49,8 +50,21 @@ async function loadPayments() {
 onMounted(loadPayments)
 
 const filtered = computed(() => {
-  if (filter.value === 'all') return payments.value
-  return payments.value.filter((p) => p.status === filter.value)
+  let list = payments.value
+  if (filter.value !== 'all') {
+    list = list.filter((p) => p.status === filter.value)
+  }
+  const q = search.value.trim().toLowerCase()
+  if (!q) return list
+  return list.filter(
+    (p) =>
+      p.id.toLowerCase().includes(q) ||
+      p.date.toLowerCase().includes(q) ||
+      p.customer.toLowerCase().includes(q) ||
+      p.partner.toLowerCase().includes(q) ||
+      p.amount.toLowerCase().includes(q) ||
+      p.status.toLowerCase().includes(q),
+  )
 })
 
 const summaryCards = computed(() => {
@@ -94,23 +108,39 @@ function statusClass(status) {
     </div>
 
     <template v-else>
-      <div class="ops-summary-grid">
-        <div v-for="card in summaryCards" :key="card.label" class="ops-summary-card">
-          <div class="ops-summary-value" :class="card.color">{{ card.value }}</div>
-          <div class="ops-summary-label">{{ card.label }}</div>
+      <div class="ops-inline-toolbar">
+        <div class="ops-stats-strip">
+          <template v-for="(card, index) in summaryCards" :key="card.label">
+            <div class="ops-stat">
+              <span
+                class="ops-stat-dot"
+                :class="card.color ? `dot-${card.color}` : 'dot-neutral'"
+              ></span>
+              <span class="ops-stat-value">{{ card.value }}</span>
+              <span class="ops-stat-label">{{ card.label }}</span>
+            </div>
+            <div v-if="index < summaryCards.length - 1" class="ops-stat-divider"></div>
+          </template>
+        </div>
+
+        <div class="ops-inline-controls">
+          <input
+            v-model="search"
+            type="text"
+            class="ops-search"
+            placeholder="Search by TX ID, customer, partner..."
+          />
+          <select v-model="filter" class="ops-filter">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="blocked">Blocked</option>
+            <option value="refunded">Refunded</option>
+          </select>
         </div>
       </div>
 
-      <div class="ops-toolbar">
-        <select v-model="filter" class="ops-filter">
-          <option value="all">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-          <option value="blocked">Blocked</option>
-          <option value="refunded">Refunded</option>
-        </select>
-        <span class="ops-count">{{ filtered.length }} transactions</span>
-      </div>
+      <div class="ops-count">{{ filtered.length }} transactions</div>
 
       <div class="data-table-wrapper">
         <table class="data-table">

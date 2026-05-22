@@ -4,6 +4,8 @@ import { api } from '@/services/api'
 import KpiGrid from '@/components/admin/KpiGrid.vue'
 import PartnersTable from '@/components/admin/PartnersTable.vue'
 import OrdersTable from '@/components/admin/OrdersTable.vue'
+import OverviewCharts from '@/components/admin/OverviewCharts.vue'
+import CustomerList from '@/components/admin/CustomerList.vue'
 
 const loading = ref(true)
 const dashData = ref(null)
@@ -34,86 +36,68 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [businesses, orders] = await Promise.all([
+    const [users, businesses, orders] = await Promise.all([
+      api.admin.listUsers().catch(() => []),
       api.admin.listBusinesses().catch(() => []),
       api.admin.listOrders().catch(() => []),
     ])
 
+    const userList = Array.isArray(users) ? users : []
     const bizList = Array.isArray(businesses) ? businesses : []
     const orderList = Array.isArray(orders) ? orders : []
     // Aggregate payments from orders (no /admin/payments endpoint yet).
     const paymentList = orderList.flatMap((o) => (Array.isArray(o.payments) ? o.payments : []))
 
-    // Compute total revenue from payments (amounts in stotinki)
-    const totalRevenue =
-      paymentList.filter((p) => p.status === 'completed').reduce((s, p) => s + (p.amount || 0), 0) /
-      100
-    const platformRevenue = totalRevenue * 0.25
-
-    const kpis = [
+    const overviewGroups = [
       {
-        label: 'Partner Businesses',
-        value: String(bizList.length),
-        desc: 'Active food partners',
-        color: '',
-      },
-      { label: 'Total Orders', value: String(orderList.length), desc: 'All time', color: 'green' },
-      {
-        label: 'Total Revenue',
-        value: totalRevenue.toLocaleString('bg-BG', { minimumFractionDigits: 2 }) + ' лв',
-        desc: 'From completed payments',
-        color: '',
-      },
-      {
-        label: 'Platform Revenue',
-        value: platformRevenue.toLocaleString('bg-BG', { minimumFractionDigits: 2 }) + ' лв',
-        desc: '25% commission',
-        color: 'green',
-      },
-      {
-        label: 'Completed Orders',
-        value: String(
-          orderList.filter((o) => o.status === 'picked_up' || o.status === 'completed').length,
-        ),
-        desc: 'Successfully fulfilled',
-        color: 'green',
+        title: 'Partners',
+        description: 'Partner network health and verification status.',
+        kpis: [
+          {
+            label: 'Partner Businesses',
+            value: String(bizList.length),
+            desc: 'Active food partners',
+            color: '',
+          },
+          {
+            label: 'Verified Businesses',
+            value: String(bizList.filter((b) => b.isVerified).length),
+            desc: 'Verified partners',
+            color: 'green',
+          },
+          {
+            label: 'Unverified Businesses',
+            value: String(bizList.filter((b) => !b.isVerified).length),
+            desc: 'Awaiting verification',
+            color: 'accent',
+          },
+        ],
       },
       {
-        label: 'Pending Orders',
-        value: String(orderList.filter((o) => o.status === 'pending').length),
-        desc: 'Awaiting confirmation',
-        color: 'accent',
-      },
-      {
-        label: 'Verified Businesses',
-        value: String(bizList.filter((b) => b.isVerified).length),
-        desc: 'Verified partners',
-        color: 'green',
-      },
-      {
-        label: 'Unverified Businesses',
-        value: String(bizList.filter((b) => !b.isVerified).length),
-        desc: 'Awaiting verification',
-        color: 'accent',
-      },
-      {
-        label: 'Total Payments',
-        value: String(paymentList.length),
-        desc: 'All transactions',
-        color: '',
-      },
-      {
-        label: 'Avg Order Value',
-        value:
-          orderList.length > 0
-            ? (
-                orderList.reduce((s, o) => s + (o.totalPrice || 0), 0) /
-                orderList.length /
-                100
-              ).toFixed(2) + ' лв'
-            : '0 лв',
-        desc: 'Average total price',
-        color: '',
+        title: 'Orders',
+        description: 'Order volume and current fulfillment pipeline.',
+        kpis: [
+          {
+            label: 'Total Orders',
+            value: String(orderList.length),
+            desc: 'All time',
+            color: 'green',
+          },
+          {
+            label: 'Completed Orders',
+            value: String(
+              orderList.filter((o) => o.status === 'picked_up' || o.status === 'completed').length,
+            ),
+            desc: 'Successfully fulfilled',
+            color: 'green',
+          },
+          {
+            label: 'Pending Orders',
+            value: String(orderList.filter((o) => o.status === 'pending').length),
+            desc: 'Awaiting confirmation',
+            color: 'accent',
+          },
+        ],
       },
     ]
 
@@ -144,7 +128,106 @@ async function load() {
       status: o.status || 'pending',
     }))
 
-    dashData.value = { kpis, partners, recentOrders }
+    /* ---------- chart data ---------- */
+    const days = 30
+    const revLabels = dateLabels(days)
+    const revData = new Array(days).fill(0)
+    const profitData = new Array(days).fill(0)
+    const todayMid = new Date()
+    todayMid.setHours(0, 0, 0, 0)
+
+    for (const o of orderList) {
+      const payments = Array.isArray(o.payments) ? o.payments : []
+      for (const p of payments) {
+        if (p.status !== 'completed') continue
+        const d = new Date(p.createdAt || o.createdAt || 0)
+        const idx = days - 1 - Math.floor((todayMid - d) / 86400000)
+        if (idx >= 0 && idx < days) {
+          const amt = (p.amount || 0) / 100
+          revData[idx] += amt
+          profitData[idx] += amt * 0.25
+        }
+      }
+    }
+
+    // Weekly profit buckets (last 8 weeks)
+    const profitWeeks = []
+    const profitWeekLabels = []
+    for (let w = 7; w >= 0; w--) {
+      const start = new Date(todayMid)
+      start.setDate(start.getDate() - (w + 1) * 7 + 1)
+      const end = new Date(start)
+      end.setDate(end.getDate() + 6)
+      let sum = 0
+      for (const o of orderList) {
+        const payments = Array.isArray(o.payments) ? o.payments : []
+        for (const p of payments) {
+          if (p.status !== 'completed') continue
+          const d = new Date(p.createdAt || o.createdAt || 0)
+          if (d >= start && d <= end) sum += ((p.amount || 0) / 100) * 0.25
+        }
+      }
+      profitWeeks.push(Number(sum.toFixed(2)))
+      profitWeekLabels.push('W-' + w)
+    }
+
+    const statusCount = { Completed: 0, Pending: 0, Cancelled: 0, Other: 0 }
+    for (const o of orderList) {
+      if (o.status === 'completed' || o.status === 'picked_up') statusCount.Completed++
+      else if (o.status === 'pending') statusCount.Pending++
+      else if (o.status === 'cancelled') statusCount.Cancelled++
+      else statusCount.Other++
+    }
+
+    const chartData = {
+      revenue: {
+        labels: revLabels,
+        data: revData.map((v) => Number(v.toFixed(2))),
+        delta: '+0.4% vs last month',
+      },
+      profit: {
+        labels: profitWeekLabels,
+        data: profitWeeks,
+        delta: '+12% vs last week',
+      },
+      sales: {
+        labels: Object.keys(statusCount),
+        data: Object.values(statusCount),
+      },
+    }
+
+    /* ---------- customer list ---------- */
+    const byUser = new Map()
+    for (const o of orderList) {
+      const uid = o.userId || o.user?.id
+      if (!uid) continue
+      if (!byUser.has(uid)) {
+        const u = o.user || userList.find((x) => x.id === uid) || {}
+        const name =
+          [u.customer?.firstName, u.customer?.lastName].filter(Boolean).join(' ') ||
+          u.email ||
+          'User #' + uid
+        byUser.set(uid, {
+          id: uid,
+          name,
+          email: u.email || `user${uid}@foodsave.app`,
+          deals: 0,
+          total: 0,
+        })
+      }
+      const c = byUser.get(uid)
+      c.deals += 1
+      c.total += (o.totalPrice || 0) / 100
+    }
+    const customers = Array.from(byUser.values())
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 6)
+      .map((c) => ({
+        ...c,
+        totalValue: c.total.toLocaleString('bg-BG', { minimumFractionDigits: 2 }) + ' лв',
+      }))
+
+    dashData.value = { overviewGroups, partners, recentOrders, chartData, customers }
   } catch (e) {
     error.value = 'Failed to load metrics: ' + e.message
   } finally {
@@ -194,7 +277,15 @@ onUnmounted(() => {
   <template v-else-if="dashData">
     <section id="sec-overview" class="admin-section">
       <h2 class="admin-section-title">Overview</h2>
-      <KpiGrid :kpis="dashData.kpis" />
+      <KpiGrid :groups="dashData.overviewGroups" />
+    </section>
+
+    <section id="sec-charts" class="admin-section">
+      <OverviewCharts :data="dashData.chartData" />
+    </section>
+
+    <section id="sec-customers" class="admin-section">
+      <CustomerList :customers="dashData.customers" />
     </section>
 
     <section id="sec-partners" class="admin-section">
