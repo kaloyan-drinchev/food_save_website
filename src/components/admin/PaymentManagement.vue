@@ -2,8 +2,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { api } from '@/services/api'
 
-const emit = defineEmits(['goto-refunds'])
-
 const payments = ref([])
 const loading = ref(true)
 const filter = ref('all')
@@ -31,8 +29,16 @@ function mapPayment(p) {
 async function loadPayments() {
   loading.value = true
   try {
-    const data = await api.getPayments()
-    payments.value = (Array.isArray(data) ? data : []).map(mapPayment)
+    // No /admin/payments endpoint yet — aggregate from /admin/orders.
+    const orders = await api.admin.listOrders()
+    const list = []
+    for (const o of Array.isArray(orders) ? orders : []) {
+      const ps = Array.isArray(o.payments) ? o.payments : []
+      for (const p of ps) {
+        list.push(mapPayment({ ...p, orderId: o.id, userId: o.userId }))
+      }
+    }
+    payments.value = list
   } catch (e) {
     payments.value = []
   } finally {
@@ -67,10 +73,6 @@ function unblock(payment) {
 
 function markComplete(payment) {
   payment.status = 'completed'
-}
-
-function initiateRefund(payment) {
-  emit('goto-refunds', payment.id)
 }
 
 function statusClass(status) {
@@ -143,13 +145,6 @@ function statusClass(status) {
                   @click="markComplete(p)"
                 >
                   Complete
-                </button>
-                <button
-                  v-if="p.status !== 'refunded'"
-                  class="btn-xs btn-refund"
-                  @click="initiateRefund(p)"
-                >
-                  Refund
                 </button>
               </td>
             </tr>

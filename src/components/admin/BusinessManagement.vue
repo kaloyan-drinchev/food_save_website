@@ -76,7 +76,7 @@ function mapBusiness(b) {
 async function loadBusinesses() {
   loading.value = true
   try {
-    const data = await api.getBusinesses()
+    const data = await api.admin.listBusinesses()
     businesses.value = (Array.isArray(data) ? data : []).map(mapBusiness)
   } catch (e) {
     toast('Failed to load businesses: ' + e.message)
@@ -156,22 +156,33 @@ function openVerify(biz) {
 
 function confirmVerify() {
   if (!verifyTarget.value) return
-  verifyTarget.value.isVerified = true
-  verifyTarget.value.verifiedAt = new Date().toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-  verifyTarget.value.verificationNotes = verifyNotes.value
-  showVerifyModal.value = false
-  toast(`${verifyTarget.value.name} has been verified`)
-  verifyTarget.value = null
+  const target = verifyTarget.value
+  api.admin
+    .updateBusiness(target.id, { isVerified: true })
+    .then(() => {
+      target.isVerified = true
+      target.verifiedAt = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+      target.verificationNotes = verifyNotes.value
+      showVerifyModal.value = false
+      toast(`${target.name} has been verified`)
+      verifyTarget.value = null
+    })
+    .catch((e) => toast('Failed to verify: ' + e.message))
 }
 
 function revokeVerification(biz) {
-  biz.isVerified = false
-  biz.verifiedAt = null
-  toast(`Verification revoked for ${biz.name}`)
+  api.admin
+    .updateBusiness(biz.id, { isVerified: false })
+    .then(() => {
+      biz.isVerified = false
+      biz.verifiedAt = null
+      toast(`Verification revoked for ${biz.name}`)
+    })
+    .catch((e) => toast('Failed to revoke: ' + e.message))
 }
 
 function openEdit(biz) {
@@ -214,11 +225,16 @@ function openDelete(biz) {
 
 function confirmDelete() {
   if (!deleteTarget.value) return
-  const name = deleteTarget.value.name
-  businesses.value = businesses.value.filter((b) => b.id !== deleteTarget.value.id)
-  showDeleteConfirm.value = false
-  deleteTarget.value = null
-  toast(`${name} has been removed`)
+  const target = deleteTarget.value
+  api.admin
+    .deleteBusiness(target.id)
+    .then(() => {
+      businesses.value = businesses.value.filter((b) => b.id !== target.id)
+      showDeleteConfirm.value = false
+      deleteTarget.value = null
+      toast(`${target.name} has been removed`)
+    })
+    .catch((e) => toast('Failed to delete: ' + e.message))
 }
 
 const EMAIL_TEMPLATES = [
@@ -245,7 +261,7 @@ const EMAIL_TEMPLATES = [
   {
     label: 'Invalid Certificate — Resubmission',
     subject: 'Action Required: Please Resubmit Your Certificate — FoodSave',
-    body: `Dear {owner},\n\nWe reviewed the certificate submitted for {name} on the FoodSave platform and unfortunately found that it is not valid or has expired.\n\nTo complete your business verification and become visible to customers, we need a valid, up-to-date Food Safety / HACCP certificate.\n\nPlease reply directly to this email with your updated certificate attached (PDF or image). There is no need to log in or re-register — simply reply with the file and we will update your profile.\n\nIf you have any questions or need assistance obtaining the certificate, feel free to reach out.\n\nBest regards,\nFoodSave Admin Team\nsupport@foodsavebg.com`,
+    body: `Dear {owner},\n\nWe reviewed the certificate submitted for {name} on the FoodSave platform and unfortunately found that it is not valid or has expired.\n\nTo complete your business verification and become visible to customers, we need a valid, up-to-date Food Safety / HACCP certificate.\n\nPlease reply directly to this email with your updated certificate attached (PDF or image). There is no need to log in or re-register — simply reply with the file and we will update your profile.\n\nIf you have any questions or need assistance obtaining the certificate, feel free to reach out.\n\nBest regards,\nFoodSave Admin Team\ncontact@foodsave.tech`,
   },
 ]
 

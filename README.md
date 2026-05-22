@@ -27,12 +27,12 @@ npm run preview   # preview the build locally
 
 ## Routes
 
-| Path | Description |
-|------|-------------|
-| `/` | Home — hero carousel, how it works, download, waitlist, FAQ, contact |
-| `/privacy` | Privacy Policy (EN/BG) |
-| `/terms` | Terms & Conditions (EN/BG) |
-| `/admin` | Admin Dashboard (login: `admin` / `guiadmin`) |
+| Path       | Description                                                          |
+| ---------- | -------------------------------------------------------------------- |
+| `/`        | Home — hero carousel, how it works, download, waitlist, FAQ, contact |
+| `/privacy` | Privacy Policy (EN/BG)                                               |
+| `/terms`   | Terms & Conditions (EN/BG)                                           |
+| `/admin`   | Admin Dashboard (login: `admin` / `guiadmin`)                        |
 
 ## Project Structure
 
@@ -49,5 +49,4 @@ src/
     home/                        HeroCarousel, About, Download, Waitlist, FAQ, Contact
     admin/                       Login, Header, Sidebar, KpiGrid, Charts, Tables, Events
   views/                         HomeView, PrivacyView, TermsView, AdminView
-  composables/useAdminMock.js    Mock data for admin dashboard
 ```

@@ -34,15 +34,15 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [businesses, orders, payments] = await Promise.all([
-      api.getBusinesses().catch(() => []),
-      api.getOrders().catch(() => []),
-      api.getPayments().catch(() => []),
+    const [businesses, orders] = await Promise.all([
+      api.admin.listBusinesses().catch(() => []),
+      api.admin.listOrders().catch(() => []),
     ])
 
     const bizList = Array.isArray(businesses) ? businesses : []
     const orderList = Array.isArray(orders) ? orders : []
-    const paymentList = Array.isArray(payments) ? payments : []
+    // Aggregate payments from orders (no /admin/payments endpoint yet).
+    const paymentList = orderList.flatMap((o) => (Array.isArray(o.payments) ? o.payments : []))
 
     // Compute total revenue from payments (amounts in stotinki)
     const totalRevenue =

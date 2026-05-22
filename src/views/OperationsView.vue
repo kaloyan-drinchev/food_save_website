@@ -1,28 +1,16 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import UserManagement from '@/components/admin/UserManagement.vue'
 import BusinessManagement from '@/components/admin/BusinessManagement.vue'
 import PaymentManagement from '@/components/admin/PaymentManagement.vue'
-import RefundManagement from '@/components/admin/RefundManagement.vue'
 
 const activeTab = ref('users')
-const refundPrefillTxId = ref('')
 
 const tabs = [
   { id: 'users', label: 'Users', icon: '👤' },
   { id: 'businesses', label: 'Businesses', icon: '🏪' },
   { id: 'payments', label: 'Payments', icon: '💳' },
-  { id: 'refunds', label: 'Refunds', icon: '↩️' },
 ]
-
-function gotoRefunds(txId) {
-  refundPrefillTxId.value = txId
-  activeTab.value = 'refunds'
-}
-
-watch(activeTab, (val) => {
-  if (val !== 'refunds') refundPrefillTxId.value = ''
-})
 </script>
 
 <template>
@@ -43,8 +31,7 @@ watch(activeTab, (val) => {
     <div class="ops-content">
       <UserManagement v-if="activeTab === 'users'" />
       <BusinessManagement v-if="activeTab === 'businesses'" />
-      <PaymentManagement v-if="activeTab === 'payments'" @goto-refunds="gotoRefunds" />
-      <RefundManagement v-if="activeTab === 'refunds'" :prefill-tx-id="refundPrefillTxId" />
+      <PaymentManagement v-if="activeTab === 'payments'" />
     </div>
   </div>
 </template>

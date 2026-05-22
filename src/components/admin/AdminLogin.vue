@@ -1,18 +1,26 @@
 <script setup>
 import { ref } from 'vue'
+import { api } from '@/services/api'
 
 const emit = defineEmits(['login'])
 const username = ref('')
 const password = ref('')
 const showError = ref(false)
+const errorMsg = ref('')
+const loading = ref(false)
 
-function onSubmit() {
+async function onSubmit() {
   showError.value = false
-  if (username.value.trim() === 'admin' && password.value === 'guiadmin') {
-    sessionStorage.setItem('fs_admin', 'true')
+  errorMsg.value = ''
+  loading.value = true
+  try {
+    await api.admin.login(username.value.trim(), password.value)
     emit('login')
-  } else {
+  } catch (e) {
+    errorMsg.value = e?.message || 'Invalid credentials'
     showError.value = true
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -20,7 +28,9 @@ function onSubmit() {
 <template>
   <div class="login-screen">
     <div class="login-card">
-      <div class="login-logo"><img src="/assets/images/logo.svg" alt="FoodSave" class="login-logo-img" /></div>
+      <div class="login-logo">
+        <img src="/assets/images/logo.svg" alt="FoodSave" class="login-logo-img" />
+      </div>
       <p class="login-subtitle">Admin Dashboard</p>
       <form @submit.prevent="onSubmit">
         <div class="login-field">
@@ -37,9 +47,11 @@ function onSubmit() {
             required
           />
         </div>
-        <button type="submit" class="login-btn">Sign In</button>
+        <button type="submit" class="login-btn" :disabled="loading">
+          {{ loading ? 'Signing in…' : 'Sign In' }}
+        </button>
         <p class="login-error" :style="{ display: showError ? 'block' : 'none' }">
-          Invalid credentials
+          {{ errorMsg || 'Invalid credentials' }}
         </p>
       </form>
     </div>

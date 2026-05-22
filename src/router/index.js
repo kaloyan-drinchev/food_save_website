@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('@/views/TermsView.vue'),
     },
     {
+      path: '/admin/login',
+      name: 'admin-login',
+      component: () => import('@/views/AdminLoginView.vue'),
+    },
+    {
       path: '/admin',
       component: () => import('@/views/AdminView.vue'),
       children: [

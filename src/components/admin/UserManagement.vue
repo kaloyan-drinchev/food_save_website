@@ -19,55 +19,27 @@ const menuOpenId = ref(null)
 async function loadUsers() {
   loading.value = true
   try {
-    // The API has no admin user listing endpoint.
-    // We fetch businesses and map their owners as "business" users,
-    // plus the current admin profile.
-    const [profile, bizList] = await Promise.all([
-      api.getProfile().catch(() => null),
-      api.getBusinesses().catch(() => []),
-    ])
-
-    const list = []
-
-    if (profile) {
-      list.push({
-        id: String(profile.id),
-        name:
-          [profile.customer?.firstName, profile.customer?.lastName].filter(Boolean).join(' ') ||
-          profile.email,
-        email: profile.email,
+    const list = await api.admin.listUsers()
+    users.value = (Array.isArray(list) ? list : []).map((u) => {
+      const first = u.customer?.firstName || ''
+      const last = u.customer?.lastName || ''
+      const fullName = [first, last].filter(Boolean).join(' ') || u.email
+      return {
+        id: String(u.id),
+        name: fullName,
+        email: u.email || '',
         status: 'active',
-        role: profile.role || 'admin',
-        registered: profile.createdAt
-          ? new Date(profile.createdAt).toLocaleDateString('en-GB', {
+        role: u.role || 'customer',
+        registered: u.createdAt
+          ? new Date(u.createdAt).toLocaleDateString('en-GB', {
               day: 'numeric',
               month: 'short',
               year: 'numeric',
             })
           : '',
-      })
-    }
-
-    const businesses = Array.isArray(bizList) ? bizList : []
-    for (const biz of businesses) {
-      if (profile && biz.userId === profile.id) continue
-      list.push({
-        id: String(biz.userId || biz.id),
-        name: biz.companyName || 'Business #' + biz.id,
-        email: '',
-        status: 'active',
-        role: 'business',
-        registered: biz.createdAt
-          ? new Date(biz.createdAt).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-            })
-          : '',
-      })
-    }
-
-    users.value = list
+        _raw: u,
+      }
+    })
   } catch (e) {
     toast('Failed to load users: ' + e.message)
     users.value = []
@@ -130,15 +102,18 @@ function toast(msg) {
 function confirmEmail(user) {
   user.status = 'active'
   toast(`Email confirmed for ${user.name}`)
+  closeMenu()
 }
 
 function toggleStatus(user) {
   user.status = user.status === 'disabled' ? 'active' : 'disabled'
   toast(`${user.name} ${user.status === 'active' ? 'enabled' : 'disabled'}`)
+  closeMenu()
 }
 
 function resetPassword(user) {
   toast(`Password reset email sent to ${user.email}`)
+  closeMenu()
 }
 
 function openCreate() {
@@ -174,31 +149,50 @@ function openEdit(user) {
     status: user.status,
   }
   showEditModal.value = true
+  closeMenu()
 }
 
 function submitEdit() {
   const u = users.value.find((u) => u.id === editForm.value.id)
   if (!u) return
-  u.name = editForm.value.name
-  u.email = editForm.value.email
-  u.role = editForm.value.role
-  u.status = editForm.value.status
-  showEditModal.value = false
-  toast(`Updated ${u.name}`)
+  const [firstName, ...rest] = editForm.value.name.split(' ')
+  const lastName = rest.join(' ')
+  api.admin
+    .updateUser(editForm.value.id, {
+      email: editForm.value.email,
+      role: editForm.value.role,
+      firstName,
+      lastName,
+    })
+    .then(() => {
+      u.name = editForm.value.name
+      u.email = editForm.value.email
+      u.role = editForm.value.role
+      u.status = editForm.value.status
+      showEditModal.value = false
+      toast(`Updated ${u.name}`)
+    })
+    .catch((e) => toast('Failed to update: ' + e.message))
 }
 
 function openDelete(user) {
   deleteTarget.value = user
   showDeleteConfirm.value = true
+  closeMenu()
 }
 
 function confirmDelete() {
   if (!deleteTarget.value) return
-  const name = deleteTarget.value.name
-  users.value = users.value.filter((u) => u.id !== deleteTarget.value.id)
-  showDeleteConfirm.value = false
-  deleteTarget.value = null
-  toast(`${name} has been deleted`)
+  const target = deleteTarget.value
+  api.admin
+    .deleteUser(target.id)
+    .then(() => {
+      users.value = users.value.filter((u) => u.id !== target.id)
+      showDeleteConfirm.value = false
+      deleteTarget.value = null
+      toast(`${target.name} has been deleted`)
+    })
+    .catch((e) => toast('Failed to delete: ' + e.message))
 }
 
 function statusClass(status) {
@@ -225,10 +219,6 @@ function roleClass(role) {
   <div class="ops-panel">
     <div class="ops-summary-grid" style="grid-template-columns: repeat(4, 1fr)">
       <div class="ops-summary-card">
-        <div class="ops-summary-value">{{ counts.total }}</div>
-        <div class="ops-summary-label">Total Users</div>
-      </div>
-      <div class="ops-summary-card">
         <div class="ops-summary-value green">{{ counts.customers }}</div>
         <div class="ops-summary-label">Customers</div>
       </div>
@@ -239,6 +229,10 @@ function roleClass(role) {
       <div class="ops-summary-card">
         <div class="ops-summary-value" style="color: #3b82f6">{{ counts.admins }}</div>
         <div class="ops-summary-label">Admins</div>
+      </div>
+      <div class="ops-summary-card">
+        <div class="ops-summary-value">{{ counts.total }}</div>
+        <div class="ops-summary-label">Total Users</div>
       </div>
     </div>
 
@@ -307,7 +301,7 @@ function roleClass(role) {
                   <button
                     v-if="user.status === 'pending_email'"
                     class="kebab-item kebab-item--confirm"
-                    @click="confirmEmail(user); closeMenu()"
+                    @click="confirmEmail(user)"
                   >
                     <svg
                       width="14"
@@ -321,10 +315,7 @@ function roleClass(role) {
                     </svg>
                     Confirm Email
                   </button>
-                  <button
-                    class="kebab-item kebab-item--edit"
-                    @click="openEdit(user); closeMenu()"
-                  >
+                  <button class="kebab-item kebab-item--edit" @click="openEdit(user)">
                     <svg
                       width="14"
                       height="14"
@@ -343,7 +334,7 @@ function roleClass(role) {
                     :class="
                       user.status === 'disabled' ? 'kebab-item--enable' : 'kebab-item--disable'
                     "
-                    @click="toggleStatus(user); closeMenu()"
+                    @click="toggleStatus(user)"
                   >
                     <svg
                       v-if="user.status === 'disabled'"
@@ -373,10 +364,7 @@ function roleClass(role) {
                     </svg>
                     {{ user.status === 'disabled' ? 'Enable' : 'Disable' }}
                   </button>
-                  <button
-                    class="kebab-item kebab-item--reset"
-                    @click="resetPassword(user); closeMenu()"
-                  >
+                  <button class="kebab-item kebab-item--reset" @click="resetPassword(user)">
                     <svg
                       width="14"
                       height="14"
@@ -391,10 +379,7 @@ function roleClass(role) {
                     Reset Password
                   </button>
                   <div class="kebab-divider"></div>
-                  <button
-                    class="kebab-item kebab-item--delete"
-                    @click="openDelete(user); closeMenu()"
-                  >
+                  <button class="kebab-item kebab-item--delete" @click="openDelete(user)">
                     <svg
                       width="14"
                       height="14"

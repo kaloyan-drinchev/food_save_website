@@ -1,22 +1,20 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import '@/assets/css/admin.css'
-import { RouterView } from 'vue-router'
-import AdminLogin from '@/components/admin/AdminLogin.vue'
+import { RouterView, useRouter } from 'vue-router'
+import { api } from '@/services/api'
 import AdminHeader from '@/components/admin/AdminHeader.vue'
 import AdminSidebar from '@/components/admin/AdminSidebar.vue'
 
-const isLoggedIn = ref(sessionStorage.getItem('fs_admin') === 'true')
+const router = useRouter()
+const isLoggedIn = ref(!!sessionStorage.getItem('fs_admin_token'))
 const sidebarOpen = ref(false)
 
-function login() {
-  isLoggedIn.value = true
-}
-
 function logout() {
-  sessionStorage.removeItem('fs_admin')
+  api.admin.logout()
   isLoggedIn.value = false
   sidebarOpen.value = false
+  router.replace({ name: 'admin-login' })
 }
 
 function toggleSidebar() {
@@ -29,13 +27,14 @@ function closeSidebar() {
 
 onMounted(() => {
   document.title = 'FoodSave — Admin Dashboard'
+  if (!isLoggedIn.value) {
+    router.replace({ name: 'admin-login' })
+  }
 })
 </script>
 
 <template>
-  <AdminLogin v-if="!isLoggedIn" @login="login" />
-
-  <div v-else class="dashboard">
+  <div v-if="isLoggedIn" class="dashboard">
     <AdminHeader @logout="logout" @refresh="() => {}" @toggle-sidebar="toggleSidebar" />
 
     <div class="dash-layout">

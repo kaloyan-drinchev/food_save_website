@@ -1,7 +1,14 @@
 const BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1'
+// Origin for endpoints that are NOT under /api/v1 (e.g. POST /admin/login).
+// Empty string => same origin as the site.
+const ORIGIN = import.meta.env.VITE_API_ORIGIN || ''
 
 function getToken() {
   return sessionStorage.getItem('fs_token')
+}
+
+function getAdminToken() {
+  return sessionStorage.getItem('fs_admin_token')
 }
 
 function authHeaders() {
@@ -9,10 +16,28 @@ function authHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+function adminAuthHeaders() {
+  const token = getAdminToken()
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 async function request(method, path, body) {
   const res = await fetch(`${BASE}${path}`, {
     method,
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw Object.assign(new Error(err.message || res.statusText), { status: res.status })
+  }
+  return res.json()
+}
+
+async function rawRequest(method, url, body, extraHeaders = {}) {
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json', ...extraHeaders },
     body: body ? JSON.stringify(body) : undefined,
   })
   if (!res.ok) {
@@ -64,4 +89,65 @@ export const api = {
 
   // Notifications
   getNotifications: () => request('GET', '/notifications'),
+
+  // Admin
+  admin: {
+    async login(username, password) {
+      const data = await rawRequest('POST', `${ORIGIN}/admin/login`, { username, password })
+      const token = data?.token || data?.accessToken || data?.jwt
+      if (!token) {
+        throw new Error('Login response did not contain a token')
+      }
+      sessionStorage.setItem('fs_admin_token', token)
+      return data
+    },
+    logout() {
+      sessionStorage.removeItem('fs_admin_token')
+    },
+    getToken: getAdminToken,
+    authHeaders: adminAuthHeaders,
+
+    // Users
+    listUsers: () => adminRequest('GET', '/admin/users'),
+    getUser: (id) => adminRequest('GET', `/admin/users/${id}`),
+    updateUser: (id, data) => adminRequest('PUT', `/admin/users/${id}`, data),
+    deleteUser: (id) => adminRequest('DELETE', `/admin/users/${id}`),
+
+    // Businesses
+    listBusinesses: () => adminRequest('GET', '/admin/businesses'),
+    getBusiness: (id) => adminRequest('GET', `/admin/businesses/${id}`),
+    updateBusiness: (id, data) => adminRequest('PUT', `/admin/businesses/${id}`, data),
+    deleteBusiness: (id) => adminRequest('DELETE', `/admin/businesses/${id}`),
+
+    // Orders
+    listOrders: () => adminRequest('GET', '/admin/orders'),
+    getOrder: (id) => adminRequest('GET', `/admin/orders/${id}`),
+    confirmOrder: (id) => adminRequest('PUT', `/admin/orders/${id}/confirm`),
+    pickupOrder: (id) => adminRequest('PUT', `/admin/orders/${id}/pickup`),
+    cancelOrder: (id) => adminRequest('PUT', `/admin/orders/${id}/cancel`),
+
+    // Products / Reviews / Images
+    deleteProduct: (id) => adminRequest('DELETE', `/admin/products/${id}`),
+    deleteReview: (id) => adminRequest('DELETE', `/admin/reviews/${id}`),
+    deleteImage: (objectName) =>
+      adminRequest('DELETE', `/admin/images/${encodeURIComponent(objectName)}`),
+  },
+}
+
+async function adminRequest(method, path, body) {
+  const res = await fetch(`${BASE}${path}`, {
+    method,
+    headers: { 'Content-Type': 'application/json', ...adminAuthHeaders() },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+  if (res.status === 401) {
+    sessionStorage.removeItem('fs_admin_token')
+    throw Object.assign(new Error('Admin session expired'), { status: 401 })
+  }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw Object.assign(new Error(err.message || res.statusText), { status: res.status })
+  }
+  if (res.status === 204) return null
+  return res.json()
 }
