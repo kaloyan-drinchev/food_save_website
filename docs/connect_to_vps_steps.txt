@@ -1,0 +1,11 @@
+ssh root@187.127.84.167
+eAojuJb.?Qg2+p-1
+
+cd /var/www/food-save-website
+git pull
+docker compose up -d --build
+ 
+to check the deploy:
+docker compose logs -f
+sudo nginx -t
+sudo systemctl status nginx --no-pager
