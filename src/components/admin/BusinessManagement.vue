@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { api } from '@/services/api'
 
+const router = useRouter()
 const businesses = ref([])
 const loading = ref(true)
 const search = ref('')
@@ -125,7 +127,8 @@ function toast(msg) {
 }
 
 function openDetail(biz) {
-  detailBiz.value = biz
+  // Clicking a business now opens the dedicated Verification review page.
+  router.push({ name: 'admin-verification-review', params: { businessId: String(biz.id) } })
 }
 
 function closeDetail() {

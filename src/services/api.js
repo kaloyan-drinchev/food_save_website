@@ -21,6 +21,26 @@ function adminAuthHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+function decodeAdminJwt() {
+  const token = getAdminToken()
+  if (!token) return null
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return null
+    const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
+    return JSON.parse(decodeURIComponent(escape(json)))
+  } catch {
+    return null
+  }
+}
+
+function isAdminAuthenticated() {
+  const claims = decodeAdminJwt()
+  if (!claims) return false
+  if (claims.exp && Date.now() / 1000 > claims.exp) return false
+  return claims.role === 'admin'
+}
+
 async function request(method, path, body) {
   const res = await fetch(`${BASE}${path}`, {
     method,
@@ -106,6 +126,8 @@ export const api = {
     },
     getToken: getAdminToken,
     authHeaders: adminAuthHeaders,
+    decodeToken: decodeAdminJwt,
+    isAuthenticated: isAdminAuthenticated,
 
     // Users
     listUsers: () => adminRequest('GET', '/admin/users'),
@@ -118,6 +140,26 @@ export const api = {
     getBusiness: (id) => adminRequest('GET', `/admin/businesses/${id}`),
     updateBusiness: (id, data) => adminRequest('PUT', `/admin/businesses/${id}`, data),
     deleteBusiness: (id) => adminRequest('DELETE', `/admin/businesses/${id}`),
+
+    // Verification workflow (BE-confirmed)
+    // GET /admin/businesses — list, filtered client-side or by ?status=
+    listBusinessesByStatus: ({ status, page = 1, limit = 50, search } = {}) => {
+      const params = new URLSearchParams()
+      if (status && status !== 'all') params.set('status', status)
+      params.set('page', String(page))
+      params.set('limit', String(limit))
+      if (search) params.set('search', search)
+      const qs = params.toString()
+      return adminRequest('GET', `/admin/businesses${qs ? `?${qs}` : ''}`)
+    },
+    // PATCH /admin/businesses/:id/status — body { status: 'validated' | 'notValidated' }
+    // 'notValidated' is used both for "pending" and "rejected" (no separate rejected state).
+    setBusinessStatus: (id, status) =>
+      adminRequest('PATCH', `/admin/businesses/${id}/status`, { status }),
+    // GET /certificates?businessId=X — returns [{ id, type, url, createdAt }]
+    // `url` is a direct file URL (MinIO/S3); use it for <img> or PDF <iframe> sources.
+    listCertificates: (businessId) =>
+      adminRequest('GET', `/certificates?businessId=${encodeURIComponent(businessId)}`),
 
     // Orders
     listOrders: () => adminRequest('GET', '/admin/orders'),

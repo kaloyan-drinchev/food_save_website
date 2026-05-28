@@ -13,6 +13,7 @@ const navItems = [
   { route: '/admin', label: 'Dashboard Home', icon: 'home', exact: true },
   { route: '/admin/metrics', label: 'Metrics', icon: 'activity' },
   { route: '/admin/operations', label: 'Operations', icon: 'settings' },
+  { route: '/admin/verifications', label: 'Verifications', icon: 'verify' },
 ]
 
 const svgPaths = {
@@ -20,6 +21,7 @@ const svgPaths = {
   activity: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
   settings:
     '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+  verify: '<path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
 }
 
 function isActive(item) {

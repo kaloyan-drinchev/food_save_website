@@ -1,4 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { api } from '@/services/api'
+
+function requireAdmin(to, from, next) {
+  if (api.admin.isAuthenticated()) return next()
+  return next({ name: 'admin-login', query: { redirect: to.fullPath } })
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +52,19 @@ const router = createRouter({
           path: 'operations',
           name: 'admin-operations',
           component: () => import('@/views/OperationsView.vue'),
+        },
+        {
+          path: 'verifications',
+          name: 'admin-verifications',
+          component: () => import('@/views/VerificationsQueueView.vue'),
+          beforeEnter: requireAdmin,
+        },
+        {
+          path: 'verifications/:businessId',
+          name: 'admin-verification-review',
+          component: () => import('@/views/VerificationReviewView.vue'),
+          beforeEnter: requireAdmin,
+          props: true,
         },
       ],
     },
