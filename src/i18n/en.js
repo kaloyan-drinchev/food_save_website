@@ -5,15 +5,17 @@ export default {
     hero_badge: '🌿 Coming Soon to Bulgaria',
     hero_title_line1: 'Rescue Your',
     hero_title_line2: 'Next Meal',
-    hero_sub:
-      'Buy surplus food from local restaurants, bakeries, and stores at up\u00A0to\u00A0<strong>70\u00A0% off</strong>. Save money, eat well, and help fight food waste — all in one tap.',
+    hero_sub_before:
+      'Buy surplus food from local restaurants, bakeries, and stores at up\u00A0to\u00A0',
+    hero_sub_highlight: '90\u00A0% off',
+    hero_sub_after: '. Save money, eat well, and help fight food waste — all in one tap.',
     hero_cta_waitlist: 'Join the Waitlist',
     hero_cta_how: 'How It Works ↓',
     hero_social_proof: '500+ people already on the waitlist',
     hero_phone_label: 'Add your app screenshot here',
     hero_phone_hint: 'Recommended: 390 × 844 px PNG',
 
-    stats_savings_value: '70 %',
+    stats_savings_value: '90 %',
     stats_savings_label: 'Average savings',
     stats_waste_value: '~2.5 kg',
     stats_waste_label: 'CO₂ saved per meal',
@@ -34,7 +36,7 @@ export default {
     step2_num: '02',
     step2_title: 'Reserve',
     step2_desc:
-      'Choose a specific deal from the menu and reserve it at up to 70\u00A0% off the original price. Pay in-app with Card, Google Pay, Revolut, or PayPal.',
+      'Choose a specific deal from the menu and reserve it at up to 90\u00A0% off the original price. Pay in-app with Card, Google Pay, Revolut, or PayPal.',
     step3_num: '03',
     step3_title: 'Pick Up',
     step3_desc:
@@ -80,12 +82,18 @@ export default {
     dl_biz_title: 'For Business Owners',
     dl_biz_desc: 'List surplus food in seconds, reach nearby customers, and get paid weekly.',
     dl_play_sm: 'Get it on',
-    dl_play_lg: 'Google Play',
+    dl_play_lg: 'Play Store',
     dl_apple_sm: 'Download on the',
     dl_apple_lg: 'App Store',
+    dl_windows_sm: 'Download for',
+    dl_windows_lg: 'Windows App',
+    dl_web_sm: 'Open on',
+    dl_web_lg: 'Web Version',
     dl_huawei_sm: 'Explore it on',
     dl_huawei_lg: 'Huawei AppGallery',
     dl_soon: 'Coming Soon',
+    hero_download_coming: '{platform} will be available soon. Stay tuned.',
+    modal_ok: 'OK',
 
     // ── Consumer features grid ─────────────────────────────
     cf_label: 'For Consumers',
@@ -123,6 +131,7 @@ export default {
     bs_title: 'A complete toolkit for your store',
     bs_sub:
       'Everything a busy restaurant, bakery, or grocery store needs to list surplus food, manage orders, and get paid — with zero friction.',
+    bs_contact_intro: 'If you are a business contact us on',
 
     bs1_icon: '📊',
     bs1_title: 'Revenue Dashboard',
@@ -202,7 +211,7 @@ export default {
     skip: 'Skip',
     slide1_title: 'Save Your Next Meal',
     slide1_subtitle:
-      'Discover surplus food from local restaurants and stores at up to 70\u00A0% off.',
+      'Discover surplus food from local restaurants and stores at up to 90\u00A0% off.',
     slide2_title: 'Save Money Every Day',
     slide2_subtitle: 'Enjoy delicious meals at a fraction of the price while reducing food waste.',
     slide3_title: 'Protect Our Planet',
@@ -227,7 +236,7 @@ export default {
     step2_icon: '🛍️',
     step2_title: 'Reserve',
     step2_desc:
-      'Choose a surprise bag or a specific item and reserve it at up to 70% off the original price.',
+      'Choose a surprise bag or a specific item and reserve it at up to 90% off the original price.',
     step3_num: 'Step 03',
     step3_icon: '✅',
     step3_title: 'Pick Up',
@@ -425,7 +434,7 @@ export default {
     q3: 'When does the app launch?',
     a3: 'We\u2019re targeting summer 2026 for both the customer and business apps on Google Play and the App Store. Join the waitlist above to be notified the moment we go live!',
     q4: 'How much can I save?',
-    a4: 'Customers can save up to 70% off the original price of meals and groceries. The exact discount depends on what each Partner offers, but great deals are the norm \u2014 not the exception.',
+    a4: 'Customers can save up to 90% off the original price of meals and groceries. The exact discount depends on what each Partner offers, but great deals are the norm \u2014 not the exception.',
     q5: 'How do I become a partner business?',
     a5: 'If you run a restaurant, bakery, caf\u00e9, or grocery store and want to reduce your food waste while earning extra revenue, sign up on the waitlist as a business. We\u2019ll reach out with onboarding details before launch.',
   },

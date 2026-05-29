@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 import { useTheme } from '@/composables/useTheme'
 
 defineProps({
@@ -10,6 +10,8 @@ defineProps({
 
 const { t, locale } = useI18n()
 const { theme, toggle: toggleTheme } = useTheme()
+const router = useRouter()
+const route = useRoute()
 const menuOpen = ref(false)
 const navShadow = ref(false)
 
@@ -30,7 +32,26 @@ function onScroll() {
   navShadow.value = window.scrollY > 10
 }
 
-onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))
+// Smooth-scroll to a section without writing the hash into the URL.
+async function scrollToSection(id) {
+  closeMenu()
+  if (route.path !== '/') {
+    await router.push('/')
+  }
+  // Wait one frame so the target exists if we just navigated.
+  requestAnimationFrame(() => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  // Strip any leftover hash on the homepage so reloads land at /.
+  if (route.path === '/' && window.location.hash) {
+    history.replaceState(null, '', '/')
+  }
+})
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
 </script>
 
@@ -42,43 +63,35 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
     <div class="nav-desktop-links">
       <div class="nav-pill-group">
-        <RouterLink
-          to="/#about"
+        <a
+          href="#for-businesses"
           class="nav-link"
-          :class="{ 'active-link': activePage === 'about' }"
+          :class="{ 'active-link': activePage === 'for-businesses' }"
+          @click.prevent="scrollToSection('for-businesses')"
         >
-          {{ t('nav.about') }}
-        </RouterLink>
-        <RouterLink
-          to="/#faq"
-          class="nav-link"
-          :class="{ 'active-link': activePage === 'faq' }"
-        >
-          {{ t('nav.faq') }}
-        </RouterLink>
-        <RouterLink
-          to="/#download"
-          class="nav-link"
-          :class="{ 'active-link': activePage === 'download' }"
-        >
-          {{ t('nav.download') }}
-        </RouterLink>
-        <RouterLink
-          to="/privacy"
-          class="nav-link"
-          :class="{ 'active-link': activePage === 'privacy' }"
-        >
-          {{ t('nav.privacy') }}
-        </RouterLink>
-        <RouterLink to="/terms" class="nav-link" :class="{ 'active-link': activePage === 'terms' }">
-          {{ t('nav.terms') }}
-        </RouterLink>
-        <RouterLink
-          to="/#contact"
+          {{ t('landing.bs_label') }}
+        </a>
+        <a
+          href="#contact"
           class="nav-link"
           :class="{ 'active-link': activePage === 'contact' }"
+          @click.prevent="scrollToSection('contact')"
         >
           {{ t('nav.contact') }}
+        </a>
+        <a
+          href="#waitlist"
+          class="nav-link"
+          :class="{ 'active-link': activePage === 'waitlist' }"
+          @click.prevent="scrollToSection('waitlist')"
+        >
+          {{ t('landing.hero_cta_waitlist') }}
+        </a>
+        <RouterLink to="/privacy" class="nav-link">
+          {{ t('nav.privacy') }}
+        </RouterLink>
+        <RouterLink to="/terms" class="nav-link">
+          {{ t('nav.terms') }}
         </RouterLink>
       </div>
     </div>
@@ -107,18 +120,21 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   <Transition name="mobile-menu">
     <div v-if="menuOpen" class="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
       <div class="mobile-menu-links">
-        <RouterLink to="/#about" @click="closeMenu">{{ t('nav.about') }}</RouterLink>
-        <RouterLink to="/#faq" @click="closeMenu">{{ t('nav.faq') }}</RouterLink>
-        <RouterLink to="/#download" @click="closeMenu">{{ t('nav.download') }}</RouterLink>
+        <a href="#for-businesses" @click.prevent="scrollToSection('for-businesses')">{{
+          t('landing.bs_label')
+        }}</a>
+        <a href="#contact" @click.prevent="scrollToSection('contact')">{{ t('nav.contact') }}</a>
+        <a href="#waitlist" @click.prevent="scrollToSection('waitlist')">
+          {{ t('landing.hero_cta_waitlist') }}
+        </a>
         <RouterLink to="/privacy" @click="closeMenu">{{ t('nav.privacy') }}</RouterLink>
         <RouterLink to="/terms" @click="closeMenu">{{ t('nav.terms') }}</RouterLink>
-        <RouterLink to="/#contact" @click="closeMenu">{{ t('nav.contact') }}</RouterLink>
       </div>
       <div class="mobile-menu-footer">
         <div class="lang-toggle" :class="locale === 'bg' ? 'lang-active-bg' : 'lang-active-en'">
           <span class="lang-slider"></span>
-          <button :class="{ active: locale === 'bg' }" @click="switchLang('bg')">🇧🇬 BG</button>
-          <button :class="{ active: locale === 'en' }" @click="switchLang('en')">🇬🇧 EN</button>
+          <button :class="{ active: locale === 'bg' }" @click="switchLang('bg')">BG</button>
+          <button :class="{ active: locale === 'en' }" @click="switchLang('en')">EN</button>
         </div>
         <button class="theme-toggle" @click="toggleTheme">
           <FontAwesomeIcon :icon="theme === 'dark' ? 'sun' : 'moon'" />

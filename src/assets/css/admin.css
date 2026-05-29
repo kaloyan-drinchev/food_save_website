@@ -21,27 +21,27 @@
 /* ── Dark theme (default) ──────────────────────────────────── */
 :root,
 [data-theme='dark'] {
-  --fs-primary: #6f9899; /* lighter teal for contrast on dark */
-  --fs-primary-dark: #315253;
-  --fs-primary-container: #1f3536;
+  --fs-primary: #eb8227; /* orange buttons in dark theme */
+  --fs-primary-dark: #b5621c;
+  --fs-primary-container: #5a3210;
   --fs-on-primary: #f7f5f1;
   --fs-accent: #eb8227;
-  --fs-surface: #1c2727;
-  --fs-surface-mid: #243131;
-  --fs-surface-high: #2f3e3e;
+  --fs-surface: #1e2a24;
+  --fs-surface-mid: #27352e;
+  --fs-surface-high: #33443b;
   --fs-on-surface: #f7f5f1;
-  --fs-on-surface-var: #b8c3bf;
-  --fs-outline: #7a8d8c;
-  --fs-outline-var: #455555;
+  --fs-on-surface-var: #b7c8ba;
+  --fs-outline: #7d9583;
+  --fs-outline-var: #4a5c4f;
   --fs-error: #ef9a9a;
   --fs-scrim: rgba(0, 0, 0, 0.7);
 }
 
 /* ── Light theme ───────────────────────────────────────────── */
 [data-theme='light'] {
-  --fs-primary: #315253; /* brand dark teal */
-  --fs-primary-dark: #1f3a3b;
-  --fs-primary-container: #dee3d5; /* brand sage */
+  --fs-primary: #eb8227; /* use orange for light-theme buttons */
+  --fs-primary-dark: #b5621c;
+  --fs-primary-container: #fde2cc;
   --fs-on-primary: #ffffff;
   --fs-accent: #eb8227; /* brand orange */
   --fs-surface: #f7f5f1; /* brand cream */

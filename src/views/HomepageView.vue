@@ -6,19 +6,23 @@ import AppFooter from '@/components/layout/AppFooter.vue'
 import FaqSection from '@/components/home/FaqSection.vue'
 import WaitlistSection from '@/components/home/WaitlistSection.vue'
 import ContactSection from '@/components/home/ContactSection.vue'
+import windowsAppLogo from '../../assets/images/logo-s-green.png'
 
 const { t, locale } = useI18n()
 const submitting = ref(false)
 const showModal = ref(false)
+const comingSoonPlatform = ref('')
 
 // Stats count-up
 const statConfigs = [
-  { prefix: '', target: 70,  suffix: ' %',  decimals: 0 },
+  { prefix: '', target: 70, suffix: ' %', decimals: 0 },
   { prefix: '~', target: 2.5, suffix: ' kg', decimals: 1 },
-  { prefix: '', target: 100, suffix: ' %',  decimals: 0 },
-  { prefix: '', target: null, suffix: 'BG',  decimals: 0 },
+  { prefix: '', target: 100, suffix: ' %', decimals: 0 },
+  { prefix: '', target: null, suffix: 'BG', decimals: 0 },
 ]
-const statValues = ref(statConfigs.map(s => s.target === null ? s.suffix : `${s.prefix}0${s.suffix}`))
+const statValues = ref(
+  statConfigs.map((s) => (s.target === null ? s.suffix : `${s.prefix}0${s.suffix}`)),
+)
 
 function animateStats() {
   const duration = 1800
@@ -40,22 +44,52 @@ function animateStats() {
 
 // Testimonials data
 const reviews = [
-  { initials: 'AS', name: 'Alexandra S.', textKey: 'landing.review1_text', roleKey: 'landing.review1_role' },
-  { initials: 'MP', name: 'Martin P.',    textKey: 'landing.review2_text', roleKey: 'landing.review2_role' },
-  { initials: 'ED', name: 'Elena D.',     textKey: 'landing.review3_text', roleKey: 'landing.review3_role' },
-  { initials: 'GI', name: 'Georgi I.',    textKey: 'landing.review4_text', roleKey: 'landing.review4_role' },
-  { initials: 'SV', name: 'Simona V.',    textKey: 'landing.review5_text', roleKey: 'landing.review5_role' },
-  { initials: 'KN', name: 'Kaloyan N.',   textKey: 'landing.review6_text', roleKey: 'landing.review6_role' },
+  {
+    initials: 'AS',
+    name: 'Alexandra S.',
+    textKey: 'landing.review1_text',
+    roleKey: 'landing.review1_role',
+  },
+  {
+    initials: 'MP',
+    name: 'Martin P.',
+    textKey: 'landing.review2_text',
+    roleKey: 'landing.review2_role',
+  },
+  {
+    initials: 'ED',
+    name: 'Elena D.',
+    textKey: 'landing.review3_text',
+    roleKey: 'landing.review3_role',
+  },
+  {
+    initials: 'GI',
+    name: 'Georgi I.',
+    textKey: 'landing.review4_text',
+    roleKey: 'landing.review4_role',
+  },
+  {
+    initials: 'SV',
+    name: 'Simona V.',
+    textKey: 'landing.review5_text',
+    roleKey: 'landing.review5_role',
+  },
+  {
+    initials: 'KN',
+    name: 'Kaloyan N.',
+    textKey: 'landing.review6_text',
+    roleKey: 'landing.review6_role',
+  },
 ]
 
 // Impact count-up
 const impactConfigs = [
-  { prefix: '',  target: 1240, suffix: '+',   decimals: 0 },
-  { prefix: '',  target: 3100, suffix: ' kg', decimals: 0 },
-  { prefix: '€', target: 8500, suffix: '',    decimals: 0 },
-  { prefix: '',  target: 45,   suffix: '+',   decimals: 0 },
+  { prefix: '', target: 1240, suffix: '+', decimals: 0 },
+  { prefix: '', target: 3100, suffix: ' kg', decimals: 0 },
+  { prefix: '€', target: 8500, suffix: '', decimals: 0 },
+  { prefix: '', target: 45, suffix: '+', decimals: 0 },
 ]
-const impactValues = ref(impactConfigs.map(c => `${c.prefix}0${c.suffix}`))
+const impactValues = ref(impactConfigs.map((c) => `${c.prefix}0${c.suffix}`))
 
 function animateImpact() {
   const duration = 1800
@@ -92,6 +126,15 @@ async function onWaitlistSubmit(e) {
   }
 }
 
+function openComingSoon(platformLabel) {
+  comingSoonPlatform.value = platformLabel
+  showModal.value = true
+}
+
+function closeComingSoon() {
+  showModal.value = false
+}
+
 function updateTitle() {
   document.title = t('landing.title')
 }
@@ -108,35 +151,41 @@ onMounted(() => {
         }
       })
     },
-    { threshold: 0.12 }
+    { threshold: 0.12 },
   )
   document.querySelectorAll('.lv-fade').forEach((el) => observer.observe(el))
 
   // Stats count-up observer
   const statsBar = document.querySelector('.lv-stats-bar')
   if (statsBar) {
-    const statsObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          animateStats()
-          statsObserver.unobserve(entry.target)
-        }
-      })
-    }, { threshold: 0.4 })
+    const statsObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateStats()
+            statsObserver.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.4 },
+    )
     statsObserver.observe(statsBar)
   }
 
   // Impact count-up observer
   const impactCounters = document.querySelector('.lv-impact-counters')
   if (impactCounters) {
-    const impactObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          animateImpact()
-          impactObserver.unobserve(entry.target)
-        }
-      })
-    }, { threshold: 0.4 })
+    const impactObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateImpact()
+            impactObserver.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.4 },
+    )
     impactObserver.observe(impactCounters)
   }
 
@@ -150,7 +199,7 @@ onMounted(() => {
         }
       })
     },
-    { threshold: 0.12 }
+    { threshold: 0.12 },
   )
   document.querySelectorAll('.fade-in').forEach((el) => fadeObserver.observe(el))
 })
@@ -160,7 +209,6 @@ onMounted(() => {
   <AppNavbar />
 
   <main class="lv-main">
-
     <!-- ═══════════════════════════════════════════
          HERO
     ════════════════════════════════════════════ -->
@@ -172,21 +220,79 @@ onMounted(() => {
             {{ t('landing.hero_title_line1') }}<br />
             <span class="lv-accent">{{ t('landing.hero_title_line2') }}</span>
           </h1>
-          <p class="lv-hero-sub" v-html="t('landing.hero_sub')"></p>
+          <p class="lv-hero-sub">
+            {{ t('landing.hero_sub_before') }}
+            <strong>{{ t('landing.hero_sub_highlight') }}</strong>
+            {{ t('landing.hero_sub_after') }}
+          </p>
           <div class="lv-hero-actions">
-            <a href="#waitlist" class="lv-btn lv-btn-primary">{{ t('landing.hero_cta_waitlist') }}</a>
-            <a href="#how-it-works" class="lv-btn lv-btn-ghost">{{ t('landing.hero_cta_how') }}</a>
+            <a href="#waitlist" class="lv-btn lv-btn-primary">{{
+              t('landing.hero_cta_waitlist')
+            }}</a>
           </div>
           <p class="lv-social-proof">
             <span class="lv-dot"></span> {{ t('landing.hero_social_proof') }}
           </p>
+          <div class="lv-hero-downloads">
+            <button
+              class="lv-hero-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_apple_lg'))"
+            >
+              <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_apple_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_apple_lg') }}</span>
+              </div>
+            </button>
+
+            <button
+              class="lv-hero-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_play_lg'))"
+            >
+              <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_play_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_play_lg') }}</span>
+              </div>
+            </button>
+
+            <button
+              class="lv-hero-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_windows_lg'))"
+            >
+              <img
+                :src="windowsAppLogo"
+                alt="Windows app"
+                class="lv-store-btn-icon lv-windows-logo"
+              />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_windows_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_windows_lg') }}</span>
+              </div>
+            </button>
+
+            <button
+              class="lv-hero-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_web_lg'))"
+            >
+              <FontAwesomeIcon :icon="'globe'" class="lv-store-btn-icon" />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_web_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_web_lg') }}</span>
+              </div>
+            </button>
+          </div>
         </div>
 
         <!-- ══ Phone mockup placeholder ══ -->
         <div class="lv-phone-wrap lv-hero-phone">
           <div class="lv-phone-frame">
             <div class="lv-phone-notch"></div>
-            <img src="/assets/images/landing/app-homepage-screen.jpg" alt="">
+            <img src="/assets/images/landing/app-homepage-screen.jpg" alt="" />
             <div class="lv-phone-home-bar" aria-hidden="true"></div>
           </div>
           <div class="lv-phone-shadow"></div>
@@ -238,21 +344,18 @@ onMounted(() => {
 
         <div class="lv-steps">
           <div class="lv-step">
-            <div class="lv-step-num">{{ t('landing.step1_num') }}</div>
             <div class="lv-step-icon">🔍</div>
             <h3 class="lv-step-title">{{ t('landing.step1_title') }}</h3>
             <p class="lv-step-desc">{{ t('landing.step1_desc') }}</p>
           </div>
           <div class="lv-step-arrow" aria-hidden="true">→</div>
           <div class="lv-step">
-            <div class="lv-step-num">{{ t('landing.step2_num') }}</div>
             <div class="lv-step-icon">🛍️</div>
             <h3 class="lv-step-title">{{ t('landing.step2_title') }}</h3>
             <p class="lv-step-desc">{{ t('landing.step2_desc') }}</p>
           </div>
           <div class="lv-step-arrow" aria-hidden="true">→</div>
           <div class="lv-step">
-            <div class="lv-step-num">{{ t('landing.step3_num') }}</div>
             <div class="lv-step-icon">✅</div>
             <h3 class="lv-step-title">{{ t('landing.step3_title') }}</h3>
             <p class="lv-step-desc">{{ t('landing.step3_desc') }}</p>
@@ -361,7 +464,7 @@ onMounted(() => {
           <div class="lv-phone-wrap lv-phone-back">
             <div class="lv-phone-frame lv-phone-sm">
               <div class="lv-phone-notch"></div>
-              <img src="/assets/images/landing/app-browse-map.jpg" alt="">
+              <img src="/assets/images/landing/app-browse-map.jpg" alt="" />
               <div class="lv-phone-home-bar" aria-hidden="true"></div>
             </div>
           </div>
@@ -369,7 +472,7 @@ onMounted(() => {
           <div class="lv-phone-wrap lv-phone-front">
             <div class="lv-phone-frame">
               <div class="lv-phone-notch"></div>
-             <img src="/assets/images/landing/app-browse-list.jpg" alt="">
+              <img src="/assets/images/landing/app-browse-list.jpg" alt="" />
               <div class="lv-phone-home-bar" aria-hidden="true"></div>
             </div>
           </div>
@@ -418,12 +521,16 @@ onMounted(() => {
     <!-- ═══════════════════════════════════════════
          BUSINESS SUITE
     ════════════════════════════════════════════ -->
-    <section class="lv-section lv-bs lv-fade">
+    <section id="for-businesses" class="lv-section lv-bs lv-fade">
       <div class="lv-container">
         <div class="lv-section-header">
           <span class="lv-section-label">{{ t('landing.bs_label') }}</span>
           <h2 class="lv-section-title">{{ t('landing.bs_title') }}</h2>
           <p class="lv-section-sub">{{ t('landing.bs_sub') }}</p>
+          <p class="lv-section-sub">
+            {{ t('landing.bs_contact_intro') }}
+            <a href="mailto:contact@foodsave.tech">contact@foodsave.tech</a>
+          </p>
         </div>
         <div class="lv-bs-grid">
           <div class="lv-bs-card">
@@ -475,7 +582,7 @@ onMounted(() => {
             <li><span>🛒</span> {{ t('landing.biz_type3') }}</li>
             <li><span>🍹</span> {{ t('landing.biz_type4') }}</li>
           </ul>
-          <a href="#waitlist" class="lv-btn lv-btn-primary" style="margin-top:1.5rem">
+          <a href="#waitlist" class="lv-btn lv-btn-primary" style="margin-top: 1.5rem">
             {{ t('landing.biz_cta') }}
           </a>
         </div>
@@ -484,7 +591,7 @@ onMounted(() => {
         <div class="lv-phone-wrap lv-biz-phone">
           <div class="lv-phone-frame">
             <div class="lv-phone-notch"></div>
-            <img src="/assets/images/landing/app-business-page.jpg" alt="">
+            <img src="/assets/images/landing/app-business-page.jpg" alt="" />
             <div class="lv-phone-home-bar" aria-hidden="true"></div>
           </div>
           <div class="lv-phone-shadow"></div>
@@ -554,30 +661,58 @@ onMounted(() => {
           </div>
 
           <div class="lv-store-badges-v2">
-            <div class="lv-store-btn">
+            <button
+              class="lv-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_play_lg'))"
+            >
               <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_play_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_play_lg') }}</span>
               </div>
               <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </div>
-            <div class="lv-store-btn">
+            </button>
+            <button
+              class="lv-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_apple_lg'))"
+            >
               <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_apple_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_apple_lg') }}</span>
               </div>
               <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </div>
-            <div class="lv-store-btn">
-              <img src="/assets/images/landing/huawei-appgallery.png" alt="AppGallery" class="lv-store-btn-icon" />
+            </button>
+            <button
+              class="lv-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_windows_lg'))"
+            >
+              <img
+                :src="windowsAppLogo"
+                alt="Windows app"
+                class="lv-store-btn-icon lv-windows-logo"
+              />
               <div class="lv-store-btn-text">
-                <span class="lv-store-btn-sm">{{ t('landing.dl_huawei_sm') }}</span>
-                <span class="lv-store-btn-lg">{{ t('landing.dl_huawei_lg') }}</span>
+                <span class="lv-store-btn-sm">{{ t('landing.dl_windows_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_windows_lg') }}</span>
               </div>
               <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </div>
+            </button>
+            <button
+              class="lv-store-btn"
+              type="button"
+              @click="openComingSoon(t('landing.dl_web_lg'))"
+            >
+              <FontAwesomeIcon :icon="'globe'" class="lv-store-btn-icon" />
+              <div class="lv-store-btn-text">
+                <span class="lv-store-btn-sm">{{ t('landing.dl_web_sm') }}</span>
+                <span class="lv-store-btn-lg">{{ t('landing.dl_web_lg') }}</span>
+              </div>
+              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -623,8 +758,25 @@ onMounted(() => {
          CONTACT  (reused component)
     ════════════════════════════════════════════ -->
     <ContactSection />
-
   </main>
+
+  <Transition name="lv-modal-fade">
+    <div
+      v-if="showModal"
+      class="lv-coming-modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      @click.self="closeComingSoon"
+    >
+      <div class="lv-coming-modal">
+        <h3>{{ t('landing.dl_soon') }}</h3>
+        <p>{{ t('landing.hero_download_coming', { platform: comingSoonPlatform }) }}</p>
+        <button type="button" class="lv-btn lv-btn-primary" @click="closeComingSoon">
+          {{ t('landing.modal_ok') }}
+        </button>
+      </div>
+    </div>
+  </Transition>
 
   <AppFooter />
 </template>
@@ -643,7 +795,9 @@ onMounted(() => {
 .lv-fade {
   opacity: 0;
   transform: translateY(32px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transition:
+    opacity 0.65s ease,
+    transform 0.65s ease;
 }
 .lv-fade.lv-visible {
   opacity: 1;
@@ -717,24 +871,6 @@ onMounted(() => {
   z-index: 1;
 }
 
-@media (max-width: 768px) {
-  .lv-hero-inner {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  .lv-hero-phone {
-    order: -1;
-    display: flex;
-    justify-content: center;
-  }
-  .lv-hero-actions {
-    justify-content: center;
-  }
-  .lv-social-proof {
-    justify-content: center;
-  }
-}
-
 .lv-hero-content {
   display: flex;
   flex-direction: column;
@@ -772,11 +908,57 @@ onMounted(() => {
   max-width: 480px;
 }
 
+.lv-hero-sub strong {
+  color: var(--color-on-surface);
+  font-weight: 700;
+}
+
 .lv-hero-actions {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   margin-top: 0.25rem;
+}
+
+.lv-hero-downloads {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(168px, 1fr));
+  gap: 0.75rem;
+  max-width: 760px;
+}
+
+.lv-hero-store-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-surface-high);
+  border: 1.5px solid var(--color-outline-var);
+  border-radius: var(--radius-lg);
+  min-height: 72px;
+  padding: 0.9rem 1.05rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.lv-hero-store-btn:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  transform: translateY(-2px);
+}
+
+.lv-hero-store-btn-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--btn-primary-text);
+  background: var(--color-primary);
+  flex-shrink: 0;
 }
 
 /* Buttons */
@@ -833,8 +1015,13 @@ onMounted(() => {
 }
 
 @keyframes lv-pulse {
-  0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent); }
-  50%       { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-primary) 10%, transparent); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
 }
 
 /* Blobs */
@@ -846,14 +1033,91 @@ onMounted(() => {
   opacity: 0.35;
 }
 .lv-blob-1 {
-  width: 480px; height: 480px;
+  width: 480px;
+  height: 480px;
   background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-  top: -100px; right: -80px;
+  top: -100px;
+  right: -80px;
 }
 .lv-blob-2 {
-  width: 320px; height: 320px;
+  width: 320px;
+  height: 320px;
   background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
-  bottom: -60px; left: -60px;
+  bottom: -60px;
+  left: -60px;
+}
+
+/* ── Hero responsive overrides (must come after base rules) ── */
+@media (max-width: 768px) {
+  .lv-hero {
+    padding-top: calc(var(--nav-height) + 1rem);
+    padding-bottom: 2.5rem;
+    min-height: auto;
+  }
+  .lv-hero-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .lv-hero-content {
+    gap: 0.9rem;
+    align-items: center;
+    min-width: 0;
+  }
+  .lv-badge {
+    align-self: center;
+  }
+  .lv-hero-title {
+    font-size: clamp(1.85rem, 7vw, 2.6rem);
+    overflow-wrap: anywhere;
+  }
+  .lv-hero-sub {
+    margin-inline: auto;
+  }
+  .lv-hero-phone {
+    order: -1;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+  }
+  .lv-hero-phone .lv-phone-frame {
+    width: 200px;
+    border-radius: 30px;
+  }
+  .lv-hero-actions {
+    justify-content: center;
+  }
+  .lv-hero-downloads {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+    margin-inline: auto;
+  }
+  .lv-hero-store-btn {
+    justify-content: flex-start;
+  }
+  .lv-social-proof {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .lv-hero-title {
+    font-size: clamp(1.7rem, 8vw, 2.2rem);
+  }
+  .lv-hero-sub {
+    font-size: 0.95rem;
+  }
+  .lv-hero-phone .lv-phone-frame {
+    width: 170px;
+    border-radius: 26px;
+  }
+  .lv-hero-phone .lv-phone-notch {
+    width: 60px;
+    height: 18px;
+  }
+  .lv-blob {
+    display: none;
+  }
 }
 
 /* ══════════════════════════════════════════════
@@ -873,7 +1137,7 @@ onMounted(() => {
   border: 3px solid var(--color-outline-var);
   overflow: hidden;
   box-shadow:
-    0 30px 60px rgba(0,0,0,0.3),
+    0 30px 60px rgba(0, 0, 0, 0.3),
     inset 0 0 0 1px var(--color-glass-border);
 }
 
@@ -940,7 +1204,7 @@ onMounted(() => {
   transform: translateX(-50%);
   width: 160px;
   height: 24px;
-  background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
   filter: blur(6px);
 }
 
@@ -995,7 +1259,9 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
-  .lv-stat-divider { display: none; }
+  .lv-stat-divider {
+    display: none;
+  }
 }
 
 /* ══════════════════════════════════════════════
@@ -1019,20 +1285,13 @@ onMounted(() => {
   padding: 2rem 1.5rem;
   text-align: center;
   position: relative;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 .lv-step:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px var(--color-card-glow);
-}
-
-.lv-step-num {
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  color: var(--color-primary);
-  text-transform: uppercase;
-  margin-bottom: 0.75rem;
 }
 
 .lv-step-icon {
@@ -1062,7 +1321,9 @@ onMounted(() => {
 }
 
 @media (max-width: 680px) {
-  .lv-step-arrow { display: none; }
+  .lv-step-arrow {
+    display: none;
+  }
 }
 
 /* ══════════════════════════════════════════════
@@ -1178,7 +1439,9 @@ onMounted(() => {
   border-radius: var(--radius-lg);
   padding: 1.5rem 1.25rem;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .lv-cf-card:hover {
@@ -1225,7 +1488,9 @@ onMounted(() => {
   border: 1px solid var(--color-outline-var);
   border-radius: var(--radius-lg);
   padding: 1.75rem 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
 }
@@ -1350,14 +1615,18 @@ onMounted(() => {
   opacity: 0.25;
 }
 .lv-dl-glow--1 {
-  width: 400px; height: 400px;
+  width: 400px;
+  height: 400px;
   background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-  top: -80px; left: -60px;
+  top: -80px;
+  left: -60px;
 }
 .lv-dl-glow--2 {
-  width: 300px; height: 300px;
+  width: 300px;
+  height: 300px;
   background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
-  bottom: -60px; right: -40px;
+  bottom: -60px;
+  right: -40px;
 }
 
 .lv-dl-layout {
@@ -1459,6 +1728,10 @@ onMounted(() => {
   object-fit: contain;
 }
 
+.lv-windows-logo {
+  border-radius: 50%;
+}
+
 .lv-store-btn-text {
   display: flex;
   flex-direction: column;
@@ -1488,6 +1761,47 @@ onMounted(() => {
   background: var(--color-primary-container);
   color: var(--color-primary);
   white-space: nowrap;
+}
+
+.lv-modal-fade-enter-active,
+.lv-modal-fade-leave-active {
+  transition: opacity 0.22s ease;
+}
+
+.lv-modal-fade-enter-from,
+.lv-modal-fade-leave-to {
+  opacity: 0;
+}
+
+.lv-coming-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: color-mix(in srgb, var(--color-scrim) 85%, transparent);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.lv-coming-modal {
+  width: min(520px, 100%);
+  background: var(--color-surface-high);
+  border: 1px solid var(--color-outline-var);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 22px 60px color-mix(in srgb, var(--color-scrim) 75%, transparent);
+  padding: 1.35rem;
+}
+
+.lv-coming-modal h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+}
+
+.lv-coming-modal p {
+  margin: 0 0 1rem;
+  color: var(--color-on-surface-var);
+  line-height: 1.6;
 }
 
 @media (max-width: 768px) {
@@ -1550,7 +1864,9 @@ onMounted(() => {
   text-align: center;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .lv-impact-card:hover {
@@ -1562,7 +1878,11 @@ onMounted(() => {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 6%, transparent), transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-primary) 6%, transparent),
+    transparent
+  );
   pointer-events: none;
 }
 
@@ -1630,7 +1950,9 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
-  .lv-trust-sep { display: none; }
+  .lv-trust-sep {
+    display: none;
+  }
 }
 
 /* ══════════════════════════════════════════════
@@ -1666,7 +1988,9 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .lv-review-card:hover {
