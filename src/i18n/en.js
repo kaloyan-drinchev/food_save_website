@@ -314,7 +314,7 @@ export default {
   <li>Object to or restrict certain processing.</li>
   <li>Data portability.</li>
 </ul>
-<p>To exercise any of these rights, contact us at <a href="mailto:privacy@foodsave.app">privacy@foodsave.app</a>.</p>
+<p>To exercise any of these rights, contact us at <a href="mailto:contact@foodsave.tech">contact@foodsave.tech</a>.</p>
 
 <h2>7. Security</h2>
 <p>We implement industry-standard security measures to protect your data, including encryption in transit (HTTPS) and at rest. No method of transmission over the internet is 100% secure; we cannot guarantee absolute security.</p>
@@ -326,7 +326,7 @@ export default {
 <p>We may update this Privacy Policy periodically. We will notify you of significant changes via the app or email. Continued use of FoodSave after changes constitutes acceptance of the updated policy.</p>
 
 <h2>10. Contact</h2>
-<p>For privacy-related questions, contact us at <a href="mailto:privacy@foodsave.app">privacy@foodsave.app</a>.</p>
+<p>For privacy-related questions, contact us at <a href="mailto:contact@foodsave.tech">contact@foodsave.tech</a>.</p>
         `,
     updated: 'Last updated: March 2, 2026',
   },
@@ -403,7 +403,7 @@ export default {
 <p>We reserve the right to modify these Terms at any time. We will notify users of material changes via the App or email. Continued use of the platform after changes constitutes acceptance.</p>
 
 <h2>12. Contact</h2>
-<p>Questions regarding these Terms may be sent to <a href="mailto:legal@foodsave.app">legal@foodsave.app</a>.</p>
+<p>Questions regarding these Terms may be sent to <a href="mailto:contact@foodsave.tech">contact@foodsave.tech</a>.</p>
         `,
     updated: 'Last updated: March 2, 2026',
   },
