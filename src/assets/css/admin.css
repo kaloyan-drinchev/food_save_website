@@ -3,48 +3,56 @@
    Uses the same color tokens as the main site
    ============================================================ */
 :root {
+  /* Brand book: Rubik only */
   --fs-font: 'Rubik', sans-serif;
-  --fs-font-heading: 'Montserrat', sans-serif;
+  --fs-font-heading: 'Rubik', sans-serif;
   --fs-radius: 14px;
   --fs-radius-sm: 8px;
   --fs-transition: 0.3s ease;
+
+  /* ── Brand palette (single source of truth) ──────────────── */
+  --fs-brand-orange: #eb8227;
+  --fs-brand-teal: #315253;
+  --fs-brand-sage: #dee3d5;
+  --fs-brand-cream: #f7f5f1;
+  --fs-brand-gray: #e7e8ea;
 }
 
 /* ── Dark theme (default) ──────────────────────────────────── */
 :root,
 [data-theme='dark'] {
-  --fs-primary: #80c49b;
-  --fs-primary-dark: #374151;
-  --fs-primary-container: #1f2937;
-  --fs-on-primary: #f9fafb;
+  --fs-primary: #6f9899; /* lighter teal for contrast on dark */
+  --fs-primary-dark: #315253;
+  --fs-primary-container: #1f3536;
+  --fs-on-primary: #f7f5f1;
   --fs-accent: #eb8227;
-  --fs-surface: #1f2329;
-  --fs-surface-mid: #2d333d;
-  --fs-surface-high: #3a4150;
-  --fs-on-surface: #ffffff;
-  --fs-on-surface-var: #b0b7c3;
-  --fs-outline: #75808f;
-  --fs-outline-var: #4a5460;
+  --fs-surface: #1c2727;
+  --fs-surface-mid: #243131;
+  --fs-surface-high: #2f3e3e;
+  --fs-on-surface: #f7f5f1;
+  --fs-on-surface-var: #b8c3bf;
+  --fs-outline: #7a8d8c;
+  --fs-outline-var: #455555;
   --fs-error: #ef9a9a;
   --fs-scrim: rgba(0, 0, 0, 0.7);
 }
 
 /* ── Light theme ───────────────────────────────────────────── */
 [data-theme='light'] {
-  --fs-primary: #2e7d32;
-  --fs-primary-dark: #1b5e20;
-  --fs-primary-container: #c8e6c9;
+  --fs-primary: #315253; /* brand dark teal */
+  --fs-primary-dark: #1f3a3b;
+  --fs-primary-container: #dee3d5; /* brand sage */
   --fs-on-primary: #ffffff;
-  --fs-accent: #e65100;
-  --fs-surface: #f5faf5;
-  --fs-surface-mid: #eaf3ea;
+  --fs-accent: #eb8227; /* brand orange */
+  --fs-surface: #f7f5f1; /* brand cream */
+  --fs-surface-mid: #dee3d5; /* brand sage */
   --fs-surface-high: #ffffff;
-  --fs-on-surface: #1a2e1b;
-  --fs-on-surface-var: #546e56;
-  --fs-outline: #90a490;
-  --fs-outline-var: #d4e4d4;
+  --fs-on-surface: #315253;
+  --fs-on-surface-var: #5a7173;
+  --fs-outline: #315253;
+  --fs-outline-var: #e7e8ea; /* brand gray */
   --fs-error: #d32f2f;
-  --fs-scrim: rgba(0, 0, 0, 0.4);
+  --fs-scrim: rgba(49, 82, 83, 0.4);
 }
 
 * {

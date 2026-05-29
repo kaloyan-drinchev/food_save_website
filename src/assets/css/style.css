@@ -4,8 +4,9 @@
 
 :root {
   /* ── Shared design tokens ───────────────────────────────── */
+  /* Brand book: Rubik is the single typeface for both EN & BG */
   --font: 'Rubik', sans-serif;
-  --font-heading: 'Montserrat', sans-serif;
+  --font-heading: 'Rubik', sans-serif;
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -13,68 +14,75 @@
   --transition: 0.3s ease;
   --max-width: 1100px;
   --nav-height: 64px;
+
+  /* ── Brand palette (single source of truth) ─────────────── */
+  --brand-orange: #eb8227;
+  --brand-teal: #315253;
+  --brand-sage: #dee3d5;
+  --brand-cream: #f7f5f1;
+  --brand-gray: #e7e8ea;
 }
 
 /* ── Dark theme (default) ────────────────────────────────── */
 [data-theme='dark'] {
-  --color-primary: #8de2b8;
-  --color-primary-dark: #374151;
-  --color-primary-container: #1f2937;
-  --color-on-primary: #f9fafb;
-  --color-accent: #ff8f00;
-  --color-accent-container: #7a3d00;
-  --color-on-accent: #3e1d00;
-  --color-tertiary: #4db6ac;
-  --color-tertiary-container: #004d40;
-  --color-surface: #1f2329;
-  --color-surface-mid: #2d333d;
-  --color-surface-high: #3a4150;
-  --color-on-surface: #ffffff;
-  --color-on-surface-var: #b0b7c3;
-  --color-outline: #75808f;
-  --color-outline-var: #4a5460;
+  --color-primary: #6f9899; /* lighter teal for contrast on dark */
+  --color-primary-dark: #315253;
+  --color-primary-container: #1f3536;
+  --color-on-primary: #f7f5f1;
+  --color-accent: #eb8227;
+  --color-accent-container: #5a3210;
+  --color-on-accent: #ffffff;
+  --color-tertiary: #dee3d5;
+  --color-tertiary-container: #2a3a36;
+  --color-surface: #1c2727;
+  --color-surface-mid: #243131;
+  --color-surface-high: #2f3e3e;
+  --color-on-surface: #f7f5f1;
+  --color-on-surface-var: #b8c3bf;
+  --color-outline: #7a8d8c;
+  --color-outline-var: #455555;
   --color-error: #ef9a9a;
   --color-scrim: rgba(0, 0, 0, 0.7);
-  --color-glass: rgba(31, 35, 41, 0.75);
-  --color-glass-border: rgba(141, 226, 184, 0.08);
-  --color-card-glow: rgba(141, 226, 184, 0.06);
-  --hero-slide1-bg: linear-gradient(160deg, #1f2329 0%, #2d333d 40%, #414956 100%);
-  --hero-slide2-bg: linear-gradient(160deg, #261911 0%, #3d3024 40%, #524437 100%);
-  --hero-slide3-bg: linear-gradient(160deg, #1a1f27 0%, #27333f 40%, #37495d 100%);
-  --hero-slide4-bg: linear-gradient(160deg, #1f2329 0%, #313943 40%, #465460 100%);
-  --btn-primary-text: #0f172a;
-  --nav-bg: rgba(31, 35, 41, 0.82);
+  --color-glass: rgba(28, 39, 39, 0.75);
+  --color-glass-border: rgba(222, 227, 213, 0.08);
+  --color-card-glow: rgba(235, 130, 39, 0.08);
+  --hero-slide1-bg: linear-gradient(160deg, #1c2727 0%, #243131 40%, #315253 100%);
+  --hero-slide2-bg: linear-gradient(160deg, #2a1c10 0%, #3d2a17 40%, #5a3210 100%);
+  --hero-slide3-bg: linear-gradient(160deg, #1c2727 0%, #2f3e3e 40%, #4a6566 100%);
+  --hero-slide4-bg: linear-gradient(160deg, #1c2727 0%, #315253 40%, #6f9899 100%);
+  --btn-primary-text: #f7f5f1;
+  --nav-bg: rgba(28, 39, 39, 0.82);
 }
 
 /* ── Light theme ─────────────────────────────────────────── */
 [data-theme='light'] {
-  --color-primary: #2e7d32;
-  --color-primary-dark: #1b5e20;
-  --color-primary-container: #c8e6c9;
+  --color-primary: #315253; /* brand dark teal */
+  --color-primary-dark: #1f3a3b;
+  --color-primary-container: #dee3d5; /* brand sage */
   --color-on-primary: #ffffff;
-  --color-accent: #e65100;
-  --color-accent-container: #ffe0b2;
+  --color-accent: #eb8227; /* brand orange */
+  --color-accent-container: #fde2cc;
   --color-on-accent: #ffffff;
-  --color-tertiary: #00796b;
-  --color-tertiary-container: #b2dfdb;
-  --color-surface: #f5faf5;
-  --color-surface-mid: #eaf3ea;
+  --color-tertiary: #315253;
+  --color-tertiary-container: #dee3d5;
+  --color-surface: #f7f5f1; /* brand cream (main bg) */
+  --color-surface-mid: #dee3d5; /* brand sage */
   --color-surface-high: #ffffff;
-  --color-on-surface: #1a2e1b;
-  --color-on-surface-var: #546e56;
-  --color-outline: #90a490;
-  --color-outline-var: #d4e4d4;
+  --color-on-surface: #315253; /* brand teal as primary text */
+  --color-on-surface-var: #5a7173;
+  --color-outline: #315253;
+  --color-outline-var: #e7e8ea; /* brand gray */
   --color-error: #d32f2f;
-  --color-scrim: rgba(0, 0, 0, 0.4);
-  --color-glass: rgba(245, 250, 245, 0.82);
-  --color-glass-border: rgba(46, 125, 50, 0.1);
-  --color-card-glow: rgba(46, 125, 50, 0.04);
-  --hero-slide1-bg: linear-gradient(160deg, #e8f5e9 0%, #c8e6c9 40%, #a5d6a7 100%);
-  --hero-slide2-bg: linear-gradient(160deg, #fff3e0 0%, #ffe0b2 40%, #ffcc80 100%);
-  --hero-slide3-bg: linear-gradient(160deg, #e0f2f1 0%, #b2dfdb 40%, #80cbc4 100%);
-  --hero-slide4-bg: linear-gradient(160deg, #e8f5e9 0%, #a5d6a7 40%, #66bb6a 100%);
+  --color-scrim: rgba(49, 82, 83, 0.4);
+  --color-glass: rgba(247, 245, 241, 0.85);
+  --color-glass-border: rgba(49, 82, 83, 0.12);
+  --color-card-glow: rgba(235, 130, 39, 0.06);
+  --hero-slide1-bg: linear-gradient(160deg, #f7f5f1 0%, #dee3d5 60%, #c4ccba 100%);
+  --hero-slide2-bg: linear-gradient(160deg, #fde2cc 0%, #f7c79a 50%, #eb8227 100%);
+  --hero-slide3-bg: linear-gradient(160deg, #dee3d5 0%, #a8b8a8 50%, #315253 100%);
+  --hero-slide4-bg: linear-gradient(160deg, #f7f5f1 0%, #dee3d5 40%, #315253 100%);
   --btn-primary-text: #ffffff;
-  --nav-bg: rgba(245, 250, 245, 0.82);
+  --nav-bg: rgba(247, 245, 241, 0.85);
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */

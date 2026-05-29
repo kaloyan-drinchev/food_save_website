@@ -1,31 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <!-- Vue + Vite: run `npm run dev` and open the printed URL. Live Server / opening this file directly will fail (bare imports like "vue" need Vite). -->
 <html lang="bg">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="FoodSave connects you with local restaurants and stores that have surplus food at up to 70% off. Save money, eat well, reduce waste." />
+    <meta
+      name="description"
+      content="FoodSave connects you with local restaurants and stores that have surplus food at up to 70% off. Save money, eat well, reduce waste."
+    />
     <meta name="theme-color" content="#0D1F0E" />
     <meta property="og:title" content="FoodSave" />
-    <meta property="og:description" content="Save your next meal — up to 70% off surplus food from local businesses." />
+    <meta
+      property="og:description"
+      content="Save your next meal — up to 70% off surplus food from local businesses."
+    />
     <meta property="og:type" content="website" />
-    <link rel="icon" type="image/png" href="/assets/images/favicon/favicon-96x96.png" sizes="96x96" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/assets/images/favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
     <link rel="icon" type="image/svg+xml" href="/assets/images/favicon/favicon.svg" />
     <link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/assets/images/favicon/apple-touch-icon.png"
+    />
     <meta name="apple-mobile-web-app-title" content="FoodSave" />
     <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <title>FoodSave</title>
     <script>
       // Apply saved theme before first paint to prevent flash
-      (function() {
-        var t = localStorage.getItem('foodsave-theme') ||
-                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', t);
-      })();
+      ;(function () {
+        var t =
+          localStorage.getItem('foodsave-theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        document.documentElement.setAttribute('data-theme', t)
+      })()
     </script>
   </head>
   <body>
