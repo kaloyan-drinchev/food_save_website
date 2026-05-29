@@ -31,6 +31,8 @@ const rejectReason = ref('')
 const showDeleteModal = ref(false)
 // Suspend modal
 const showSuspendModal = ref(false)
+// Approve modal
+const showApproveModal = ref(false)
 
 // Email modal
 const showEmailModal = ref(false)
@@ -255,8 +257,12 @@ function isImage(c) {
 }
 
 async function approve() {
-  if (!confirm(`Approve "${displayName.value}"? The business will be marked as verified.`)) return
+  showApproveModal.value = true
+}
+
+async function confirmApprove() {
   acting.value = true
+  showApproveModal.value = false
   try {
     await api.admin.setBusinessStatus(props.businessId, 'validated')
     showToast('Business approved')
@@ -590,6 +596,20 @@ function sendEmail() {
         </button>
       </footer>
     </template>
+
+    <!-- Approve modal -->
+    <div v-if="showApproveModal" class="rev-modal-backdrop" @click.self="showApproveModal = false">
+      <div class="rev-modal" role="dialog" aria-modal="true">
+        <h3>Approve business?</h3>
+        <p class="rev-sub">
+          <strong>{{ displayName }}</strong> will be marked as verified and visible as approved.
+        </p>
+        <div class="rev-modal-actions">
+          <button class="ver-btn" @click="showApproveModal = false">Cancel</button>
+          <button class="rev-btn rev-btn--primary" @click="confirmApprove">Approve</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Reject modal -->
     <div v-if="showRejectModal" class="rev-modal-backdrop" @click.self="showRejectModal = false">
