@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { api } from '@/services/api'
 
 const props = defineProps({
@@ -8,6 +8,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const route = useRoute()
 
 const business = ref(null)
 const loading = ref(true)
@@ -19,6 +20,8 @@ const toastKind = ref('ok') // 'ok' | 'err'
 // Loaded certificates: [{ id, type, url, createdAt }]
 const certs = ref([])
 const certError = ref('')
+const certPreviewState = ref({})
+const showCertDebug = ref(false)
 
 // Aggregated stats (loaded from listOrders)
 const orderStats = ref({ totalOrders: 0, totalRevenue: 0, platformRevenue: 0 })
@@ -249,12 +252,71 @@ function fileNameFromUrl(url) {
 }
 
 function isPdf(c) {
-  return /\.pdf(\?|$)/i.test(c.url || '')
+  return /\.pdf(\?|$)/i.test(certificateUrl(c))
 }
 
 function isImage(c) {
-  return /\.(png|jpe?g|gif|webp)(\?|$)/i.test(c.url || '')
+  return /\.(png|jpe?g|gif|webp)(\?|$)/i.test(certificateUrl(c))
 }
+
+function resolveCertUrl(url) {
+  if (!url) return ''
+  const raw = String(url).trim()
+  if (!raw) return ''
+  try {
+    return new URL(raw).toString()
+  } catch {
+    const origin = import.meta.env.VITE_API_ORIGIN || window.location.origin
+    const base = origin.replace(/\/$/, '')
+    if (raw.startsWith('/')) return `${base}${raw}`
+    return `${base}/${raw}`
+  }
+}
+
+function certificateUrl(c) {
+  return resolveCertUrl(c?.url)
+}
+
+function certPreviewStatus(id) {
+  return certPreviewState.value[id] || 'idle'
+}
+
+function setCertPreviewStatus(id, status) {
+  certPreviewState.value = { ...certPreviewState.value, [id]: status }
+}
+
+const certDiagnostics = computed(() => {
+  const pageProtocol = window.location.protocol
+  return certs.value.map((c) => {
+    const rawUrl = c?.url || ''
+    const resolvedUrl = certificateUrl(c)
+    let parsed
+    try {
+      parsed = resolvedUrl ? new URL(resolvedUrl) : null
+    } catch {
+      parsed = null
+    }
+    const protocol = parsed?.protocol || ''
+    const host = parsed?.host || ''
+    const pathname = parsed?.pathname || ''
+    const mixedContentRisk = pageProtocol === 'https:' && protocol === 'http:'
+    const likelyInternalHost =
+      /(localhost|127\.|0\.0\.0\.0|\.local|minio|docker|kubernetes|svc)/i.test(host)
+
+    return {
+      id: c.id,
+      type: certTypeLabel(c.type),
+      rawUrl,
+      resolvedUrl,
+      protocol,
+      host,
+      pathname,
+      mixedContentRisk,
+      likelyInternalHost,
+      previewStatus: certPreviewStatus(c.id),
+    }
+  })
+})
 
 async function approve() {
   showApproveModal.value = true
@@ -299,9 +361,16 @@ async function submitReject() {
 }
 
 function downloadCert(c) {
-  if (!c.url) return
-  window.open(c.url, '_blank', 'noopener')
+  const url = certificateUrl(c)
+  if (!url) return
+  window.open(url, '_blank', 'noopener')
 }
+
+onMounted(() => {
+  if (String(route.query.debugCert || '') === '1') {
+    showCertDebug.value = true
+  }
+})
 
 // ── Stats helpers ──────────────────────────────────────────
 const rating = computed(() => Number(business.value?.rating || 0))
@@ -545,6 +614,32 @@ function sendEmail() {
         <h2 class="rev-card-title">Certificates ({{ certs.length }})</h2>
         <p v-if="certError" class="rev-error rev-error--sm">⚠ {{ certError }}</p>
         <p v-if="!certs.length && !certError" class="rev-empty-inline">No certificates uploaded.</p>
+
+        <div v-if="certs.length" class="rev-cert-debug-toggle">
+          <button class="ver-btn ver-btn--sm" @click="showCertDebug = !showCertDebug">
+            {{ showCertDebug ? 'Hide diagnostics' : 'Show diagnostics' }}
+          </button>
+        </div>
+
+        <div v-if="showCertDebug && certs.length" class="rev-cert-debug">
+          <h3 class="rev-cert-debug-title">Certificate URL diagnostics</h3>
+          <div class="rev-cert-debug-grid">
+            <article v-for="d in certDiagnostics" :key="d.id" class="rev-cert-debug-item">
+              <div>
+                <strong>{{ d.type }}</strong> · #{{ d.id }}
+              </div>
+              <div>Preview status: {{ d.previewStatus }}</div>
+              <div>Protocol: {{ d.protocol || '—' }}</div>
+              <div>Host: {{ d.host || '—' }}</div>
+              <div>Mixed content risk: {{ d.mixedContentRisk ? 'YES' : 'no' }}</div>
+              <div>Likely internal host: {{ d.likelyInternalHost ? 'YES' : 'no' }}</div>
+              <div>Raw URL: {{ d.rawUrl || '—' }}</div>
+              <div>Resolved URL: {{ d.resolvedUrl || '—' }}</div>
+              <div>Path: {{ d.pathname || '—' }}</div>
+            </article>
+          </div>
+        </div>
+
         <div v-if="certs.length" class="rev-cert-grid">
           <article v-for="c in certs" :key="c.id" class="rev-cert">
             <header class="rev-cert-head">
@@ -558,18 +653,21 @@ function sendEmail() {
 
             <div class="rev-cert-preview">
               <img
-                v-if="isImage(c) && c.url"
-                :src="c.url"
+                v-if="isImage(c) && certificateUrl(c)"
+                :src="certificateUrl(c)"
                 :alt="certTypeLabel(c.type)"
                 class="rev-cert-img"
+                @load="setCertPreviewStatus(c.id, 'loaded')"
+                @error="setCertPreviewStatus(c.id, 'error')"
               />
               <iframe
-                v-else-if="isPdf(c) && c.url"
-                :src="c.url"
+                v-else-if="isPdf(c) && certificateUrl(c)"
+                :src="certificateUrl(c)"
                 class="rev-cert-pdf"
                 title="Certificate PDF"
+                @load="setCertPreviewStatus(c.id, 'loaded')"
               ></iframe>
-              <div v-else-if="c.url" class="rev-empty-inline">
+              <div v-else-if="certificateUrl(c)" class="rev-empty-inline">
                 Cannot preview this file type. Use Open to view it.
               </div>
               <div v-else class="rev-empty-inline">No file URL.</div>
@@ -724,6 +822,42 @@ function sendEmail() {
 .rev-sub {
   color: var(--fs-on-surface-var);
   font-size: 0.9rem;
+}
+
+.rev-cert-debug-toggle {
+  margin-bottom: 10px;
+}
+
+.rev-cert-debug {
+  margin-bottom: 14px;
+  border: 1px dashed var(--fs-outline-var);
+  border-radius: var(--fs-radius);
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.rev-cert-debug-title {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: var(--fs-on-surface);
+}
+
+.rev-cert-debug-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.rev-cert-debug-item {
+  border: 1px solid var(--fs-outline-var);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--fs-surface-mid);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+  word-break: break-word;
 }
 
 /* Stats panel */

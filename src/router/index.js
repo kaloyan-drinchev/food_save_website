@@ -20,6 +20,16 @@ const router = createRouter({
       component: () => import('@/views/HomepageView.vue'),
     },
     {
+      path: '/for-businesses',
+      name: 'for-businesses',
+      component: () => import('@/views/ForBusinessesView.vue'),
+    },
+    {
+      path: '/for-clients',
+      name: 'for-clients',
+      component: () => import('@/views/ForClientsView.vue'),
+    },
+    {
       path: '/privacy',
       name: 'privacy',
       component: () => import('@/views/PrivacyView.vue'),

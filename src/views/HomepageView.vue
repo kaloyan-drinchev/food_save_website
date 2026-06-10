@@ -9,11 +9,9 @@ import ContactSection from '@/components/home/ContactSection.vue'
 import windowsAppLogo from '../../assets/images/logo-s-green.png'
 
 const { t, locale } = useI18n()
-const submitting = ref(false)
 const showModal = ref(false)
 const comingSoonPlatform = ref('')
 
-// Stats count-up
 const statConfigs = [
   { prefix: '', target: 70, suffix: ' %', decimals: 0 },
   { prefix: '~', target: 2.5, suffix: ' kg', decimals: 1 },
@@ -24,106 +22,29 @@ const statValues = ref(
   statConfigs.map((s) => (s.target === null ? s.suffix : `${s.prefix}0${s.suffix}`)),
 )
 
-function animateStats() {
-  const duration = 1800
-  const start = performance.now()
-  function tick(now) {
-    const elapsed = now - start
-    const progress = Math.min(elapsed / duration, 1)
-    const eased = 1 - Math.pow(1 - progress, 4)
-    statConfigs.forEach((cfg, i) => {
-      if (cfg.target === null) return
-      const cur = cfg.target * eased
-      const display = cfg.decimals > 0 ? cur.toFixed(cfg.decimals) : Math.round(cur)
-      statValues.value[i] = `${cfg.prefix}${display}${cfg.suffix}`
-    })
-    if (progress < 1) requestAnimationFrame(tick)
-  }
-  requestAnimationFrame(tick)
-}
-
-// Testimonials data
-const reviews = [
-  {
-    initials: 'AS',
-    name: 'Alexandra S.',
-    textKey: 'landing.review1_text',
-    roleKey: 'landing.review1_role',
-  },
-  {
-    initials: 'MP',
-    name: 'Martin P.',
-    textKey: 'landing.review2_text',
-    roleKey: 'landing.review2_role',
-  },
-  {
-    initials: 'ED',
-    name: 'Elena D.',
-    textKey: 'landing.review3_text',
-    roleKey: 'landing.review3_role',
-  },
-  {
-    initials: 'GI',
-    name: 'Georgi I.',
-    textKey: 'landing.review4_text',
-    roleKey: 'landing.review4_role',
-  },
-  {
-    initials: 'SV',
-    name: 'Simona V.',
-    textKey: 'landing.review5_text',
-    roleKey: 'landing.review5_role',
-  },
-  {
-    initials: 'KN',
-    name: 'Kaloyan N.',
-    textKey: 'landing.review6_text',
-    roleKey: 'landing.review6_role',
-  },
-]
-
-// Impact count-up
 const impactConfigs = [
   { prefix: '', target: 1240, suffix: '+', decimals: 0 },
   { prefix: '', target: 3100, suffix: ' kg', decimals: 0 },
-  { prefix: '€', target: 8500, suffix: '', decimals: 0 },
+  { prefix: 'EUR ', target: 8500, suffix: '', decimals: 0 },
   { prefix: '', target: 45, suffix: '+', decimals: 0 },
 ]
 const impactValues = ref(impactConfigs.map((c) => `${c.prefix}0${c.suffix}`))
 
-function animateImpact() {
-  const duration = 1800
+function animateValues(configs, targetRef, duration = 1800) {
   const start = performance.now()
   function tick(now) {
     const elapsed = now - start
     const progress = Math.min(elapsed / duration, 1)
     const eased = 1 - Math.pow(1 - progress, 4)
-    impactConfigs.forEach((cfg, i) => {
+    configs.forEach((cfg, i) => {
+      if (cfg.target === null) return
       const cur = cfg.target * eased
       const display = cfg.decimals > 0 ? cur.toFixed(cfg.decimals) : Math.round(cur)
-      impactValues.value[i] = `${cfg.prefix}${display}${cfg.suffix}`
+      targetRef.value[i] = `${cfg.prefix}${display}${cfg.suffix}`
     })
     if (progress < 1) requestAnimationFrame(tick)
   }
   requestAnimationFrame(tick)
-}
-
-async function onWaitlistSubmit(e) {
-  const form = e.target
-  submitting.value = true
-  try {
-    const res = await fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { Accept: 'application/json' },
-    })
-    if (res.ok) {
-      form.reset()
-      showModal.value = true
-    }
-  } finally {
-    submitting.value = false
-  }
 }
 
 function openComingSoon(platformLabel) {
@@ -138,31 +59,34 @@ function closeComingSoon() {
 function updateTitle() {
   document.title = t('landing.title')
 }
+
 watch(locale, updateTitle)
 
 onMounted(() => {
   updateTitle()
-  const observer = new IntersectionObserver(
+
+  const fadeObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('lv-visible')
-          observer.unobserve(entry.target)
+          entry.target.classList.add('lv-visible', 'visible')
+          fadeObserver.unobserve(entry.target)
         }
       })
     },
     { threshold: 0.12 },
   )
-  document.querySelectorAll('.lv-fade').forEach((el) => observer.observe(el))
 
-  // Stats count-up observer
+  document.querySelectorAll('.lv-fade').forEach((el) => fadeObserver.observe(el))
+  document.querySelectorAll('.fade-in').forEach((el) => fadeObserver.observe(el))
+
   const statsBar = document.querySelector('.lv-stats-bar')
   if (statsBar) {
     const statsObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            animateStats()
+            animateValues(statConfigs, statValues)
             statsObserver.unobserve(entry.target)
           }
         })
@@ -172,14 +96,13 @@ onMounted(() => {
     statsObserver.observe(statsBar)
   }
 
-  // Impact count-up observer
   const impactCounters = document.querySelector('.lv-impact-counters')
   if (impactCounters) {
     const impactObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            animateImpact()
+            animateValues(impactConfigs, impactValues)
             impactObserver.unobserve(entry.target)
           }
         })
@@ -188,20 +111,6 @@ onMounted(() => {
     )
     impactObserver.observe(impactCounters)
   }
-
-  // Also handle .fade-in elements used by reused components (WaitlistSection, ContactSection)
-  const fadeObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible')
-          fadeObserver.unobserve(entry.target)
-        }
-      })
-    },
-    { threshold: 0.12 },
-  )
-  document.querySelectorAll('.fade-in').forEach((el) => fadeObserver.observe(el))
 })
 </script>
 
@@ -209,9 +118,6 @@ onMounted(() => {
   <AppNavbar />
 
   <main class="lv-main">
-    <!-- ═══════════════════════════════════════════
-         HERO
-    ════════════════════════════════════════════ -->
     <section class="lv-hero">
       <div class="lv-container lv-hero-inner">
         <div class="lv-hero-content">
@@ -288,25 +194,17 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- ══ Phone mockup placeholder ══ -->
         <div class="lv-phone-wrap lv-hero-phone">
           <div class="lv-phone-frame">
             <div class="lv-phone-notch"></div>
-            <img src="/assets/images/landing/app-homepage-screen.jpg" alt="" />
+            <img src="/assets/images/landing/app-homepage-screen.jpg" alt="App home screen" />
             <div class="lv-phone-home-bar" aria-hidden="true"></div>
           </div>
           <div class="lv-phone-shadow"></div>
         </div>
       </div>
-
-      <!-- Decorative blobs -->
-      <div class="lv-blob lv-blob-1" aria-hidden="true"></div>
-      <div class="lv-blob lv-blob-2" aria-hidden="true"></div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         STATS BAR
-    ════════════════════════════════════════════ -->
     <div class="lv-stats-bar lv-fade">
       <div class="lv-container lv-stats-inner">
         <div class="lv-stat">
@@ -331,9 +229,6 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════
-         HOW IT WORKS
-    ════════════════════════════════════════════ -->
     <section id="how-it-works" class="lv-section lv-fade">
       <div class="lv-container">
         <div class="lv-section-header">
@@ -341,22 +236,19 @@ onMounted(() => {
           <h2 class="lv-section-title">{{ t('landing.how_title') }}</h2>
           <p class="lv-section-sub">{{ t('landing.how_sub') }}</p>
         </div>
-
         <div class="lv-steps">
           <div class="lv-step">
-            <div class="lv-step-icon">🔍</div>
+            <div class="lv-step-icon">01</div>
             <h3 class="lv-step-title">{{ t('landing.step1_title') }}</h3>
             <p class="lv-step-desc">{{ t('landing.step1_desc') }}</p>
           </div>
-          <div class="lv-step-arrow" aria-hidden="true">→</div>
           <div class="lv-step">
-            <div class="lv-step-icon">🛍️</div>
+            <div class="lv-step-icon">02</div>
             <h3 class="lv-step-title">{{ t('landing.step2_title') }}</h3>
             <p class="lv-step-desc">{{ t('landing.step2_desc') }}</p>
           </div>
-          <div class="lv-step-arrow" aria-hidden="true">→</div>
           <div class="lv-step">
-            <div class="lv-step-icon">✅</div>
+            <div class="lv-step-icon">03</div>
             <h3 class="lv-step-title">{{ t('landing.step3_title') }}</h3>
             <p class="lv-step-desc">{{ t('landing.step3_desc') }}</p>
           </div>
@@ -364,12 +256,6 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         APP PREVIEW
-    ════════════════════════════════════════════ -->
-    <!-- ═══════════════════════════════════════════
-         ENVIRONMENTAL IMPACT
-    ════════════════════════════════════════════ -->
     <section class="lv-section lv-impact lv-fade">
       <div class="lv-container">
         <div class="lv-section-header">
@@ -379,22 +265,22 @@ onMounted(() => {
         </div>
         <div class="lv-impact-counters">
           <div class="lv-impact-card">
-            <div class="lv-impact-icon">🍱</div>
+            <div class="lv-impact-icon">Meal</div>
             <span class="lv-impact-value">{{ impactValues[0] }}</span>
             <span class="lv-impact-label">{{ t('landing.impact_meals_label') }}</span>
           </div>
           <div class="lv-impact-card">
-            <div class="lv-impact-icon">🌿</div>
+            <div class="lv-impact-icon">CO2</div>
             <span class="lv-impact-value">{{ impactValues[1] }}</span>
             <span class="lv-impact-label">{{ t('landing.impact_co2_label') }}</span>
           </div>
           <div class="lv-impact-card">
-            <div class="lv-impact-icon">💰</div>
+            <div class="lv-impact-icon">Save</div>
             <span class="lv-impact-value">{{ impactValues[2] }}</span>
             <span class="lv-impact-label">{{ t('landing.impact_saved_label') }}</span>
           </div>
           <div class="lv-impact-card">
-            <div class="lv-impact-icon">🏪</div>
+            <div class="lv-impact-icon">Biz</div>
             <span class="lv-impact-value">{{ impactValues[3] }}</span>
             <span class="lv-impact-label">{{ t('landing.impact_biz_label') }}</span>
           </div>
@@ -402,361 +288,62 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         CONSUMER FEATURES
-    ════════════════════════════════════════════ -->
-    <section class="lv-section lv-cf lv-fade">
-      <div class="lv-container">
-        <div class="lv-section-header">
-          <span class="lv-section-label">{{ t('landing.cf_label') }}</span>
-          <h2 class="lv-section-title">{{ t('landing.cf_title') }}</h2>
-          <p class="lv-section-sub">{{ t('landing.cf_sub') }}</p>
-        </div>
-        <div class="lv-cf-grid">
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">🔄</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf1_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf1_desc') }}</p>
-          </div>
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">🗺️</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf2_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf2_desc') }}</p>
-          </div>
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">❤️</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf3_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf3_desc') }}</p>
-          </div>
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">💳</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf4_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf4_desc') }}</p>
-          </div>
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">🎟️</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf5_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf5_desc') }}</p>
-          </div>
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">⭐</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf6_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf6_desc') }}</p>
-          </div>
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">🔔</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf7_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf7_desc') }}</p>
-          </div>
-          <div class="lv-cf-card">
-            <div class="lv-cf-icon">🥦</div>
-            <h3 class="lv-cf-title">{{ t('landing.cf8_title') }}</h3>
-            <p class="lv-cf-desc">{{ t('landing.cf8_desc') }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="lv-section lv-preview lv-fade">
-      <div class="lv-container lv-preview-inner">
-        <div class="lv-preview-phones">
-          <!-- Phone 1 placeholder -->
-          <div class="lv-phone-wrap lv-phone-back">
-            <div class="lv-phone-frame lv-phone-sm">
-              <div class="lv-phone-notch"></div>
-              <img src="/assets/images/landing/app-browse-map.jpg" alt="" />
-              <div class="lv-phone-home-bar" aria-hidden="true"></div>
-            </div>
-          </div>
-          <!-- Phone 2 placeholder -->
-          <div class="lv-phone-wrap lv-phone-front">
-            <div class="lv-phone-frame">
-              <div class="lv-phone-notch"></div>
-              <img src="/assets/images/landing/app-browse-list.jpg" alt="" />
-              <div class="lv-phone-home-bar" aria-hidden="true"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="lv-preview-features">
-          <span class="lv-section-label">{{ t('landing.app_label') }}</span>
-          <h2 class="lv-section-title lv-left">{{ t('landing.app_title') }}</h2>
-          <ul class="lv-feature-list">
-            <li class="lv-feature-item">
-              <span class="lv-feature-icon">🗺️</span>
-              <div>
-                <strong>{{ t('landing.feat1_title') }}</strong>
-                <p>{{ t('landing.feat1_desc') }}</p>
-              </div>
-            </li>
-            <li class="lv-feature-item">
-              <span class="lv-feature-icon">⚡</span>
-              <div>
-                <strong>{{ t('landing.feat2_title') }}</strong>
-                <p>{{ t('landing.feat2_desc') }}</p>
-              </div>
-            </li>
-            <li class="lv-feature-item">
-              <span class="lv-feature-icon">🎟️</span>
-              <div>
-                <strong>{{ t('landing.feat3_title') }}</strong>
-                <p>{{ t('landing.feat3_desc') }}</p>
-              </div>
-            </li>
-            <li class="lv-feature-item">
-              <span class="lv-feature-icon">🌍</span>
-              <div>
-                <strong>{{ t('landing.feat4_title') }}</strong>
-                <p>{{ t('landing.feat4_desc') }}</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════
-         FOR BUSINESSES
-    ════════════════════════════════════════════ -->
-    <!-- ═══════════════════════════════════════════
-         BUSINESS SUITE
-    ════════════════════════════════════════════ -->
-    <section id="for-businesses" class="lv-section lv-bs lv-fade">
-      <div class="lv-container">
-        <div class="lv-section-header">
-          <span class="lv-section-label">{{ t('landing.bs_label') }}</span>
-          <h2 class="lv-section-title">{{ t('landing.bs_title') }}</h2>
-          <p class="lv-section-sub">{{ t('landing.bs_sub') }}</p>
-          <p class="lv-section-sub">
-            {{ t('landing.bs_contact_intro') }}
-            <a href="mailto:contact@foodsave.tech">contact@foodsave.tech</a>
-          </p>
-        </div>
-        <div class="lv-bs-grid">
-          <div class="lv-bs-card">
-            <div class="lv-bs-icon">{{ t('landing.bs1_icon') }}</div>
-            <h3 class="lv-bs-title">{{ t('landing.bs1_title') }}</h3>
-            <p class="lv-bs-desc">{{ t('landing.bs1_desc') }}</p>
-          </div>
-          <div class="lv-bs-card lv-bs-card--accent">
-            <div class="lv-bs-icon">{{ t('landing.bs2_icon') }}</div>
-            <h3 class="lv-bs-title">{{ t('landing.bs2_title') }}</h3>
-            <p class="lv-bs-desc">{{ t('landing.bs2_desc') }}</p>
-          </div>
-          <div class="lv-bs-card">
-            <div class="lv-bs-icon">{{ t('landing.bs3_icon') }}</div>
-            <h3 class="lv-bs-title">{{ t('landing.bs3_title') }}</h3>
-            <p class="lv-bs-desc">{{ t('landing.bs3_desc') }}</p>
-          </div>
-          <div class="lv-bs-card">
-            <div class="lv-bs-icon">{{ t('landing.bs4_icon') }}</div>
-            <h3 class="lv-bs-title">{{ t('landing.bs4_title') }}</h3>
-            <p class="lv-bs-desc">{{ t('landing.bs4_desc') }}</p>
-          </div>
-          <div class="lv-bs-card lv-bs-card--accent">
-            <div class="lv-bs-icon">{{ t('landing.bs5_icon') }}</div>
-            <h3 class="lv-bs-title">{{ t('landing.bs5_title') }}</h3>
-            <p class="lv-bs-desc">{{ t('landing.bs5_desc') }}</p>
-          </div>
-          <div class="lv-bs-card">
-            <div class="lv-bs-icon">{{ t('landing.bs6_icon') }}</div>
-            <h3 class="lv-bs-title">{{ t('landing.bs6_title') }}</h3>
-            <p class="lv-bs-desc">{{ t('landing.bs6_desc') }}</p>
-          </div>
-        </div>
-        <div class="lv-bs-cta">
-          <a href="#waitlist" class="lv-btn lv-btn-primary">{{ t('landing.biz_cta') }}</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="lv-section lv-biz lv-fade">
-      <div class="lv-container lv-biz-inner">
-        <div class="lv-biz-content">
-          <span class="lv-section-label">{{ t('landing.biz_label') }}</span>
-          <h2 class="lv-section-title lv-left">{{ t('landing.biz_title') }}</h2>
-          <p class="lv-biz-sub">{{ t('landing.biz_sub') }}</p>
-          <ul class="lv-biz-list">
-            <li><span>🍞</span> {{ t('landing.biz_type1') }}</li>
-            <li><span>🍕</span> {{ t('landing.biz_type2') }}</li>
-            <li><span>🛒</span> {{ t('landing.biz_type3') }}</li>
-            <li><span>🍹</span> {{ t('landing.biz_type4') }}</li>
-          </ul>
-          <a href="#waitlist" class="lv-btn lv-btn-primary" style="margin-top: 1.5rem">
-            {{ t('landing.biz_cta') }}
-          </a>
-        </div>
-
-        <!-- Phone 3 placeholder -->
-        <div class="lv-phone-wrap lv-biz-phone">
-          <div class="lv-phone-frame">
-            <div class="lv-phone-notch"></div>
-            <img src="/assets/images/landing/app-business-page.jpg" alt="" />
-            <div class="lv-phone-home-bar" aria-hidden="true"></div>
-          </div>
-          <div class="lv-phone-shadow"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════
-         TRUST SIGNALS
-    ════════════════════════════════════════════ -->
-    <div class="lv-trust-bar lv-fade">
-      <div class="lv-container lv-trust-inner">
-        <div class="lv-trust-item">
-          <span class="lv-trust-icon">🛡️</span>
-          <span>{{ t('landing.trust_babh') }}</span>
-        </div>
-        <div class="lv-trust-sep" aria-hidden="true"></div>
-        <div class="lv-trust-item">
-          <span class="lv-trust-icon">🔒</span>
-          <span>{{ t('landing.trust_payments') }}</span>
-        </div>
-        <div class="lv-trust-sep" aria-hidden="true"></div>
-        <div class="lv-trust-item">
-          <span class="lv-trust-icon">📱</span>
-          <span>{{ t('landing.trust_free') }}</span>
-        </div>
-        <div class="lv-trust-sep" aria-hidden="true"></div>
-        <div class="lv-trust-item">
-          <span class="lv-trust-icon">🇧🇬</span>
-          <span>{{ t('landing.trust_local') }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════
-         DOWNLOAD
-    ════════════════════════════════════════════ -->
     <section id="download" class="lv-section lv-download lv-fade">
-      <div class="lv-dl-glow lv-dl-glow--1" aria-hidden="true"></div>
-      <div class="lv-dl-glow lv-dl-glow--2" aria-hidden="true"></div>
-
-      <div class="lv-container lv-dl-layout">
-        <!-- Left: Phone mockup -->
-        <div class="lv-dl-phone-col">
-          <div class="lv-phone-wrap">
-            <div class="lv-phone-frame">
-              <div class="lv-phone-notch"></div>
-              <img src="/assets/images/landing/app-homepage-screen.jpg" alt="FoodSave app" />
-              <div class="lv-phone-home-bar" aria-hidden="true"></div>
-            </div>
-            <div class="lv-phone-shadow"></div>
-          </div>
-        </div>
-
-        <!-- Right: Content -->
-        <div class="lv-dl-content">
-          <span class="lv-section-label">{{ t('landing.dl_label') }}</span>
-          <h2 class="lv-section-title lv-left">{{ t('landing.dl_title') }}</h2>
-          <p class="lv-dl-desc">{{ t('landing.dl_sub') }}</p>
-
-          <div class="lv-dl-highlight">
-            <div class="lv-dl-highlight-icon">📱</div>
-            <div>
-              <strong>{{ t('landing.dl_client_title') }}</strong>
-              <p>{{ t('landing.dl_client_desc') }}</p>
-            </div>
-          </div>
-
-          <div class="lv-store-badges-v2">
-            <button
-              class="lv-store-btn"
-              type="button"
-              @click="openComingSoon(t('landing.dl_play_lg'))"
-            >
-              <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
-              <div class="lv-store-btn-text">
-                <span class="lv-store-btn-sm">{{ t('landing.dl_play_sm') }}</span>
-                <span class="lv-store-btn-lg">{{ t('landing.dl_play_lg') }}</span>
-              </div>
-              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </button>
-            <button
-              class="lv-store-btn"
-              type="button"
-              @click="openComingSoon(t('landing.dl_apple_lg'))"
-            >
-              <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
-              <div class="lv-store-btn-text">
-                <span class="lv-store-btn-sm">{{ t('landing.dl_apple_sm') }}</span>
-                <span class="lv-store-btn-lg">{{ t('landing.dl_apple_lg') }}</span>
-              </div>
-              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </button>
-            <button
-              class="lv-store-btn"
-              type="button"
-              @click="openComingSoon(t('landing.dl_windows_lg'))"
-            >
-              <img
-                :src="windowsAppLogo"
-                alt="Windows app"
-                class="lv-store-btn-icon lv-windows-logo"
-              />
-              <div class="lv-store-btn-text">
-                <span class="lv-store-btn-sm">{{ t('landing.dl_windows_sm') }}</span>
-                <span class="lv-store-btn-lg">{{ t('landing.dl_windows_lg') }}</span>
-              </div>
-              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </button>
-            <button
-              class="lv-store-btn"
-              type="button"
-              @click="openComingSoon(t('landing.dl_web_lg'))"
-            >
-              <FontAwesomeIcon :icon="'globe'" class="lv-store-btn-icon" />
-              <div class="lv-store-btn-text">
-                <span class="lv-store-btn-sm">{{ t('landing.dl_web_sm') }}</span>
-                <span class="lv-store-btn-lg">{{ t('landing.dl_web_lg') }}</span>
-              </div>
-              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════
-         TESTIMONIALS
-    ════════════════════════════════════════════ -->
-    <section class="lv-section lv-testimonials lv-fade">
-      <div class="lv-container">
+      <div class="lv-container lv-download-inner">
         <div class="lv-section-header">
-          <span class="lv-section-label">{{ t('landing.reviews_label') }}</span>
-          <h2 class="lv-section-title">{{ t('landing.reviews_title') }}</h2>
-          <p class="lv-section-sub">{{ t('landing.reviews_sub') }}</p>
+          <span class="lv-section-label">{{ t('landing.dl_label') }}</span>
+          <h2 class="lv-section-title">{{ t('landing.dl_title') }}</h2>
+          <p class="lv-section-sub">{{ t('landing.dl_sub') }}</p>
         </div>
-        <div class="lv-reviews-grid">
-          <div class="lv-review-card" v-for="(review, i) in reviews" :key="i">
-            <div class="lv-review-stars" aria-label="5 stars">★★★★★</div>
-            <p class="lv-review-text">&ldquo;{{ t(review.textKey) }}&rdquo;</p>
-            <div class="lv-review-author">
-              <div class="lv-review-avatar" aria-hidden="true">{{ review.initials }}</div>
-              <div>
-                <div class="lv-review-name">{{ review.name }}</div>
-                <div class="lv-review-role">{{ t(review.roleKey) }}</div>
-              </div>
-            </div>
-          </div>
+
+        <div class="lv-dl-highlight">
+          <strong>{{ t('landing.dl_client_title') }}</strong>
+          <p>{{ t('landing.dl_client_desc') }}</p>
+        </div>
+
+        <div class="lv-store-badges">
+          <button
+            class="lv-store-btn"
+            type="button"
+            @click="openComingSoon(t('landing.dl_play_lg'))"
+          >
+            <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
+            <span>{{ t('landing.dl_play_lg') }}</span>
+          </button>
+          <button
+            class="lv-store-btn"
+            type="button"
+            @click="openComingSoon(t('landing.dl_apple_lg'))"
+          >
+            <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
+            <span>{{ t('landing.dl_apple_lg') }}</span>
+          </button>
+          <button
+            class="lv-store-btn"
+            type="button"
+            @click="openComingSoon(t('landing.dl_windows_lg'))"
+          >
+            <img
+              :src="windowsAppLogo"
+              alt="Windows app"
+              class="lv-store-btn-icon lv-windows-logo"
+            />
+            <span>{{ t('landing.dl_windows_lg') }}</span>
+          </button>
+          <button
+            class="lv-store-btn"
+            type="button"
+            @click="openComingSoon(t('landing.dl_web_lg'))"
+          >
+            <FontAwesomeIcon :icon="'globe'" class="lv-store-btn-icon" />
+            <span>{{ t('landing.dl_web_lg') }}</span>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         FAQ  (reused component)
-    ════════════════════════════════════════════ -->
     <FaqSection />
-
-    <!-- ═══════════════════════════════════════════
-         WAITLIST  (reused component)
-    ════════════════════════════════════════════ -->
     <WaitlistSection />
-
-    <!-- ═══════════════════════════════════════════
-         CONTACT  (reused component)
-    ════════════════════════════════════════════ -->
     <ContactSection />
   </main>
 
@@ -782,119 +369,86 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* ══════════════════════════════════════════════
-   Layout & base
-══════════════════════════════════════════════ */
 .lv-container {
   max-width: var(--max-width);
   margin-inline: auto;
   padding-inline: clamp(1rem, 5vw, 2.5rem);
 }
 
-/* ── Fade-in animation ─────────────────────── */
 .lv-fade {
   opacity: 0;
-  transform: translateY(32px);
+  transform: translateY(24px);
   transition:
     opacity 0.65s ease,
     transform 0.65s ease;
 }
-.lv-fade.lv-visible {
+
+.lv-fade.lv-visible,
+.fade-in.lv-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* ══════════════════════════════════════════════
-   Common section chrome
-══════════════════════════════════════════════ */
 .lv-section {
-  padding-block: clamp(4rem, 8vw, 6rem);
+  padding-top: 24px;
+  padding-bottom: 24px;
 }
 
 .lv-section-header {
   text-align: center;
-  max-width: 640px;
-  margin-inline: auto;
-  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  max-width: 780px;
+  margin: 0 auto 2rem;
 }
 
 .lv-section-label {
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-primary);
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-full);
   border: 1px solid var(--color-primary);
-  margin-bottom: 0.75rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  margin-bottom: 0.8rem;
 }
 
 .lv-section-title {
-  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-  font-weight: 800;
-  line-height: 1.15;
-  margin-bottom: 0.75rem;
-  color: var(--color-on-surface);
-}
-.lv-section-title.lv-left {
-  text-align: left;
+  font-size: clamp(1.75rem, 4vw, 2.7rem);
+  margin-bottom: 0.7rem;
 }
 
 .lv-section-sub {
-  font-size: 1.05rem;
   color: var(--color-on-surface-var);
-  line-height: 1.7;
 }
 
-/* ══════════════════════════════════════════════
-   Hero
-══════════════════════════════════════════════ */
 .lv-hero {
-  position: relative;
-  min-height: 100svh;
   display: flex;
   align-items: center;
   padding-top: calc(var(--nav-height) + 2rem);
-  padding-bottom: 4rem;
-  overflow: hidden;
-  background: var(--color-surface);
 }
 
 .lv-hero-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2.2rem;
   align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.lv-hero-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
 }
 
 .lv-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.35rem 0.9rem;
-  border-radius: var(--radius-full);
+  display: inline-block;
+  border-radius: 999px;
   background: var(--color-primary-container);
   color: var(--color-primary);
-  width: fit-content;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+  margin-bottom: 1rem;
 }
 
 .lv-hero-title {
-  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-  font-weight: 900;
+  font-size: clamp(2.3rem, 5vw, 4rem);
   line-height: 1.08;
-  color: var(--color-on-surface);
 }
 
 .lv-accent {
@@ -902,22 +456,32 @@ onMounted(() => {
 }
 
 .lv-hero-sub {
-  font-size: clamp(1rem, 1.8vw, 1.2rem);
   color: var(--color-on-surface-var);
-  line-height: 1.7;
-  max-width: 480px;
+  margin-top: 1rem;
+  max-width: 62ch;
 }
 
 .lv-hero-sub strong {
   color: var(--color-on-surface);
-  font-weight: 700;
 }
 
 .lv-hero-actions {
+  margin-top: 1.3rem;
+}
+
+.lv-social-proof {
+  margin-top: 0.8rem;
+  color: var(--color-on-surface-var);
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 0.25rem;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.lv-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--color-primary);
 }
 
 .lv-hero-downloads {
@@ -947,791 +511,6 @@ onMounted(() => {
   transform: translateY(-2px);
 }
 
-.lv-hero-store-btn-icon {
-  width: 1.6rem;
-  height: 1.6rem;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 0.85rem;
-  color: var(--btn-primary-text);
-  background: var(--color-primary);
-  flex-shrink: 0;
-}
-
-/* Buttons */
-.lv-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.8rem 1.75rem;
-  border-radius: var(--radius-full);
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all var(--transition);
-  text-decoration: none;
-  border: none;
-}
-
-.lv-btn-primary {
-  background: var(--color-primary);
-  color: var(--btn-primary-text);
-}
-.lv-btn-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-2px);
-  color: var(--btn-primary-text);
-}
-
-.lv-btn-ghost {
-  background: transparent;
-  color: var(--color-on-surface);
-  border: 2px solid var(--color-outline);
-}
-.lv-btn-ghost:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.lv-social-proof {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: var(--color-on-surface-var);
-}
-
-.lv-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
-  animation: lv-pulse 2s infinite;
-}
-
-@keyframes lv-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-primary) 10%, transparent);
-  }
-}
-
-/* Blobs */
-.lv-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  opacity: 0.35;
-}
-.lv-blob-1 {
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-  top: -100px;
-  right: -80px;
-}
-.lv-blob-2 {
-  width: 320px;
-  height: 320px;
-  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
-  bottom: -60px;
-  left: -60px;
-}
-
-/* ── Hero responsive overrides (must come after base rules) ── */
-@media (max-width: 768px) {
-  .lv-hero {
-    padding-top: calc(var(--nav-height) + 1rem);
-    padding-bottom: 2.5rem;
-    min-height: auto;
-  }
-  .lv-hero-inner {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 1.5rem;
-  }
-  .lv-hero-content {
-    gap: 0.9rem;
-    align-items: center;
-    min-width: 0;
-  }
-  .lv-badge {
-    align-self: center;
-  }
-  .lv-hero-title {
-    font-size: clamp(1.85rem, 7vw, 2.6rem);
-    overflow-wrap: anywhere;
-  }
-  .lv-hero-sub {
-    margin-inline: auto;
-  }
-  .lv-hero-phone {
-    order: -1;
-    display: flex;
-    justify-content: center;
-    min-width: 0;
-  }
-  .lv-hero-phone .lv-phone-frame {
-    width: 200px;
-    border-radius: 30px;
-  }
-  .lv-hero-actions {
-    justify-content: center;
-  }
-  .lv-hero-downloads {
-    grid-template-columns: 1fr;
-    max-width: 320px;
-    margin-inline: auto;
-  }
-  .lv-hero-store-btn {
-    justify-content: flex-start;
-  }
-  .lv-social-proof {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .lv-hero-title {
-    font-size: clamp(1.7rem, 8vw, 2.2rem);
-  }
-  .lv-hero-sub {
-    font-size: 0.95rem;
-  }
-  .lv-hero-phone .lv-phone-frame {
-    width: 170px;
-    border-radius: 26px;
-  }
-  .lv-hero-phone .lv-phone-notch {
-    width: 60px;
-    height: 18px;
-  }
-  .lv-blob {
-    display: none;
-  }
-}
-
-/* ══════════════════════════════════════════════
-   Phone frames
-══════════════════════════════════════════════ */
-.lv-phone-wrap {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.lv-phone-frame {
-  position: relative;
-  width: 240px;
-  border-radius: 36px;
-  background: #f5f5f5;
-  border: 3px solid var(--color-outline-var);
-  overflow: hidden;
-  box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.3),
-    inset 0 0 0 1px var(--color-glass-border);
-}
-
-.lv-phone-notch {
-  width: 80px;
-  height: 22px;
-  background: var(--color-surface-high);
-  border-radius: 0 0 14px 14px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-  border: 3px solid var(--color-outline-var);
-  border-top: none;
-}
-
-.lv-phone-screen {
-  width: 100%;
-  aspect-ratio: 400/785;
-}
-
-.lv-phone-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  background: var(--color-surface-mid);
-  padding: 1rem;
-  border: 2px dashed var(--color-outline);
-}
-
-.lv-ph-icon {
-  font-size: 2.5rem;
-  line-height: 1;
-  opacity: 0.5;
-}
-
-.lv-ph-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--color-on-surface-var);
-  text-align: center;
-}
-
-.lv-ph-hint {
-  font-size: 0.6rem;
-  color: var(--color-outline);
-  text-align: center;
-}
-
-.lv-phone-home-bar {
-  width: 34%;
-  height: 4px;
-  background: var(--color-on-surface);
-  opacity: 0.25;
-  border-radius: var(--radius-full);
-  margin: 6px auto 10px;
-}
-
-.lv-phone-shadow {
-  position: absolute;
-  bottom: -24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 160px;
-  height: 24px;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
-  filter: blur(6px);
-}
-
-.lv-phone-sm .lv-phone-screen {
-  aspect-ratio: 400/785;
-}
-
-/* ══════════════════════════════════════════════
-   Stats bar
-══════════════════════════════════════════════ */
-.lv-stats-bar {
-  background: var(--color-surface-mid);
-  border-top: 1px solid var(--color-outline-var);
-  border-bottom: 1px solid var(--color-outline-var);
-  padding-block: 1.75rem;
-}
-
-.lv-stats-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-}
-
-.lv-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-}
-
-.lv-stat-value {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 900;
-  color: var(--color-primary);
-  font-family: var(--font-heading);
-}
-
-.lv-stat-label {
-  font-size: 0.78rem;
-  color: var(--color-on-surface-var);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-}
-
-.lv-stat-divider {
-  width: 1px;
-  height: 40px;
-  background: var(--color-outline-var);
-}
-
-@media (max-width: 480px) {
-  .lv-stat-divider {
-    display: none;
-  }
-}
-
-/* ══════════════════════════════════════════════
-   How It Works
-══════════════════════════════════════════════ */
-.lv-steps {
-  display: flex;
-  align-items: stretch;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.lv-step {
-  flex: 1;
-  min-width: 200px;
-  max-width: 280px;
-  background: var(--color-surface-mid);
-  border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  padding: 2rem 1.5rem;
-  text-align: center;
-  position: relative;
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition);
-}
-.lv-step:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px var(--color-card-glow);
-}
-
-.lv-step-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.lv-step-title {
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  color: var(--color-on-surface);
-}
-
-.lv-step-desc {
-  font-size: 0.9rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.65;
-}
-
-.lv-step-arrow {
-  font-size: 1.5rem;
-  color: var(--color-outline);
-  align-self: center;
-  flex-shrink: 0;
-  padding-top: 0;
-}
-
-@media (max-width: 680px) {
-  .lv-step-arrow {
-    display: none;
-  }
-}
-
-/* ══════════════════════════════════════════════
-   App Preview
-══════════════════════════════════════════════ */
-.lv-preview {
-  background: var(--color-surface-mid);
-}
-
-.lv-preview-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .lv-preview-inner {
-    grid-template-columns: 1fr;
-  }
-  .lv-preview-phones {
-    order: -1;
-    justify-content: center;
-  }
-}
-
-.lv-preview-phones {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: -1rem;
-  height: 520px;
-}
-
-.lv-phone-back {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  transform: rotate(-6deg) scale(0.88);
-  z-index: 0;
-  opacity: 0.7;
-}
-
-.lv-phone-front {
-  position: relative;
-  z-index: 1;
-  right: -20px;
-  bottom: 0;
-}
-
-.lv-feature-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.lv-feature-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.lv-feature-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-  line-height: 1;
-  margin-top: 2px;
-}
-
-.lv-feature-item strong {
-  display: block;
-  font-weight: 700;
-  margin-bottom: 0.2rem;
-  color: var(--color-on-surface);
-}
-
-.lv-feature-item p {
-  font-size: 0.9rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* ══════════════════════════════════════════════
-   Consumer Features Grid
-══════════════════════════════════════════════ */
-.lv-cf {
-  background: var(--color-surface);
-}
-
-.lv-section-sub {
-  max-width: 600px;
-  margin: 0.75rem auto 0;
-  color: var(--color-on-surface-var);
-  font-size: 1rem;
-  line-height: 1.7;
-  text-align: center;
-}
-
-.lv-cf-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-top: 2.5rem;
-}
-
-.lv-cf-card {
-  background: var(--color-surface-mid);
-  border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem 1.25rem;
-  text-align: center;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.lv-cf-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.lv-cf-icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-  line-height: 1;
-}
-
-.lv-cf-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-  margin: 0 0 0.5rem;
-}
-
-.lv-cf-desc {
-  font-size: 0.875rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* ══════════════════════════════════════════════
-   Business Suite
-══════════════════════════════════════════════ */
-.lv-bs {
-  background: var(--color-surface-high);
-}
-
-.lv-bs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
-  margin-top: 2.5rem;
-}
-
-.lv-bs-card {
-  background: var(--color-surface-mid);
-  border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem 1.5rem;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.lv-bs-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
-}
-
-.lv-bs-card--accent {
-  border-color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-mid));
-}
-
-.lv-bs-icon {
-  font-size: 2rem;
-  margin-bottom: 0.85rem;
-  line-height: 1;
-}
-
-.lv-bs-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-  margin: 0 0 0.5rem;
-}
-
-.lv-bs-desc {
-  font-size: 0.875rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.65;
-  margin: 0;
-}
-
-.lv-bs-cta {
-  text-align: center;
-  margin-top: 2.5rem;
-}
-
-@media (max-width: 768px) {
-  .lv-cf-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .lv-bs-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .lv-cf-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ══════════════════════════════════════════════
-   For Businesses
-══════════════════════════════════════════════ */
-.lv-biz {
-  background: var(--color-surface);
-}
-
-.lv-biz-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .lv-biz-inner {
-    grid-template-columns: 1fr;
-  }
-  .lv-biz-phone {
-    order: -1;
-    justify-content: center;
-  }
-}
-
-.lv-biz-sub {
-  font-size: 1.05rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.7;
-  margin-top: 0.75rem;
-  max-width: 480px;
-}
-
-.lv-biz-list {
-  list-style: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
-.lv-biz-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-on-surface);
-  background: var(--color-surface-mid);
-  padding: 0.6rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-outline-var);
-}
-
-/* ══════════════════════════════════════════════
-   Download
-══════════════════════════════════════════════ */
-.lv-download {
-  position: relative;
-  background: var(--color-surface-high);
-  overflow: hidden;
-}
-
-.lv-dl-glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  pointer-events: none;
-  opacity: 0.25;
-}
-.lv-dl-glow--1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-  top: -80px;
-  left: -60px;
-}
-.lv-dl-glow--2 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
-  bottom: -60px;
-  right: -40px;
-}
-
-.lv-dl-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.lv-dl-phone-col {
-  display: flex;
-  justify-content: center;
-}
-
-.lv-dl-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.lv-dl-content .lv-section-label {
-  align-self: flex-start;
-}
-
-.lv-dl-desc {
-  font-size: 1.05rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.7;
-  max-width: 460px;
-  margin-top: 0.25rem;
-}
-
-.lv-dl-highlight {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
-  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
-  margin-top: 1rem;
-}
-
-.lv-dl-highlight-icon {
-  font-size: 2rem;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.lv-dl-highlight strong {
-  display: block;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--color-on-surface);
-  margin-bottom: 0.3rem;
-}
-
-.lv-dl-highlight p {
-  font-size: 0.88rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.6;
-  margin: 0;
-}
-
-.lv-store-badges-v2 {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 1.25rem;
-}
-
-.lv-store-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  padding: 0.85rem 1.25rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  position: relative;
-}
-
-.lv-store-btn:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 15%, transparent);
-  transform: translateY(-2px);
-}
-
-.lv-store-btn-icon {
-  font-size: 1.6rem;
-  width: 1.6rem;
-  height: 1.6rem;
-  flex-shrink: 0;
-  color: var(--color-on-surface);
-  object-fit: contain;
-}
-
-.lv-windows-logo {
-  border-radius: 50%;
-}
-
 .lv-store-btn-text {
   display: flex;
   flex-direction: column;
@@ -1744,304 +523,279 @@ onMounted(() => {
 }
 
 .lv-store-btn-lg {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   font-weight: 700;
   color: var(--color-on-surface);
   line-height: 1.2;
 }
 
-.lv-soon-pill {
-  margin-left: auto;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 0.3rem 0.7rem;
-  border-radius: var(--radius-full);
+.lv-phone-wrap {
+  position: relative;
+  margin-inline: auto;
+}
+
+.lv-phone-frame {
+  width: min(100%, 310px);
+  border-radius: 2rem;
+  background: #eef2ee;
+  border: 2px solid #d2dad4;
+  padding: 0.55rem;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.lv-phone-notch {
+  width: 44%;
+  height: 0.95rem;
+  background: var(--color-surface);
+  border-radius: 0 0 1rem 1rem;
+  margin: 0 auto 0.5rem;
+}
+
+.lv-phone-home-bar {
+  width: 42%;
+  height: 0.3rem;
+  border-radius: 1rem;
+  background: #b8c0bb;
+  margin: 0.45rem auto 0.1rem;
+}
+
+.lv-phone-shadow {
+  width: 70%;
+  height: 1rem;
+  margin: 0.7rem auto 0;
+  border-radius: 999px;
+  filter: blur(10px);
+  background: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.lv-stats-bar {
+  border-top: 1px solid var(--color-outline-var);
+  border-bottom: 1px solid var(--color-outline-var);
+  background: color-mix(in srgb, var(--color-surface-high) 76%, transparent);
+}
+
+.lv-stats-inner {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 1.2rem;
+}
+
+.lv-stat {
+  display: grid;
+  gap: 0.18rem;
+  text-align: center;
+}
+
+.lv-stat-value {
+  font-weight: 800;
+  font-size: 1.35rem;
+}
+
+.lv-stat-label {
+  color: var(--color-on-surface-var);
+  font-size: 0.92rem;
+}
+
+.lv-stat-divider {
+  width: 1px;
+  height: 2rem;
+  background: var(--color-outline-var);
+}
+
+.lv-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.lv-step {
+  border: 1px solid var(--color-outline-var);
+  border-radius: 1rem;
+  background: var(--color-surface-high);
+  padding: 1.2rem;
+}
+
+.lv-step-icon {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
   background: var(--color-primary-container);
   color: var(--color-primary);
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
 }
 
-.lv-modal-fade-enter-active,
-.lv-modal-fade-leave-active {
-  transition: opacity 0.22s ease;
+.lv-step-desc {
+  color: var(--color-on-surface-var);
 }
 
-.lv-modal-fade-enter-from,
-.lv-modal-fade-leave-to {
-  opacity: 0;
+.lv-impact {
+  background: color-mix(in srgb, var(--color-primary-container) 35%, transparent);
+}
+
+.lv-impact-counters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.lv-impact-card {
+  border-radius: 1rem;
+  border: 1px solid var(--color-outline-var);
+  background: var(--color-surface-high);
+  padding: 1rem;
+  text-align: center;
+}
+
+.lv-impact-icon {
+  color: var(--color-primary);
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.lv-impact-value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.lv-impact-label {
+  color: var(--color-on-surface-var);
+  font-size: 0.9rem;
+}
+
+.lv-download-inner {
+  max-width: 900px;
+}
+
+.lv-dl-highlight {
+  border: 1px solid var(--color-outline-var);
+  border-radius: 1rem;
+  background: var(--color-surface-high);
+  padding: 1rem;
+  margin: 0 auto 1rem;
+  max-width: 720px;
+}
+
+.lv-dl-highlight p {
+  color: var(--color-on-surface-var);
+}
+
+.lv-store-badges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.lv-store-btn {
+  border: 1px solid var(--color-outline-var);
+  background: var(--color-surface-high);
+  border-radius: 0.9rem;
+  min-height: 64px;
+  padding: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  cursor: pointer;
+}
+
+.lv-store-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.lv-store-btn-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.lv-windows-logo {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+}
+
+.lv-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.8rem 1.5rem;
+  font-weight: 800;
+  border: none;
+}
+
+.lv-btn-primary {
+  background: var(--color-primary);
+  color: var(--btn-primary-text);
 }
 
 .lv-coming-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1200;
-  background: color-mix(in srgb, var(--color-scrim) 85%, transparent);
+  background: rgba(0, 0, 0, 0.55);
   display: grid;
   place-items: center;
-  padding: 1rem;
+  z-index: 2000;
 }
 
 .lv-coming-modal {
-  width: min(520px, 100%);
+  width: min(92vw, 420px);
   background: var(--color-surface-high);
   border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 22px 60px color-mix(in srgb, var(--color-scrim) 75%, transparent);
-  padding: 1.35rem;
-}
-
-.lv-coming-modal h3 {
-  margin: 0 0 0.45rem;
-  font-size: 1.25rem;
-  color: var(--color-on-surface);
+  border-radius: 1rem;
+  padding: 1.25rem;
 }
 
 .lv-coming-modal p {
-  margin: 0 0 1rem;
   color: var(--color-on-surface-var);
-  line-height: 1.6;
+  margin: 0.4rem 0 1rem;
 }
 
-@media (max-width: 768px) {
-  .lv-dl-layout {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    text-align: center;
-  }
-  .lv-dl-phone-col {
-    order: -1;
-  }
-  .lv-dl-content {
-    align-items: center;
-  }
-  .lv-dl-content .lv-section-label {
-    align-self: center;
-  }
-  .lv-dl-content .lv-section-title {
-    text-align: center;
-  }
-  .lv-dl-desc {
-    text-align: center;
-  }
-  .lv-dl-highlight {
-    text-align: left;
-  }
-}
-
-/* ══════════════════════════════════════════════
-   Environmental Impact
-══════════════════════════════════════════════ */
-.lv-impact {
-  background: var(--color-surface-high);
-}
-
-.lv-impact-counters {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  margin-top: 2.5rem;
-}
-
-@media (max-width: 768px) {
-  .lv-impact-counters {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 400px) {
-  .lv-impact-counters {
+@media (max-width: 1024px) {
+  .lv-hero-inner {
     grid-template-columns: 1fr;
   }
-}
 
-.lv-impact-card {
-  background: var(--color-surface-mid);
-  border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  padding: 2rem 1.5rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
+  .lv-stats-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-.lv-impact-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px var(--color-card-glow);
-}
-
-.lv-impact-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-primary) 6%, transparent),
-    transparent
-  );
-  pointer-events: none;
-}
-
-.lv-impact-icon {
-  font-size: 2.5rem;
-  line-height: 1;
-  margin-bottom: 0.75rem;
-}
-
-.lv-impact-value {
-  display: block;
-  font-size: clamp(2rem, 4vw, 2.25rem);
-  font-weight: 900;
-  color: var(--color-primary);
-  font-family: var(--font-heading);
-  line-height: 1;
-  margin-bottom: 0.5rem;
-}
-
-.lv-impact-label {
-  font-size: 0.82rem;
-  color: var(--color-on-surface-var);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-}
-
-/* ══════════════════════════════════════════════
-   Trust Signals
-══════════════════════════════════════════════ */
-.lv-trust-bar {
-  background: var(--color-surface-mid);
-  border-top: 1px solid var(--color-outline-var);
-  border-bottom: 1px solid var(--color-outline-var);
-  padding-block: 1.25rem;
-}
-
-.lv-trust-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.75rem 2rem;
-}
-
-.lv-trust-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-on-surface-var);
-}
-
-.lv-trust-icon {
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.lv-trust-sep {
-  width: 1px;
-  height: 20px;
-  background: var(--color-outline-var);
-  flex-shrink: 0;
-}
-
-@media (max-width: 480px) {
-  .lv-trust-sep {
+  .lv-stat-divider {
     display: none;
   }
-}
 
-/* ══════════════════════════════════════════════
-   Testimonials
-══════════════════════════════════════════════ */
-.lv-testimonials {
-  background: var(--color-surface);
-}
+  .lv-steps,
+  .lv-impact-counters,
+  .lv-store-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-.lv-reviews-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-
-@media (max-width: 900px) {
-  .lv-reviews-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .lv-hero-downloads {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 560px) {
-  .lv-reviews-grid {
+@media (max-width: 640px) {
+  .lv-steps,
+  .lv-impact-counters,
+  .lv-store-badges {
     grid-template-columns: 1fr;
   }
-}
 
-.lv-review-card {
-  background: var(--color-surface-mid);
-  border: 1px solid var(--color-outline-var);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.lv-review-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px var(--color-card-glow);
-}
-
-.lv-review-stars {
-  color: var(--color-accent);
-  font-size: 1rem;
-  letter-spacing: 0.1em;
-}
-
-.lv-review-text {
-  font-size: 0.93rem;
-  color: var(--color-on-surface-var);
-  line-height: 1.7;
-  flex: 1;
-  margin: 0;
-  font-style: italic;
-}
-
-.lv-review-author {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.lv-review-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--color-primary-container);
-  color: var(--color-primary);
-  font-size: 0.75rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  letter-spacing: 0.03em;
-}
-
-.lv-review-name {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-}
-
-.lv-review-role {
-  font-size: 0.78rem;
-  color: var(--color-on-surface-var);
+  .lv-hero-downloads {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
 }
 </style>
