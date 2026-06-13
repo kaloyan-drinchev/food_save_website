@@ -3,13 +3,13 @@
   "short_name": "FoodSave",
   "icons": [
     {
-      "src": "/assets/images/favicon/web-app-manifest-192x192.png",
+      "src": "/assets/images/favicon/web-app-manifest-192x192.png?v=20260613",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/assets/images/favicon/web-app-manifest-512x512.png",
+      "src": "/assets/images/favicon/web-app-manifest-512x512.png?v=20260613",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

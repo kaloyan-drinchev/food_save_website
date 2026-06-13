@@ -263,11 +263,7 @@ onMounted(() => {
               type="button"
               @click="openComingSoon(t('landing.dl_windows_lg'))"
             >
-              <img
-                :src="windowsAppLogo"
-                alt="Windows app"
-                class="lv-store-btn-icon lv-windows-logo"
-              />
+              <FontAwesomeIcon :icon="['fab', 'windows']" class="lv-store-btn-icon" />
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_windows_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_windows_lg') }}</span>
@@ -690,11 +686,7 @@ onMounted(() => {
               type="button"
               @click="openComingSoon(t('landing.dl_windows_lg'))"
             >
-              <img
-                :src="windowsAppLogo"
-                alt="Windows app"
-                class="lv-store-btn-icon lv-windows-logo"
-              />
+              <FontAwesomeIcon :icon="['fab', 'windows']" class="lv-store-btn-icon" />
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_windows_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_windows_lg') }}</span>
