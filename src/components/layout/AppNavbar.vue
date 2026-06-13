@@ -63,30 +63,20 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
     <div class="nav-desktop-links">
       <div class="nav-pill-group">
-        <a
-          href="#for-businesses"
+        <RouterLink
+          to="/for-businesses"
           class="nav-link"
           :class="{ 'active-link': activePage === 'for-businesses' }"
-          @click.prevent="scrollToSection('for-businesses')"
         >
           {{ t('landing.bs_label') }}
-        </a>
-        <a
-          href="#contact"
+        </RouterLink>
+        <RouterLink
+          to="/for-clients"
           class="nav-link"
-          :class="{ 'active-link': activePage === 'contact' }"
-          @click.prevent="scrollToSection('contact')"
+          :class="{ 'active-link': activePage === 'for-clients' }"
         >
-          {{ t('nav.contact') }}
-        </a>
-        <a
-          href="#waitlist"
-          class="nav-link"
-          :class="{ 'active-link': activePage === 'waitlist' }"
-          @click.prevent="scrollToSection('waitlist')"
-        >
-          {{ t('landing.hero_cta_waitlist') }}
-        </a>
+          {{ t('landing.cf_label') }}
+        </RouterLink>
         <RouterLink to="/privacy" class="nav-link">
           {{ t('nav.privacy') }}
         </RouterLink>
@@ -120,13 +110,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   <Transition name="mobile-menu">
     <div v-if="menuOpen" class="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
       <div class="mobile-menu-links">
-        <a href="#for-businesses" @click.prevent="scrollToSection('for-businesses')">{{
-          t('landing.bs_label')
-        }}</a>
-        <a href="#contact" @click.prevent="scrollToSection('contact')">{{ t('nav.contact') }}</a>
-        <a href="#waitlist" @click.prevent="scrollToSection('waitlist')">
-          {{ t('landing.hero_cta_waitlist') }}
-        </a>
+        <RouterLink to="/for-businesses" @click="closeMenu">{{ t('landing.bs_label') }}</RouterLink>
+        <RouterLink to="/for-clients" @click="closeMenu">{{ t('landing.cf_label') }}</RouterLink>
         <RouterLink to="/privacy" @click="closeMenu">{{ t('nav.privacy') }}</RouterLink>
         <RouterLink to="/terms" @click="closeMenu">{{ t('nav.terms') }}</RouterLink>
       </div>

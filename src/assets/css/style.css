@@ -945,7 +945,32 @@ section:nth-child(even) {
 
 /* ── Waitlist Section ───────────────────────────────────────── */
 #waitlist {
-  background: var(--color-surface);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-mid) 70%, var(--color-surface) 30%) 0%,
+    var(--color-surface) 100%
+  );
+  border-top: 1px solid var(--color-outline-var);
+  border-bottom: 1px solid var(--color-outline-var);
+  padding-top: 24px;
+  padding-bottom: 88px;
+}
+
+#waitlist .section-label {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+#waitlist .section-divider {
+  display: none;
 }
 
 .waitlist-form {
@@ -954,6 +979,18 @@ section:nth-child(even) {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  background: var(--color-surface-high);
+  border: 1px solid var(--color-outline-var);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.waitlist-form:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .waitlist-fields {
@@ -1123,6 +1160,25 @@ section:nth-child(even) {
 /* ── FAQ Section ───────────────────────────────────────────── */
 #faq {
   background: var(--color-surface-mid);
+  padding-top: 24px;
+  padding-bottom: 16px;
+}
+
+#faq .section-label {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+#faq .section-divider {
+  display: none;
 }
 
 .faq-list {
@@ -1138,7 +1194,14 @@ section:nth-child(even) {
   border: 1px solid var(--color-outline-var);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: border-color var(--transition);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.faq-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .faq-item[open] {
@@ -1189,7 +1252,30 @@ section:nth-child(even) {
 
 /* ── Contact Section ────────────────────────────────────────── */
 #contact {
-  background: var(--color-surface);
+  background: radial-gradient(
+    ellipse at 50% -40%,
+    color-mix(in srgb, var(--color-primary-container) 50%, transparent) 0%,
+    var(--color-surface) 60%
+  );
+  padding-top: 24px;
+  padding-bottom: 88px;
+}
+
+#contact .section-label {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+#contact .section-divider {
+  display: none;
 }
 
 .contact-grid {
@@ -1222,7 +1308,7 @@ section:nth-child(even) {
 .contact-card:hover {
   border-color: var(--color-primary);
   transform: translateY(-5px);
-  box-shadow: 0 12px 40px var(--color-card-glow);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .contact-card:hover::before {
