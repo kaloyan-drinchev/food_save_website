@@ -24,6 +24,14 @@ const statusOptions = [
   { value: 'all', label: 'All' },
 ]
 
+function normalizeCertificatesPayload(payload) {
+  if (Array.isArray(payload)) return payload
+  if (Array.isArray(payload?.items)) return payload.items
+  if (Array.isArray(payload?.data)) return payload.data
+  if (Array.isArray(payload?.certificates)) return payload.certificates
+  return []
+}
+
 function mapRow(b) {
   // Cert count is filled in lazily by load() (per-business GET /certificates?businessId=).
   const loc = b.locations?.[0] || {}
@@ -72,7 +80,7 @@ async function load() {
       rows.map(async (row) => {
         try {
           const certs = await api.admin.listCertificates(row.id)
-          row.certificateCount = Array.isArray(certs) ? certs.length : 0
+          row.certificateCount = normalizeCertificatesPayload(certs).length
         } catch {
           row.certificateCount = 0
         }

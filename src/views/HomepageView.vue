@@ -6,7 +6,7 @@ import AppFooter from '@/components/layout/AppFooter.vue'
 import FaqSection from '@/components/home/FaqSection.vue'
 import WaitlistSection from '@/components/home/WaitlistSection.vue'
 import ContactSection from '@/components/home/ContactSection.vue'
-import windowsAppLogo from '../../assets/images/logo-s-green.png'
+import appLogo from '../../assets/images/logo-s-green.png'
 
 const { t, locale } = useI18n()
 const showModal = ref(false)
@@ -145,7 +145,10 @@ onMounted(() => {
               type="button"
               @click="openComingSoon(t('landing.dl_apple_lg'))"
             >
-              <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
+              <FontAwesomeIcon
+                :icon="['fab', 'app-store-ios']"
+                class="lv-store-btn-icon lv-app-store-icon"
+              />
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_apple_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_apple_lg') }}</span>
@@ -157,7 +160,22 @@ onMounted(() => {
               type="button"
               @click="openComingSoon(t('landing.dl_play_lg'))"
             >
-              <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
+              <svg
+                class="lv-store-btn-icon lv-play-store-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="#00a0ff"
+                  d="M3.4 2.7c-.25.28-.4.7-.4 1.24v16.12c0 .54.15.96.4 1.24l9.1-9.3z"
+                />
+                <path fill="#00f076" d="m13.2 11.28 2.94-3-9.3-5.1c-.72-.4-1.35-.45-1.82-.16z" />
+                <path fill="#ffce00" d="m13.2 12.72-8.18 8.26c.47.29 1.1.24 1.82-.16l9.3-5.1z" />
+                <path
+                  fill="#ff3a44"
+                  d="m20.46 10.2-4.32-2.38L13.2 12l2.94 4.18 4.32-2.38c1.05-.58 1.05-3.02 0-3.6z"
+                />
+              </svg>
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_play_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_play_lg') }}</span>
@@ -167,21 +185,9 @@ onMounted(() => {
             <button
               class="lv-hero-store-btn"
               type="button"
-              @click="openComingSoon(t('landing.dl_windows_lg'))"
-            >
-              <FontAwesomeIcon :icon="['fab', 'windows']" class="lv-store-btn-icon" />
-              <div class="lv-store-btn-text">
-                <span class="lv-store-btn-sm">{{ t('landing.dl_windows_sm') }}</span>
-                <span class="lv-store-btn-lg">{{ t('landing.dl_windows_lg') }}</span>
-              </div>
-            </button>
-
-            <button
-              class="lv-hero-store-btn"
-              type="button"
               @click="openComingSoon(t('landing.dl_web_lg'))"
             >
-              <FontAwesomeIcon :icon="'globe'" class="lv-store-btn-icon" />
+              <img :src="appLogo" alt="FoodSave" class="lv-store-btn-icon lv-app-logo" />
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_web_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_web_lg') }}</span>
@@ -299,13 +305,30 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="lv-store-badges-v2">
+          <div class="lv-store-badges-v2" aria-label="Download options">
             <button
-              class="lv-store-btn"
+              class="lv-store-btn lv-download-card"
               type="button"
               @click="openComingSoon(t('landing.dl_play_lg'))"
             >
-              <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
+              <span class="lv-store-icon-wrap">
+                <svg
+                  class="lv-store-btn-icon lv-play-store-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="#00a0ff"
+                    d="M3.4 2.7c-.25.28-.4.7-.4 1.24v16.12c0 .54.15.96.4 1.24l9.1-9.3z"
+                  />
+                  <path fill="#00f076" d="m13.2 11.28 2.94-3-9.3-5.1c-.72-.4-1.35-.45-1.82-.16z" />
+                  <path fill="#ffce00" d="m13.2 12.72-8.18 8.26c.47.29 1.1.24 1.82-.16l9.3-5.1z" />
+                  <path
+                    fill="#ff3a44"
+                    d="m20.46 10.2-4.32-2.38L13.2 12l2.94 4.18 4.32-2.38c1.05-.58 1.05-3.02 0-3.6z"
+                  />
+                </svg>
+              </span>
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_play_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_play_lg') }}</span>
@@ -313,11 +336,16 @@ onMounted(() => {
               <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
             </button>
             <button
-              class="lv-store-btn"
+              class="lv-store-btn lv-download-card"
               type="button"
               @click="openComingSoon(t('landing.dl_apple_lg'))"
             >
-              <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
+              <span class="lv-store-icon-wrap">
+                <FontAwesomeIcon
+                  :icon="['fab', 'app-store-ios']"
+                  class="lv-store-btn-icon lv-app-store-icon"
+                />
+              </span>
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_apple_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_apple_lg') }}</span>
@@ -325,23 +353,13 @@ onMounted(() => {
               <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
             </button>
             <button
-              class="lv-store-btn"
-              type="button"
-              @click="openComingSoon(t('landing.dl_windows_lg'))"
-            >
-              <FontAwesomeIcon :icon="['fab', 'windows']" class="lv-store-btn-icon" />
-              <div class="lv-store-btn-text">
-                <span class="lv-store-btn-sm">{{ t('landing.dl_windows_sm') }}</span>
-                <span class="lv-store-btn-lg">{{ t('landing.dl_windows_lg') }}</span>
-              </div>
-              <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
-            </button>
-            <button
-              class="lv-store-btn"
+              class="lv-store-btn lv-download-card"
               type="button"
               @click="openComingSoon(t('landing.dl_web_lg'))"
             >
-              <FontAwesomeIcon :icon="'globe'" class="lv-store-btn-icon" />
+              <span class="lv-store-icon-wrap">
+                <img :src="appLogo" alt="FoodSave" class="lv-store-btn-icon lv-app-logo" />
+              </span>
               <div class="lv-store-btn-text">
                 <span class="lv-store-btn-sm">{{ t('landing.dl_web_sm') }}</span>
                 <span class="lv-store-btn-lg">{{ t('landing.dl_web_lg') }}</span>
@@ -349,50 +367,6 @@ onMounted(() => {
               <span class="lv-soon-pill">{{ t('landing.dl_soon') }}</span>
             </button>
           </div>
-        </div>
-
-        <div class="lv-dl-highlight">
-          <strong>{{ t('landing.dl_client_title') }}</strong>
-          <p>{{ t('landing.dl_client_desc') }}</p>
-        </div>
-
-        <div class="lv-store-badges">
-          <button
-            class="lv-store-btn"
-            type="button"
-            @click="openComingSoon(t('landing.dl_play_lg'))"
-          >
-            <FontAwesomeIcon :icon="['fab', 'google-play']" class="lv-store-btn-icon" />
-            <span>{{ t('landing.dl_play_lg') }}</span>
-          </button>
-          <button
-            class="lv-store-btn"
-            type="button"
-            @click="openComingSoon(t('landing.dl_apple_lg'))"
-          >
-            <FontAwesomeIcon :icon="['fab', 'app-store-ios']" class="lv-store-btn-icon" />
-            <span>{{ t('landing.dl_apple_lg') }}</span>
-          </button>
-          <button
-            class="lv-store-btn"
-            type="button"
-            @click="openComingSoon(t('landing.dl_windows_lg'))"
-          >
-            <img
-              :src="windowsAppLogo"
-              alt="Windows app"
-              class="lv-store-btn-icon lv-windows-logo"
-            />
-            <span>{{ t('landing.dl_windows_lg') }}</span>
-          </button>
-          <button
-            class="lv-store-btn"
-            type="button"
-            @click="openComingSoon(t('landing.dl_web_lg'))"
-          >
-            <FontAwesomeIcon :icon="'globe'" class="lv-store-btn-icon" />
-            <span>{{ t('landing.dl_web_lg') }}</span>
-          </button>
         </div>
       </div>
     </section>
@@ -569,6 +543,7 @@ onMounted(() => {
 .lv-store-btn-text {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .lv-store-btn-sm {
@@ -726,28 +701,59 @@ onMounted(() => {
   font-size: 0.9rem;
 }
 
+.lv-download {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-primary-container) 24%, transparent) 100%
+  );
+}
+
 .lv-download-inner {
-  max-width: 900px;
+  max-width: 980px;
+}
+
+.lv-dl-desc {
+  color: var(--color-on-surface-var);
+  margin-inline: auto;
+  max-width: 70ch;
 }
 
 .lv-dl-highlight {
   border: 1px solid var(--color-outline-var);
   border-radius: 1rem;
-  background: var(--color-surface-high);
-  padding: 1rem;
-  margin: 0 auto 1rem;
-  max-width: 720px;
+  background: color-mix(in srgb, var(--color-surface-high) 88%, var(--color-primary-container));
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 1rem 1.1rem;
+  margin: 1.3rem auto 1.1rem;
+  max-width: 760px;
+  text-align: left;
+}
+
+.lv-dl-highlight-icon {
+  align-items: center;
+  background: var(--color-primary-container);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 2.6rem;
+  justify-content: center;
+  width: 2.6rem;
 }
 
 .lv-dl-highlight p {
   color: var(--color-on-surface-var);
+  margin-top: 0.18rem;
 }
 
-.lv-store-badges {
+.lv-store-badges-v2 {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 1.1rem;
 }
 
 .lv-store-btn {
@@ -763,10 +769,62 @@ onMounted(() => {
   font-weight: 700;
   color: var(--color-on-surface);
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lv-download-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  justify-content: stretch;
+  min-height: 112px;
+  padding: 1.05rem;
+  text-align: left;
+}
+
+.lv-download-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--color-primary) 13%, transparent);
+  transform: translateY(-2px);
 }
 
 .lv-store-btn:hover {
   border-color: var(--color-primary);
+}
+
+.lv-store-icon-wrap {
+  align-items: center;
+  display: inline-flex;
+  grid-row: 1 / span 2;
+  height: 4.25rem;
+  justify-content: center;
+  margin-right: 0.2rem;
+  width: 4.25rem;
+}
+
+.lv-download-card .lv-store-btn-icon {
+  height: 2rem;
+  width: 2rem;
+}
+
+.lv-soon-pill {
+  align-self: end;
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 42%, transparent);
+  border-radius: 999px;
+  color: var(--color-primary);
+  display: inline-flex;
+  font-size: 0.74rem;
+  font-weight: 800;
+  justify-self: start;
+  line-height: 1;
+  margin-top: 0.45rem;
+  padding: 0.38rem 0.62rem;
+  white-space: nowrap;
 }
 
 .lv-store-btn-icon {
@@ -774,10 +832,17 @@ onMounted(() => {
   height: 1.2rem;
 }
 
-.lv-windows-logo {
-  width: 1.25rem;
-  height: 1.25rem;
+.lv-app-store-icon {
+  color: #0d96f6;
+}
+
+.lv-play-store-icon {
+  overflow: visible;
+}
+
+.lv-app-logo {
   border-radius: 999px;
+  object-fit: contain;
 }
 
 .lv-btn {
@@ -831,8 +896,7 @@ onMounted(() => {
   }
 
   .lv-steps,
-  .lv-impact-counters,
-  .lv-store-badges {
+  .lv-impact-counters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -844,8 +908,12 @@ onMounted(() => {
 @media (max-width: 640px) {
   .lv-steps,
   .lv-impact-counters,
-  .lv-store-badges {
+  .lv-store-badges-v2 {
     grid-template-columns: 1fr;
+  }
+
+  .lv-dl-highlight {
+    align-items: flex-start;
   }
 
   .lv-hero-downloads {

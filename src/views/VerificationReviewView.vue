@@ -23,6 +23,14 @@ const certError = ref('')
 const certPreviewState = ref({})
 const showCertDebug = ref(false)
 
+function normalizeCertificatesPayload(payload) {
+  if (Array.isArray(payload)) return payload
+  if (Array.isArray(payload?.items)) return payload.items
+  if (Array.isArray(payload?.data)) return payload.data
+  if (Array.isArray(payload?.certificates)) return payload.certificates
+  return []
+}
+
 // Aggregated stats (loaded from listOrders)
 const orderStats = ref({ totalOrders: 0, totalRevenue: 0, platformRevenue: 0 })
 
@@ -89,7 +97,7 @@ async function loadBusiness() {
       api.admin.listOrders().catch(() => []),
     ])
     business.value = b
-    certs.value = Array.isArray(c) ? c : []
+    certs.value = normalizeCertificatesPayload(c)
     // Geocode any locations whose lat/lng is missing or 0,0 (BE often stores 0,0).
     buildBranches()
     // Aggregate this business's orders
@@ -263,13 +271,27 @@ function resolveCertUrl(url) {
   if (!url) return ''
   const raw = String(url).trim()
   if (!raw) return ''
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1'
+  const baseOrigin = new URL(apiBaseUrl, window.location.origin).origin
+  const publicOrigin = (import.meta.env.VITE_API_ORIGIN || baseOrigin).replace(/\/$/, '')
   try {
-    return new URL(raw).toString()
+    const parsed = new URL(raw)
+    const isInternalHost = /(localhost|127\.|0\.0\.0\.0|\.local|minio|docker|kubernetes|svc)/i.test(
+      parsed.host,
+    )
+    // Back-end may return internal storage URLs (e.g. minio container host).
+    // Re-map them to the public API origin so previews work in browser.
+    if (isInternalHost && publicOrigin) {
+      return `${publicOrigin}${parsed.pathname}${parsed.search}`
+    }
+    if (window.location.protocol === 'https:' && parsed.protocol === 'http:') {
+      parsed.protocol = 'https:'
+      return parsed.toString()
+    }
+    return parsed.toString()
   } catch {
-    const origin = import.meta.env.VITE_API_ORIGIN || window.location.origin
-    const base = origin.replace(/\/$/, '')
-    if (raw.startsWith('/')) return `${base}${raw}`
-    return `${base}/${raw}`
+    if (raw.startsWith('/')) return `${publicOrigin}${raw}`
+    return `${publicOrigin}/${raw}`
   }
 }
 
