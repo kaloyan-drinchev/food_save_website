@@ -267,6 +267,23 @@ function isImage(c) {
   return /\.(png|jpe?g|gif|webp)(\?|$)/i.test(certificateUrl(c))
 }
 
+// Whether a URL host is only reachable from inside the deployment network.
+//
+// Matches on host *shape*, not on substrings: a Docker/compose service name is
+// a single label with no dot (`minio`, `minio:9000`), while a real domain that
+// merely contains the word — `minio.foodsave.tech` — is publicly reachable and
+// must be left alone, or its presigned URL gets pointed at the wrong server.
+function isInternalHost(host) {
+  const hostname = String(host || '')
+    .split(':')[0]
+    .toLowerCase()
+  if (!hostname) return false
+  if (hostname === 'localhost') return true
+  if (/^(127\.|0\.0\.0\.0|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(hostname)) return true
+  if (/\.(local|internal|svc)$/.test(hostname)) return true
+  return !hostname.includes('.')
+}
+
 function resolveCertUrl(url) {
   if (!url) return ''
   const raw = String(url).trim()
@@ -276,12 +293,9 @@ function resolveCertUrl(url) {
   const publicOrigin = (import.meta.env.VITE_API_ORIGIN || baseOrigin).replace(/\/$/, '')
   try {
     const parsed = new URL(raw)
-    const isInternalHost = /(localhost|127\.|0\.0\.0\.0|\.local|minio|docker|kubernetes|svc)/i.test(
-      parsed.host,
-    )
     // Back-end may return internal storage URLs (e.g. minio container host).
     // Re-map them to the public API origin so previews work in browser.
-    if (isInternalHost && publicOrigin) {
+    if (isInternalHost(parsed.host) && publicOrigin) {
       return `${publicOrigin}${parsed.pathname}${parsed.search}`
     }
     if (window.location.protocol === 'https:' && parsed.protocol === 'http:') {
@@ -322,8 +336,9 @@ const certDiagnostics = computed(() => {
     const host = parsed?.host || ''
     const pathname = parsed?.pathname || ''
     const mixedContentRisk = pageProtocol === 'https:' && protocol === 'http:'
-    const likelyInternalHost =
-      /(localhost|127\.|0\.0\.0\.0|\.local|minio|docker|kubernetes|svc)/i.test(host)
+    // Same predicate resolveCertUrl() uses, so the diagnostics panel can never
+    // disagree with the rewrite that actually happened.
+    const likelyInternalHost = isInternalHost(host)
 
     return {
       id: c.id,
