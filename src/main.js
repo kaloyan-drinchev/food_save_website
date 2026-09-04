@@ -1,24 +1,23 @@
-import { createApp } from 'vue'
+import { createApp, defineAsyncComponent } from 'vue'
 import App from './App.vue'
 import router from './router'
-import i18n from './i18n'
+import i18n, { restoreLocale } from './i18n'
 import './assets/css/style.css'
 
-import { library, config } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-
-config.autoAddCss = true;
-
-library.add(fas, far, fab);
-
-import VueApexCharts from 'vue3-apexcharts'
-
 const app = createApp(App)
-app.component('FontAwesomeIcon', FontAwesomeIcon)
+
+/**
+ * FontAwesome is only used by the admin panel and the legacy pages, so it is
+ * registered as an async component: the runtime and its icons download the
+ * first time one of those pages renders an icon, and never on the public site.
+ */
+app.component(
+  'FontAwesomeIcon',
+  defineAsyncComponent(() => import('./plugins/fontawesome.js')),
+)
+
 app.use(router)
 app.use(i18n)
-app.use(VueApexCharts)
-app.mount('#app')
+
+// Resolve the stored language before the first paint.
+restoreLocale().finally(() => app.mount('#app'))

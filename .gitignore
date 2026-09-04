@@ -54,3 +54,6 @@ playwright-report/
 
 # env
 .env
+
+# Raw design drops (originals live in Downloads / with the designer)
+design-source/

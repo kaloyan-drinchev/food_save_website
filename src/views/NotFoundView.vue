@@ -1,8 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppNavbar from '@/components/layout/AppNavbar.vue'
-import AppFooter from '@/components/layout/AppFooter.vue'
+import SiteShell from '@/components/site/SiteShell.vue'
 
 const { t } = useI18n()
 
@@ -12,7 +11,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppNavbar />
+  <SiteShell>
 
   <section class="not-found-section">
     <div class="container not-found-container">
@@ -25,5 +24,5 @@ onMounted(() => {
     </div>
   </section>
 
-  <AppFooter />
+  </SiteShell>
 </template>

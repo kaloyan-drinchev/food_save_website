@@ -1,20 +1,14 @@
 <script setup>
 import { computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppNavbar from '@/components/layout/AppNavbar.vue'
-import AppFooter from '@/components/layout/AppFooter.vue'
-import bgMessages from '@/i18n/bg.js'
-import enMessages from '@/i18n/en.js'
+import SiteShell from '@/components/site/SiteShell.vue'
+import { getMessages } from '@/i18n'
 
 const { t, locale } = useI18n()
 
-const localeMessages = { bg: bgMessages, en: enMessages }
-
 // Access HTML content directly, bypassing the vue-i18n message compiler
 // (the compiler mis-parses special chars like % and @ inside large HTML strings)
-const privacyContent = computed(
-  () => localeMessages[locale.value]?.privacy?.content ?? bgMessages.privacy.content,
-)
+const privacyContent = computed(() => getMessages(locale.value)?.privacy?.content ?? '')
 
 function updateTitle() {
   document.title = `FoodSave — ${t('privacy.title')}`
@@ -25,7 +19,7 @@ onMounted(updateTitle)
 </script>
 
 <template>
-  <AppNavbar active-page="privacy" />
+  <SiteShell>
 
   <div class="legal-page-hero">
     <div class="container">
@@ -43,5 +37,5 @@ onMounted(updateTitle)
     </div>
   </main>
 
-  <AppFooter />
+  </SiteShell>
 </template>

@@ -1,0 +1,336 @@
+/* ============================================================
+   FoodSave — public site design system (2026 redesign)
+   ------------------------------------------------------------
+   Every public page is wrapped in `.fs`. All colours, sizes and
+   breakpoints live here as custom properties; components only
+   compose them. Scoped under `.fs` so nothing leaks into the
+   admin panel or the legacy pages.
+
+   Reference: designer mockups (FoodSave_Web_site/*), desktop
+   canvas = 1440px, mobile canvas = 390px.
+   ============================================================ */
+
+.fs {
+  /* ── Brand palette (sampled from the mockups) ─────────── */
+  --fs-bg: #f8f7f5; /* page cream */
+  --fs-teal: #325153; /* cards, buttons, headings */
+  --fs-teal-deep: #274041; /* hover */
+  --fs-orange: #eb8127; /* accent */
+  --fs-orange-deep: #d8731c; /* hover */
+  --fs-sage: #b0bda3; /* pills, number circles */
+  --fs-sage-deep: #9daa90;
+  --fs-card: #edede5; /* light cards, inputs */
+  --fs-pill: #eff0e8; /* stats bar, FAQ pills */
+  --fs-circle: #eeeee6; /* icon circles */
+  --fs-white: #ffffff;
+  --fs-black: #1f1f1f; /* store badges */
+
+  /* Text */
+  --fs-text: var(--fs-teal);
+  --fs-body: #3a4d4e;
+  --fs-body-soft: #4f6263;
+  --fs-note: #a8b69c;
+  --fs-on-teal: #ffffff;
+  --fs-on-orange: #ffffff;
+
+  /* Overlays */
+  --fs-hero-glass: rgba(238, 238, 230, 0.88);
+  --fs-teal-overlay: rgba(50, 81, 83, 0.78);
+  --fs-dark-overlay: rgba(40, 28, 16, 0.3);
+  --fs-line-on-pill: rgba(50, 81, 83, 0.28);
+
+  /* Shadows */
+  --fs-shadow-card: 0 18px 40px -24px rgba(50, 81, 83, 0.35);
+  --fs-shadow-float: 0 30px 60px -30px rgba(0, 0, 0, 0.45);
+
+  /* ── Layout ───────────────────────────────────────────── */
+  --fs-container: 1325px; /* CONTENT width at 1440 (mockup: 57.6px gutters) */
+  --fs-container-narrow: 1000px;
+  --fs-gutter: clamp(16px, 4vw, 58px);
+  --fs-section: clamp(48px, 2.5rem + 3vw, 88px);
+  --fs-section-sm: clamp(32px, 1.5rem + 2vw, 56px);
+  --fs-gap: clamp(16px, 1rem + 1vw, 30px);
+  --fs-nav-h: clamp(72px, 2.5rem + 7.5vw, 148px);
+
+  /* Radii */
+  --fs-radius-xl: clamp(32px, 2rem + 1.6vw, 56px);
+  --fs-radius-lg: clamp(24px, 1.5rem + 1.1vw, 40px);
+  --fs-radius-md: clamp(20px, 1.25rem + 0.7vw, 30px);
+  --fs-radius-sm: clamp(16px, 1rem + 0.4vw, 22px);
+  --fs-radius-pill: 999px;
+
+  /* ── Type ─────────────────────────────────────────────── */
+  --fs-font: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-display: clamp(2.5rem, 1.6rem + 3.2vw, 4.5rem); /* 72px */
+  --fs-h1: clamp(2.125rem, 1.5rem + 2.5vw, 3.625rem); /* 58px */
+  --fs-h2: clamp(1.75rem, 1.4rem + 1.6vw, 2.875rem); /* 46px */
+  --fs-h3: clamp(1.375rem, 0.95rem + 1.5vw, 2.25rem); /* 36px */
+  --fs-h4: clamp(1.125rem, 1rem + 0.35vw, 1.3125rem); /* 21px */
+  --fs-lead: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem); /* 19px */
+  --fs-text-size: clamp(0.9375rem, 0.85rem + 0.25vw, 1.0625rem); /* 17px */
+  --fs-small: 0.9375rem; /* 15px */
+  --fs-xsmall: 0.8125rem;
+  --fs-leading: 1.5;
+  --fs-leading-tight: 1.1;
+
+  --fs-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --fs-transition: 200ms var(--fs-ease);
+
+  /* Legacy variables used by the legal pages (privacy / terms)
+     and the 404 page, remapped to the new palette so those
+     views render on-brand regardless of the saved admin theme. */
+  --color-surface: var(--fs-bg);
+  --color-surface-mid: var(--fs-card);
+  --color-surface-high: #ffffff;
+  --color-on-surface: var(--fs-teal);
+  --color-on-surface-var: var(--fs-body-soft);
+  --color-primary: var(--fs-orange);
+  --color-primary-dark: var(--fs-orange-deep);
+  --color-primary-container: #fde2cc;
+  --color-on-primary: #ffffff;
+  --color-accent: var(--fs-orange);
+  --color-outline: var(--fs-teal);
+  --color-outline-var: #e0e2da;
+  --color-tertiary: var(--fs-teal);
+  --color-tertiary-container: var(--fs-card);
+  --btn-primary-text: #ffffff;
+  --font: var(--fs-font);
+  --font-heading: var(--fs-font);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+.fs {
+  min-height: 100vh;
+  background: var(--fs-bg);
+  color: var(--fs-body);
+  font-family: var(--fs-font);
+  font-size: var(--fs-text-size);
+  line-height: var(--fs-leading);
+  -webkit-font-smoothing: antialiased;
+}
+
+.fs *,
+.fs *::before,
+.fs *::after {
+  box-sizing: border-box;
+}
+
+.fs h1,
+.fs h2,
+.fs h3,
+.fs h4,
+.fs p,
+.fs ul,
+.fs ol,
+.fs figure {
+  margin: 0;
+}
+
+.fs h1,
+.fs h2,
+.fs h3,
+.fs h4 {
+  color: var(--fs-text);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.fs ul,
+.fs ol {
+  padding: 0;
+  list-style: none;
+}
+
+.fs img,
+.fs svg {
+  display: block;
+  max-width: 100%;
+}
+
+.fs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fs button,
+.fs input,
+.fs select,
+.fs textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* The legacy global stylesheet paints every even <section>, pads every
+   <section>, tints <footer> and animates both with `transition: all`.
+   Neutralise all of that inside the redesign (higher specificity than
+   the unscoped rules). */
+.fs section,
+.fs footer {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  transition: none;
+}
+
+.fs section:nth-child(even) {
+  background: transparent;
+}
+
+.fs :focus-visible {
+  outline: 2px solid var(--fs-orange);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Layout primitives ────────────────────────────────────── */
+/* The tokens are CONTENT widths; the gutters are added on top so a 1440px
+   viewport yields exactly the mockup's 1325px column. */
+.fs-container {
+  width: 100%;
+  max-width: calc(var(--fs-container) + 2 * var(--fs-gutter));
+  margin-inline: auto;
+  padding-inline: var(--fs-gutter);
+}
+
+.fs-container--narrow {
+  max-width: calc(var(--fs-container-narrow) + 2 * var(--fs-gutter));
+}
+
+/* Photo bands touch the viewport edges on phones, as in every mobile mockup. */
+@media (max-width: 640px) {
+  .fs-container > .fs-banner {
+    margin-inline: calc(-1 * var(--fs-gutter));
+  }
+}
+
+/* The legacy stylesheet sets `overflow-x: hidden` on html, body and #app,
+   which turns them into scroll containers and stops `position: sticky` (the
+   header) from ever sticking. `clip` hides horizontal overflow without
+   creating a scroll container. */
+html,
+body,
+#app {
+  overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.fs .fs-section {
+  padding-block: var(--fs-section);
+}
+
+.fs .fs-section--sm {
+  padding-block: var(--fs-section-sm);
+}
+
+.fs .fs-section--flush-top {
+  padding-top: 0;
+}
+
+.fs .fs-section--flush-bottom {
+  padding-bottom: 0;
+}
+
+/* ── Type utilities ───────────────────────────────────────── */
+.fs-display {
+  font-size: var(--fs-display);
+  line-height: var(--fs-leading-tight);
+}
+
+.fs-h1 {
+  font-size: var(--fs-h1);
+  line-height: var(--fs-leading-tight);
+}
+
+.fs-h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.15;
+}
+
+.fs-h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.2;
+}
+
+.fs-h4 {
+  font-size: var(--fs-h4);
+  line-height: 1.25;
+}
+
+.fs-lead {
+  font-size: var(--fs-lead);
+  color: var(--fs-body);
+}
+
+.fs-accent {
+  color: var(--fs-orange);
+}
+
+.fs-center {
+  text-align: center;
+}
+
+.fs-measure {
+  max-width: 68ch;
+  margin-inline: auto;
+}
+
+.fs-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Shared surfaces ──────────────────────────────────────── */
+
+/* Rounded photo frame; children fill it. */
+.fs-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--fs-radius-xl);
+  background: var(--fs-card);
+}
+
+.fs-frame > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Sage number circle (1 / 2 / 3) used on cards and steps. */
+.fs-num {
+  display: inline-grid;
+  place-items: center;
+  width: var(--fs-num-size, 60px);
+  height: var(--fs-num-size, 60px);
+  border-radius: 50%;
+  background: var(--fs-sage);
+  color: var(--fs-teal);
+  font-weight: 700;
+  font-size: calc(var(--fs-num-size, 60px) * 0.5);
+  line-height: 1;
+  flex: none;
+}
+
+/* ── Motion ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .fs *,
+  .fs *::before,
+  .fs *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

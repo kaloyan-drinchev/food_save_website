@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
 import { useTheme } from '@/composables/useTheme'
+import { setLocale } from '@/i18n'
 
 defineProps({
   activePage: { type: String, default: '' },
@@ -15,10 +16,7 @@ const route = useRoute()
 const menuOpen = ref(false)
 const navShadow = ref(false)
 
-function switchLang(lang) {
-  locale.value = lang
-  localStorage.setItem('foodsave-lang', lang)
-}
+const switchLang = setLocale
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value

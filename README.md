@@ -27,12 +27,27 @@ npm run preview   # preview the build locally
 
 ## Routes
 
-| Path       | Description                                                          |
-| ---------- | -------------------------------------------------------------------- |
-| `/`        | Home — hero carousel, how it works, download, waitlist, FAQ, contact |
-| `/privacy` | Privacy Policy (EN/BG)                                               |
-| `/terms`   | Terms & Conditions (EN/BG)                                           |
-| `/admin`   | Admin Dashboard (login: `admin` / `guiadmin`)                        |
+| Path              | Description                                                        |
+| ----------------- | ------------------------------------------------------------------ |
+| `/`               | Home (2026 redesign) — hero, audience cards, how it works, stats, FAQ, download band |
+| `/about`          | За FoodSave — mission, how FoodSave helps                          |
+| `/for-clients`    | За потребители — perks, what you can find, steps, value, FAQ       |
+| `/for-businesses` | За бизнеса — why, steps, business types, partnership terms, FAQ    |
+| `/contact`        | Контакти — contact cards + form (Formspree)                        |
+| `/privacy`        | Privacy Policy (EN/BG)                                             |
+| `/terms`          | Terms & Conditions (EN/BG)                                         |
+| `/admin`          | Admin Dashboard (login: `admin` / `guiadmin`)                      |
+
+Previous pages stay reachable while the redesign is reviewed: `/legacy-home`, `/legacy-for-clients`, `/legacy-for-businesses`, `/old`.
+
+### Public site (redesign) — where things live
+
+- `src/assets/css/site.css` — design tokens (colours, type scale, radii, spacing) scoped under `.fs`
+- `src/components/site/` — nav, footer, buttons, store badges, FAQ, CTA band, audience cards, steps, banners
+- `src/content/site.js` — structure/config: nav & footer links, photo slots, icons, store links, contact details
+- `src/i18n/{bg,en}.js` → `hp.*` — every string on the public pages
+- `public/assets/images/site/` — optimised WebP photos, cut-outs and the designer's icon set
+- `design-source/` (git-ignored) — raw design drop; the mockups themselves live in `~/Downloads/FoodSave_Web_site`
 
 ## Admin verification workflow
 
