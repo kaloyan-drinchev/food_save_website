@@ -10,21 +10,28 @@
 
 const IMG = '/assets/images/site'
 
+/**
+ * Asset revision. Files under public/ keep their names between deploys, so a
+ * photo replaced in place would otherwise be served from browsers that still
+ * hold the previous copy. Bump this when you overwrite an existing image.
+ */
+const V = '?v=2'
+
 /** Photography. `null` renders an on-brand placeholder at the reserved size. */
 export const photos = {
-  heroHome: `${IMG}/photos/hero-home.webp`,
-  bandHome: `${IMG}/photos/band-home.webp`,
-  heroAbout: `${IMG}/photos/hero-about.webp`,
-  heroConsumers: `${IMG}/photos/hero-consumers.webp`,
-  bannerConsumers: `${IMG}/photos/banner-consumers.webp`,
-  heroBusiness: `${IMG}/photos/hero-business.webp`,
-  bannerBusiness: `${IMG}/photos/banner-business.webp`,
-  heroContact: `${IMG}/photos/hero-contact.webp`,
+  heroHome: `${IMG}/photos/hero-home.webp${V}`,
+  bandHome: `${IMG}/photos/band-home.webp${V}`,
+  heroAbout: `${IMG}/photos/hero-about.webp${V}`,
+  heroConsumers: `${IMG}/photos/hero-consumers.webp${V}`,
+  bannerConsumers: `${IMG}/photos/banner-consumers.webp${V}`,
+  heroBusiness: `${IMG}/photos/hero-business.webp${V}`,
+  bannerBusiness: `${IMG}/photos/banner-business.webp${V}`,
+  heroContact: `${IMG}/photos/hero-contact.webp${V}`,
 
   // Stand-in for the designer's consumer portrait (a woman with her phone and
   // a food bag), which was not part of the hand-over: a portrait crop of the
   // cotton food bag. Swap in the real photo when it arrives.
-  womanWithPhone: `${IMG}/photos/consumer-bag.webp`, // "За потребители" card (home + about)
+  womanWithPhone: `${IMG}/photos/consumer-bag.webp${V}`, // "За потребители" card (home + about)
   bakerAtCounter: null, // "За бизнеса" hero photo (business page)
 
   // Business-type photos ("За какви бизнеси е FoodSave?"). Not in the
@@ -38,14 +45,14 @@ export const photos = {
 
 /** Transparent cut-outs (PNG). */
 export const cutouts = {
-  phonePlates: `${IMG}/cutouts/phone-plates.webp`, // phone + two plates + basil
-  phone: `${IMG}/cutouts/phone.webp`, // single phone with the S logo
-  manTablet: `${IMG}/cutouts/man-tablet.webp`, // "За бизнеса" card portrait
-  bakery: `${IMG}/cutouts/bakery.webp`,
-  restaurant: `${IMG}/cutouts/restaurant.webp`,
-  pasta: `${IMG}/cutouts/pasta.webp`, // ready meals — "Столове и обекти с готова храна"
-  grocery: `${IMG}/cutouts/grocery.webp`,
-  cafe: `${IMG}/cutouts/cafe.webp`,
+  phonePlates: `${IMG}/cutouts/phone-plates.webp${V}`, // phone + two plates + basil
+  phone: `${IMG}/cutouts/phone.webp${V}`, // single phone with the S logo
+  manTablet: `${IMG}/cutouts/man-tablet.webp${V}`, // "За бизнеса" card portrait
+  bakery: `${IMG}/cutouts/bakery.webp${V}`,
+  restaurant: `${IMG}/cutouts/restaurant.webp${V}`,
+  pasta: `${IMG}/cutouts/pasta.webp${V}`, // ready meals — "Столове и обекти с готова храна"
+  grocery: `${IMG}/cutouts/grocery.webp${V}`,
+  cafe: `${IMG}/cutouts/cafe.webp${V}`,
 }
 
 /** Intrinsic pixel sizes of the cut-outs, so the browser reserves space before they load. */
@@ -62,22 +69,22 @@ export const cutoutSizes = {
 
 /** Designer icon set (PNG, transparent). */
 export const icons = {
-  business: `${IMG}/icons/business.webp`, // handshake
-  foodBag: `${IMG}/icons/food-bag.webp`,
-  cafe: `${IMG}/icons/cafe.webp`,
-  store: `${IMG}/icons/store.webp`,
-  search: `${IMG}/icons/search.webp`,
-  bakery: `${IMG}/icons/bakery.webp`,
-  user: `${IMG}/icons/user.webp`,
-  restaurant: `${IMG}/icons/restaurant.webp`,
-  co2: `${IMG}/icons/co2.webp`,
-  foodBowl: `${IMG}/icons/food-bowl.webp`,
-  lessWaste: `${IMG}/icons/less-waste.webp`,
-  heart: `${IMG}/icons/heart.webp`,
-  newClients: `${IMG}/icons/new-clients.webp`,
-  growth: `${IMG}/icons/growth.webp`,
-  piggy: `${IMG}/icons/piggy.webp`,
-  control: `${IMG}/icons/control.webp`,
+  business: `${IMG}/icons/business.webp${V}`, // handshake
+  foodBag: `${IMG}/icons/food-bag.webp${V}`,
+  cafe: `${IMG}/icons/cafe.webp${V}`,
+  store: `${IMG}/icons/store.webp${V}`,
+  search: `${IMG}/icons/search.webp${V}`,
+  bakery: `${IMG}/icons/bakery.webp${V}`,
+  user: `${IMG}/icons/user.webp${V}`,
+  restaurant: `${IMG}/icons/restaurant.webp${V}`,
+  co2: `${IMG}/icons/co2.webp${V}`,
+  foodBowl: `${IMG}/icons/food-bowl.webp${V}`,
+  lessWaste: `${IMG}/icons/less-waste.webp${V}`,
+  heart: `${IMG}/icons/heart.webp${V}`,
+  newClients: `${IMG}/icons/new-clients.webp${V}`,
+  growth: `${IMG}/icons/growth.webp${V}`,
+  piggy: `${IMG}/icons/piggy.webp${V}`,
+  control: `${IMG}/icons/control.webp${V}`,
 }
 
 export const logos = {
