@@ -165,11 +165,24 @@ const bind = computed(() => {
 }
 
 @media (max-width: 640px) {
+  /* The card columns are narrow here, so a long label has to wrap: without
+     this the nowrap text pushes the arrow outside the pill. */
   .fs-btn {
     --btn-h: 42px;
     --btn-px: 18px;
     --btn-fs: 0.8125rem;
     gap: 14px;
+    min-width: 0;
+    padding: 9px var(--btn-px);
+    white-space: normal;
+  }
+
+  .fs-btn--arrow {
+    gap: 12px;
+  }
+
+  .fs-btn__label {
+    min-width: 0;
   }
 
   .fs-btn--lg {

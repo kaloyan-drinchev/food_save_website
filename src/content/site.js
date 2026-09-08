@@ -51,7 +51,7 @@ export const cutouts = {
 /** Intrinsic pixel sizes of the cut-outs, so the browser reserves space before they load. */
 export const cutoutSizes = {
   phonePlates: [1199, 1019],
-  phone: [711, 1200],
+  phone: [650, 1200],
   manTablet: [916, 1372],
   bakery: [1220, 903],
   restaurant: [1137, 681],

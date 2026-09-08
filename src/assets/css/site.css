@@ -198,13 +198,6 @@
   max-width: calc(var(--fs-container-narrow) + 2 * var(--fs-gutter));
 }
 
-/* Photo bands touch the viewport edges on phones, as in every mobile mockup. */
-@media (max-width: 640px) {
-  .fs-container > .fs-banner {
-    margin-inline: calc(-1 * var(--fs-gutter));
-  }
-}
-
 /* The legacy stylesheet sets `overflow-x: hidden` on html, body and #app,
    which turns them into scroll containers and stops `position: sticky` (the
    header) from ever sticking. `clip` hides horizontal overflow without

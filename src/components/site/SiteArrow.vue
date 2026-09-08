@@ -22,4 +22,10 @@
   flex: none;
   transition: transform var(--fs-transition);
 }
+
+@media (max-width: 640px) {
+  .fs-arrow {
+    width: 1.75em;
+  }
+}
 </style>

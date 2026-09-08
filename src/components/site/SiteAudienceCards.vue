@@ -163,7 +163,7 @@ const k = computed(() => `hp.audience.${props.variant}`)
 
 @media (max-width: 480px) {
   .fs-aud__card {
-    grid-template-columns: minmax(0, 1fr) 38%;
+    grid-template-columns: minmax(0, 1fr) 33%;
     gap: 14px;
     padding: 22px 20px 26px;
   }
