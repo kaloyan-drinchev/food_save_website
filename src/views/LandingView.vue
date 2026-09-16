@@ -177,7 +177,10 @@ const rightSteps = homeSteps.slice(2)
 .home-hero__frame > img {
   position: absolute;
   inset: 0;
-  object-position: center;
+  /* The banner is a wide composition whose subject — the phone — sits right of
+     centre. Anchoring the crop left keeps it clear of the copy card at every
+     width; centring tucks it under the card's translucent edge. */
+  object-position: left center;
 }
 
 .home-hero__card {

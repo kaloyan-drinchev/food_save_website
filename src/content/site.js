@@ -19,7 +19,7 @@ const V = '?v=2'
 
 /** Photography. `null` renders an on-brand placeholder at the reserved size. */
 export const photos = {
-  heroHome: `${IMG}/photos/hero-home.webp${V}`,
+  heroHome: `${IMG}/photos/hero-banner.webp${V}`, // branded hero banner (phone + plates)
   bandHome: `${IMG}/photos/band-home.webp${V}`,
   heroAbout: `${IMG}/photos/hero-about.webp${V}`,
   heroConsumers: `${IMG}/photos/hero-consumers.webp${V}`,
@@ -28,11 +28,8 @@ export const photos = {
   bannerBusiness: `${IMG}/photos/banner-business.webp${V}`,
   heroContact: `${IMG}/photos/hero-contact.webp${V}`,
 
-  // Stand-in for the designer's consumer portrait (a woman with her phone and
-  // a food bag), which was not part of the hand-over: a portrait crop of the
-  // cotton food bag. Swap in the real photo when it arrives.
-  womanWithPhone: `${IMG}/photos/consumer-bag.webp${V}`, // "За потребители" card (home + about)
-  bakerAtCounter: null, // "За бизнеса" hero photo (business page)
+  womanWithPhone: `${IMG}/photos/woman-phone-bag.webp${V}`, // "За потребители" card (home + about)
+  bakerAtCounter: `${IMG}/photos/man-tablet-bakery.webp${V}`, // "За бизнеса" hero photo (business page)
 
   // Business-type photos ("За какви бизнеси е FoodSave?"). Not in the
   // hand-over either; the cutouts below are used as stand-ins.

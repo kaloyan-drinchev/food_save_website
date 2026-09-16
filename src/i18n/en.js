@@ -514,8 +514,8 @@ export default {
     },
 
     photo: {
-      womanWithPhone: 'A cotton bag with fresh fruit',
-      bakerAtCounter: 'Photo: a bakery owner',
+      womanWithPhone: 'A woman holding a FoodSave bag and browsing the app on her phone',
+      bakerAtCounter: 'A bakery owner with a tablet behind a counter of croissants',
       type: 'Photo of the venue',
     },
 
@@ -541,7 +541,7 @@ export default {
       hero: {
         title: 'Good food finds its person',
         lead: 'FoodSave connects people and local businesses, turning unsold food into an opportunity for everyone.',
-        photoAlt: 'Vegetables in reusable mesh bags',
+        photoAlt: 'A hand holding a phone with the FoodSave app, surrounded by plates of food',
       },
       what: {
         title: 'What is FoodSave?',

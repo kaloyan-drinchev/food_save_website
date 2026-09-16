@@ -205,6 +205,9 @@ const partnerLink = { path: '/contact', query: { topic: 'business' } }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* The photo is a portrait shot in a landscape frame: bias the crop upwards
+     so the owner's face and the tablet both stay inside it. */
+  object-position: center 32%;
 }
 
 .biz-hero__photo--stand-in {
