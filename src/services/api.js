@@ -49,8 +49,11 @@ async function request(method, path, body) {
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw Object.assign(new Error(err.message || res.statusText), { status: res.status })
+    throw Object.assign(new Error(err.message || err.error || res.statusText), {
+      status: res.status,
+    })
   }
+  if (res.status === 204) return null
   return res.json()
 }
 
@@ -69,12 +72,26 @@ async function rawRequest(method, url, body, extraHeaders = {}) {
 
 export const api = {
   // Auth
-  login: (email, password) => request('POST', '/auth/login', { email, password }),
+  async login(email, password) {
+    const data = await request('POST', '/auth/login', { email, password })
+    const token = data?.token || data?.accessToken || data?.jwt
+    if (!token) throw new Error('Login response did not contain a token')
+    sessionStorage.setItem('fs_token', token)
+    return data
+  },
+  logout() {
+    sessionStorage.removeItem('fs_token')
+  },
   register: (data) => request('POST', '/auth/register', data),
 
   // Users
   getProfile: () => request('GET', '/auth/users/profile'),
   updateProfile: (data) => request('PUT', '/auth/users/profile', data),
+  async deleteAccount() {
+    const data = await request('DELETE', '/auth/users/account')
+    sessionStorage.removeItem('fs_token')
+    return data
+  },
 
   // Businesses
   getBusinesses: (category) =>

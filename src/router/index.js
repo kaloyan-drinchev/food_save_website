@@ -45,6 +45,13 @@ const router = createRouter({
       name: 'terms',
       component: () => import('@/views/TermsView.vue'),
     },
+    {
+      // Intentionally unlinked: this public URL is only for account-deletion requests.
+      path: '/delete-account',
+      name: 'delete-account',
+      component: () => import('@/views/AccountDeletionView.vue'),
+      meta: { robots: 'noindex, nofollow' },
+    },
 
     // ── Previous pages, kept reachable while the redesign is in review ──
     {
@@ -128,6 +135,20 @@ const router = createRouter({
     }
     return { top: 0 }
   },
+})
+
+router.afterEach((to) => {
+  let robots = document.querySelector('meta[name="robots"]')
+  if (to.meta.robots) {
+    if (!robots) {
+      robots = document.createElement('meta')
+      robots.setAttribute('name', 'robots')
+      document.head.appendChild(robots)
+    }
+    robots.setAttribute('content', to.meta.robots)
+  } else if (robots) {
+    robots.remove()
+  }
 })
 
 export default router
