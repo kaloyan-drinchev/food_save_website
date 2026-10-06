@@ -32,6 +32,11 @@ SOURCES = {
 DROP = []
 FIXES = {}
 
+# The one deliberate difference from the .docx: the "last updated" date in the
+# terms is the day the text went live here, not the date typed in the draft.
+# Update it whenever a new revision is published.
+LAST_UPDATED = '06.10.2026'
+
 # Cross-references between the three documents become in-site links.
 CROSS_LINKS = [
     (r'Политика(?:та)? за поверителност(?! на )', '/privacy'),
@@ -156,6 +161,7 @@ def convert(name, path):
     doc = re.sub(r'<p>\s*</p>\n?', '', doc)
     for old, new in FIXES.items():
         doc = doc.replace(old, new)
+    doc = re.sub(r'(Последна актуализация:\s*)\d{2}\.\d{2}\.\d{4}', rf'\g<1>{LAST_UPDATED}', doc)
     doc = linkify(doc, name)
     return doc + '\n'
 
