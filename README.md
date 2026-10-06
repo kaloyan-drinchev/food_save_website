@@ -34,8 +34,9 @@ npm run preview   # preview the build locally
 | `/for-clients`    | За потребители — perks, what you can find, steps, value, FAQ       |
 | `/for-businesses` | За бизнеса — why, steps, business types, partnership terms, FAQ    |
 | `/contact`        | Контакти — contact cards + form (Formspree)                        |
-| `/privacy`        | Privacy Policy (EN/BG)                                             |
-| `/terms`          | Terms & Conditions (EN/BG)                                         |
+| `/terms`          | Общи условия (B2C)                                                 |
+| `/privacy`        | Политика за поверителност                                          |
+| `/cookies`        | Политика за бисквитките                                            |
 | `/admin`          | Admin Dashboard (login: `admin` / `guiadmin`)                      |
 
 Previous pages stay reachable while the redesign is reviewed: `/legacy-home`, `/legacy-for-clients`, `/legacy-for-businesses`, `/old`.
@@ -47,6 +48,7 @@ Previous pages stay reachable while the redesign is reviewed: `/legacy-home`, `/
 - `src/content/site.js` — structure/config: nav & footer links, photo slots, icons, store links, contact details
 - `src/i18n/{bg,en}.js` → `hp.*` — every string on the public pages
 - `public/assets/images/site/` — optimised WebP photos, cut-outs and the designer's icon set
+- `src/content/legal/*.bg.html` — the legal pages, generated from the .docx files in `docs/b2c_docs/` by `python3 scripts/legal-docx-to-html.py` (Bulgarian only)
 - `design-source/` (git-ignored) — raw design drop; the mockups themselves live in `~/Downloads/FoodSave_Web_site`
 
 ## Admin verification workflow

@@ -26,7 +26,7 @@ function updateTitle() {
   document.title = props.standaloneTitle ? name : `${name} | FoodSave`
 }
 
-watch(locale, updateTitle)
+watch([locale, () => props.titleKey], updateTitle)
 onMounted(updateTitle)
 </script>
 

@@ -155,7 +155,7 @@ export const footerColumns = [
     links: [
       { key: 'hp.footer.col4Link1', to: '/terms' },
       { key: 'hp.footer.col4Link2', to: '/privacy' },
-      { key: 'hp.footer.col4Link3', to: '/privacy' },
+      { key: 'hp.footer.col4Link3', to: '/cookies' },
     ],
   },
 ]

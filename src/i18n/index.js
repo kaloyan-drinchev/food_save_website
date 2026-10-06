@@ -3,7 +3,7 @@ import bg from './bg.js'
 
 /**
  * Bulgarian ships with the app; English is fetched the first time it is
- * selected. Both files carry the same 248 keys, so nothing but the download
+ * selected. Both files carry the same keys, so nothing but the download
  * differs between them.
  *
  * Always switch languages through `setLocale()` — it loads the messages if

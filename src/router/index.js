@@ -36,14 +36,22 @@ const router = createRouter({
       component: () => import('@/views/ContactView.vue'),
     },
     {
-      path: '/privacy',
-      name: 'privacy',
-      component: () => import('@/views/PrivacyView.vue'),
-    },
-    {
       path: '/terms',
       name: 'terms',
-      component: () => import('@/views/TermsView.vue'),
+      component: () => import('@/views/LegalView.vue'),
+      props: { doc: 'terms' },
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/views/LegalView.vue'),
+      props: { doc: 'privacy' },
+    },
+    {
+      path: '/cookies',
+      name: 'cookies',
+      component: () => import('@/views/LegalView.vue'),
+      props: { doc: 'cookies' },
     },
     {
       // Intentionally unlinked: this public URL is only for account-deletion requests.

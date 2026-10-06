@@ -76,9 +76,8 @@
   --fs-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --fs-transition: 200ms var(--fs-ease);
 
-  /* Legacy variables used by the legal pages (privacy / terms)
-     and the 404 page, remapped to the new palette so those
-     views render on-brand regardless of the saved admin theme. */
+  /* Legacy variables used by the 404 page, remapped to the new
+     palette so it renders on-brand regardless of the saved admin theme. */
   --color-surface: var(--fs-bg);
   --color-surface-mid: var(--fs-card);
   --color-surface-high: #ffffff;
