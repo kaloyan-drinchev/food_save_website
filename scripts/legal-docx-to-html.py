@@ -9,6 +9,7 @@ Standard library only. When a new revision of a document arrives, drop it
 into docs/b2c_docs/, point SOURCES at it and re-run; review the diff.
 """
 import html
+import json
 import re
 import sys
 import zipfile
@@ -35,7 +36,7 @@ FIXES = {}
 # The one deliberate difference from the .docx: the "last updated" date in the
 # terms is the day the text went live here, not the date typed in the draft.
 # Update it whenever a new revision is published.
-LAST_UPDATED = '06.10.2026'
+LAST_UPDATED = '07.10.2026'
 
 # Cross-references between the three documents become in-site links.
 CROSS_LINKS = [
@@ -173,8 +174,8 @@ def outside_anchors(doc, fn):
 
 
 def linkify(doc, name):
-    doc = outside_anchors(doc, lambda s: s.replace(
-        'contact@foodsave.tech', '<a href="mailto:contact@foodsave.tech">contact@foodsave.tech</a>'))
+    for address in ('contact@foodsave.tech', 'support@foodsave.tech'):
+        doc = outside_anchors(doc, lambda s, a=address: s.replace(a, f'<a href="mailto:{a}">{a}</a>'))
     doc = outside_anchors(doc, lambda s: s.replace(
         'www.foodsave.tech', '<a href="https://www.foodsave.tech/">www.foodsave.tech</a>'))
     doc = outside_anchors(doc, lambda s: s.replace(
@@ -194,6 +195,7 @@ def main():
             sys.exit(f'missing: {path}')
         (OUT / f'{name}.bg.html').write_text(convert(name, path), encoding='utf-8')
         print(f'{name}: {OUT / f"{name}.bg.html"}')
+    (OUT / 'updated.json').write_text(json.dumps({'date': LAST_UPDATED}) + '\n', encoding='utf-8')
 
 
 if __name__ == '__main__':

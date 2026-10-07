@@ -277,6 +277,7 @@ export default {
 
   legal: {
     bgOnly: '',
+    updated: 'Последна актуализация: {date}г.',
   },
 
   waitlist: {

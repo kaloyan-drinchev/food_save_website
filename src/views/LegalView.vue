@@ -3,6 +3,7 @@ import { ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import SiteShell from '@/components/site/SiteShell.vue'
+import updated from '@/content/legal/updated.json'
 
 /**
  * Terms, privacy and cookie policy. The documents are HTML generated from the
@@ -44,6 +45,7 @@ function onClick(event) {
       <div class="fs-container legal-column">
         <h1 class="fs-h1">{{ t(`${doc}.title`) }}</h1>
         <p class="fs-lead legal-hero__lead">{{ t(`${doc}.subtitle`) }}</p>
+        <p class="legal-hero__updated">{{ t('legal.updated', { date: updated.date }) }}</p>
       </div>
     </header>
 
@@ -66,6 +68,12 @@ function onClick(event) {
 
 .legal-hero__lead {
   margin-top: 14px;
+  color: var(--fs-body-soft);
+}
+
+.legal-hero__updated {
+  margin-top: 10px;
+  font-size: var(--fs-small);
   color: var(--fs-body-soft);
 }
 

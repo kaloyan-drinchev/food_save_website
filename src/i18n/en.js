@@ -277,6 +277,7 @@ export default {
 
   legal: {
     bgOnly: 'This document is currently available in Bulgarian only. The Bulgarian version is the one that applies.',
+    updated: 'Last updated: {date}',
   },
 
   waitlist: {
