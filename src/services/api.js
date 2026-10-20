@@ -84,6 +84,11 @@ export const api = {
   },
   register: (data) => request('POST', '/auth/register', data),
 
+  // Password reset (the token comes from the emailed link)
+  validateResetToken: (token) => request('POST', '/auth/reset-password/validate', { token }),
+  resetPassword: (token, newPassword) =>
+    request('POST', '/auth/reset-password', { token, newPassword }),
+
   // Users
   getProfile: () => request('GET', '/auth/users/profile'),
   updateProfile: (data) => request('PUT', '/auth/users/profile', data),

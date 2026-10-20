@@ -61,6 +61,14 @@ const router = createRouter({
       meta: { robots: 'noindex, nofollow' },
     },
 
+    {
+      // Opened from the password-reset email; the token travels in the hash.
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/views/ResetPasswordView.vue'),
+      meta: { robots: 'noindex, nofollow' },
+    },
+
     // ── Previous pages, kept reachable while the redesign is in review ──
     {
       path: '/old',
@@ -131,7 +139,8 @@ const router = createRouter({
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition
-    if (to.hash) {
+    // Only scroll to real anchors: the reset link's #token=… is not one.
+    if (/^#[A-Za-z][\w-]*$/.test(to.hash)) {
       return new Promise((resolve) => {
         // Lazy-loaded views mount a tick after navigation; give the target
         // a moment to exist, then land just below the sticky nav.
