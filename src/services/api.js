@@ -88,7 +88,12 @@ export const api = {
   // Password reset (the token comes from the emailed link). The language
   // picks the language of the backend's error message.
   resetPassword: (token, newPassword, language) =>
-    request('POST', '/auth/reset-password', { token, newPassword }, { 'Accept-Language': language }),
+    request(
+      'POST',
+      '/auth/reset-password',
+      { token, newPassword },
+      { 'Accept-Language': language },
+    ),
 
   // Users
   getProfile: () => request('GET', '/auth/users/profile'),
