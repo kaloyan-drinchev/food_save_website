@@ -278,7 +278,6 @@ export default {
   resetPassword: {
     pageTitle: 'New password | FoodSave',
     eyebrow: 'Your account',
-    checking: 'Checking your link…',
     title: 'Choose a new password',
     subtitle: 'Enter your new password twice.',
     newPassword: 'New password',
@@ -290,12 +289,13 @@ export default {
     errTooLong: 'Your password is too long.',
     errMismatch: 'The passwords do not match.',
     errRateLimit: 'Too many attempts. Please try again in a moment.',
+    errRateLimitIn: 'Too many attempts. Please try again in {minutes} min.',
     errGeneric: 'Something went wrong. Please try again.',
     submit: 'Save new password',
     submitting: 'Saving…',
     invalidTitle: 'This link is invalid or has expired',
     invalidBody:
-      'Password reset links work for 30 minutes and can only be used once. Request a new one from “Forgot password” in the FoodSave app.',
+      'Password reset links expire 5 minutes after you request them and work only once. Requesting a new link cancels the previous one. Request a new one from “Forgot password” in the FoodSave app.',
     doneTitle: 'Your password has been changed',
     doneBody: 'You can now sign in to the FoodSave app with your new password. For your security, you have been signed out on all devices.',
     home: 'Go to FoodSave',

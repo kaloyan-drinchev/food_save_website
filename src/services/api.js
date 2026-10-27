@@ -41,16 +41,17 @@ function isAdminAuthenticated() {
   return claims.role === 'admin'
 }
 
-async function request(method, path, body) {
+async function request(method, path, body, extraHeaders = {}) {
   const res = await fetch(`${BASE}${path}`, {
     method,
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    headers: { 'Content-Type': 'application/json', ...authHeaders(), ...extraHeaders },
     body: body ? JSON.stringify(body) : undefined,
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw Object.assign(new Error(err.message || err.error || res.statusText), {
       status: res.status,
+      retryAfter: res.headers.get('Retry-After'),
     })
   }
   if (res.status === 204) return null
@@ -84,10 +85,10 @@ export const api = {
   },
   register: (data) => request('POST', '/auth/register', data),
 
-  // Password reset (the token comes from the emailed link)
-  validateResetToken: (token) => request('POST', '/auth/reset-password/validate', { token }),
-  resetPassword: (token, newPassword) =>
-    request('POST', '/auth/reset-password', { token, newPassword }),
+  // Password reset (the token comes from the emailed link). The language
+  // picks the language of the backend's error message.
+  resetPassword: (token, newPassword, language) =>
+    request('POST', '/auth/reset-password', { token, newPassword }, { 'Accept-Language': language }),
 
   // Users
   getProfile: () => request('GET', '/auth/users/profile'),

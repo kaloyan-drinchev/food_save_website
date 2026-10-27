@@ -5,20 +5,25 @@ import { api } from '@/services/api'
 import { setLocale } from '@/i18n'
 
 /**
- * Landing page for the password-reset email. The link carries a one-time
- * token in the hash (/reset-password#token=…) so it never reaches server logs.
- * The token is checked before the form is shown, then removed from the
- * address bar so it is not left in history or shared by accident.
+ * Landing page for the password-reset email
+ * (/reset-password?token=…). Opening the page sends nothing, so email link
+ * scanners cannot use up the token; it is only sent when the form is
+ * submitted. The token is kept in memory and removed from the address bar
+ * straight away so it is not left in history or shared by accident.
  */
 
 const MIN_LENGTH = 12
 // bcrypt only reads the first 72 bytes; the backend rejects anything longer.
 const MAX_BYTES = 72
+// The backend issues 256-bit tokens as 43 URL-safe characters.
+const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/
+// The backend's message for an expired, used or replaced link (EN and BG).
+const INVALID_LINK = /reset link|линкът за възстановяване/i
 
 const { t, locale } = useI18n()
 
 const token = ref('')
-const step = ref('checking') // checking | form | invalid | done
+const step = ref('form') // form | invalid | done
 const password = ref('')
 const confirm = ref('')
 const showPassword = ref(false)
@@ -44,37 +49,26 @@ watchEffect(() => {
 })
 
 function readToken() {
-  const params = new URLSearchParams(window.location.hash.slice(1))
-  // Accept ?token= too, in case an email client rewrites the link.
-  return (params.get('token') || new URLSearchParams(window.location.search).get('token') || '').trim()
+  const query = new URLSearchParams(window.location.search).get('token')
+  // Older links put the token in the hash.
+  const hash = new URLSearchParams(window.location.hash.slice(1)).get('token')
+  return query || hash || ''
 }
 
 function messageFor(err) {
-  if (err?.status === 429) return t('resetPassword.errRateLimit')
+  if (err?.status === 429) {
+    const minutes = Math.ceil(Number(err.retryAfter) / 60)
+    return minutes > 0
+      ? t('resetPassword.errRateLimitIn', { minutes })
+      : t('resetPassword.errRateLimit')
+  }
   return t('resetPassword.errGeneric')
 }
 
-onMounted(async () => {
+onMounted(() => {
   token.value = readToken()
   window.history.replaceState(window.history.state, '', window.location.pathname)
-
-  if (!token.value) {
-    step.value = 'invalid'
-    return
-  }
-
-  try {
-    await api.validateResetToken(token.value)
-    step.value = 'form'
-  } catch (err) {
-    if (err?.status === 400 || err?.status === 404 || err?.status === 410) {
-      step.value = 'invalid'
-    } else {
-      // Could not check (network, rate limit): let the submit decide.
-      error.value = messageFor(err)
-      step.value = 'form'
-    }
-  }
+  if (!TOKEN_PATTERN.test(token.value)) step.value = 'invalid'
 })
 
 async function submit() {
@@ -84,13 +78,13 @@ async function submit() {
 
   loading.value = true
   try {
-    await api.resetPassword(token.value, password.value)
+    await api.resetPassword(token.value, password.value, locale.value)
     password.value = ''
     confirm.value = ''
     token.value = ''
     step.value = 'done'
   } catch (err) {
-    if (err?.status === 400 && /token|code|expired|invalid/i.test(err.message || '')) {
+    if (err?.status === 400 && INVALID_LINK.test(err.message || '')) {
       step.value = 'invalid'
     } else {
       // A 400 for the password itself carries the backend's reason.
@@ -129,12 +123,7 @@ async function submit() {
         </div>
       </div>
 
-      <div v-if="step === 'checking'" class="reset-heading">
-        <div class="reset-spinner" aria-hidden="true"></div>
-        <p id="reset-title">{{ t('resetPassword.checking') }}</p>
-      </div>
-
-      <template v-else-if="step === 'form'">
+      <template v-if="step === 'form'">
         <div class="reset-heading">
           <span class="reset-eyebrow">{{ t('resetPassword.eyebrow') }}</span>
           <h1 id="reset-title">{{ t('resetPassword.title') }}</h1>
@@ -498,22 +487,6 @@ async function submit() {
   color: var(--reset-teal);
 }
 
-.reset-spinner {
-  width: 36px;
-  height: 36px;
-  margin: 8px auto 16px;
-  border: 3px solid var(--reset-sage);
-  border-top-color: var(--reset-teal);
-  border-radius: 50%;
-  animation: reset-spin 0.8s linear infinite;
-}
-
-@keyframes reset-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .reset-help {
   margin: 30px 0 0;
   color: #708183;
@@ -548,10 +521,6 @@ async function submit() {
   .reset-button,
   .reset-field input {
     transition: none;
-  }
-
-  .reset-spinner {
-    animation-duration: 2.4s;
   }
 }
 </style>
